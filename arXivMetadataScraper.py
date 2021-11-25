@@ -15,7 +15,7 @@ def get_data(category, start_date):
     st_d = date(year, month, day)
 
     df = pd.DataFrame(columns=('arxiv_id', 'title', 'abstract', 'primary_category', 'categories',
-                               'authors', 'created', 'updated', 'doi'))
+                               'authors', 'published', 'updated', 'doi'))
 
     search = arxiv.Search(
         query=category,
@@ -69,7 +69,6 @@ if __name__ == "__main__":
                 pass
 
         data = data.drop_duplicates(subset=["arxiv_id"], keep="first")
-
         data.to_json("./data/arXiv" + start_date + ".json", orient='records', lines=True)
 
         print("Saved Json file for papers from ", start_date, " until today")
