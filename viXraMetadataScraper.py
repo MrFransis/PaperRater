@@ -10,14 +10,9 @@ headers = {
 }
 
 
-class Author:
-    def __init__(self, name):
-        self.name = name
-
-
 def get_data(start_date):
     """
-    get_data query viXra in order to retrieve metadata associated with all the papers that were published onto
+    get_data queries viXra in order to retrieve metadata associated with all the papers that were published onto
     viXra since the start_date.
     """
     year, month, day = start_date.split('-')
@@ -25,7 +20,7 @@ def get_data(start_date):
     stop_date = date(year, month, day)
     curr_date = date.today()
 
-    df = pd.DataFrame(columns=('vixra_id', 'title', 'abstract', 'primary_category', 'authors', 'published'))
+    df = pd.DataFrame(columns=('vixra_id', 'title', 'abstract', 'category', 'authors', 'published'))
 
     while curr_date >= stop_date:
         year = curr_date.year
@@ -55,7 +50,7 @@ def get_data(start_date):
 
             authors = []
             for elem in a.find("p").find_all("a"):
-                authors.append(Author(elem.text))
+                authors.append(elem.text)
 
             abstract = a.find_all("p", recursive=False)[1].find(text=True).strip()
             # Avoid bad characters
@@ -66,7 +61,7 @@ def get_data(start_date):
             contents = {'vixra_id': vixra_id,
                         'title': title,
                         'abstract': abstract,
-                        'primary_category': primary_category,
+                        'category': primary_category,
                         'authors': authors,
                         'published': published
                         }

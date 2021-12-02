@@ -5,7 +5,7 @@ import arxiv
 
 def get_data_by_category(category, start_date):
     """
-    get_data query arXiv in order to retrieve metadata associated with all the papers that were published onto
+    get_data queries arXiv in order to retrieve metadata associated with all the papers that were published onto
     arXiv since the start_date.
     """
     print("Processing:", category)
@@ -14,7 +14,7 @@ def get_data_by_category(category, start_date):
     year, month, day = int(year), int(month), int(day)
     st_d = date(year, month, day)
 
-    df = pd.DataFrame(columns=('arxiv_id', 'title', 'abstract', 'primary_category', 'categories',
+    df = pd.DataFrame(columns=('arxiv_id', 'title', 'abstract', 'category', 'categories',
                                'authors', 'published', 'updated', 'doi'))
 
     search = arxiv.Search(
@@ -30,6 +30,10 @@ def get_data_by_category(category, start_date):
         ArXiv API does not support temporal queries, so the loop is stopped when the published date of
         the last paper retrieved is older than the start_date
         """
+        authors = []
+        for author in result.authors:
+            authors.append(str(author))
+
         if result.published.date() < st_d:
             break
 
@@ -39,9 +43,9 @@ def get_data_by_category(category, start_date):
         contents = {'arxiv_id': arxiv_id,
                     'title': result.title,
                     'abstract': result.summary.strip(),
-                    'primary_category': result.primary_category,
+                    'category': result.primary_category,
                     'categories': result.categories,
-                    'authors': result.authors,
+                    'authors': authors,
                     'published': str(result.published.date()),
                     'updated': str(result.updated.date()),
                     'doi': result.doi
