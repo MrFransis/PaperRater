@@ -3,7 +3,12 @@ import pandas as pd
 import arxiv
 
 
-def get_data(category, start_date):
+class Id:
+    def __init__(self, arxiv):
+        self.arxiv = arxiv
+
+
+def get_data_by_category(category, start_date):
     """
     get_data query arXiv in order to retrieve metadata associated with all the papers that were published onto
     arXiv since the start_date.
@@ -36,7 +41,7 @@ def get_data(category, start_date):
         # extracting only the paper id
         arxiv_id = result.entry_id.split("/")[4][:10]
 
-        contents = {'arxiv_id': arxiv_id,
+        contents = {'arxiv_id': Id(arxiv_id),
                     'title': result.title,
                     'abstract': result.summary.strip(),
                     'primary_category': result.primary_category,
@@ -51,8 +56,7 @@ def get_data(category, start_date):
     return df
 
 
-if __name__ == "__main__":
-    start_date = "2021-11-23"
+def get_data(start_date):
     categories = ['eess', 'econ', 'math', 'cs', 'physics', 'physics:astro-ph', 'physics:cond-mat', 'physics:gr-qc',
                   'physics:hep-ex', 'physics:hep-lat', 'physics:hep-ph', 'physics:hep-th', 'physics:math-ph',
                   'physics:nlin', 'physics:nucl-ex', 'physics:nucl-th', 'physics:physics', 'physics:quant-ph', 'q-bio',
@@ -63,7 +67,7 @@ if __name__ == "__main__":
     try:
         for category in categories:
             try:
-                data = data.append(get_data(category, start_date))
+                data = data.append(get_data_by_category(category, start_date))
             except Exception as e:
                 print(e)
                 pass
@@ -75,3 +79,8 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(e)
+
+
+if __name__ == "__main__":
+    start_date = "2021-11-23"
+    get_data(start_date)

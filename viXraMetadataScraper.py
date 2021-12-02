@@ -10,6 +10,16 @@ headers = {
 }
 
 
+class Author:
+    def __init__(self, name):
+        self.name = name
+
+
+class Id:
+    def __init__(self, vixra):
+        self.vixra = vixra
+
+
 def get_data(start_date):
     """
     get_data query viXra in order to retrieve metadata associated with all the papers that were published onto
@@ -50,7 +60,7 @@ def get_data(start_date):
 
             authors = []
             for elem in a.find("p").find_all("a"):
-                authors.append(elem.text)
+                authors.append(Author(elem.text))
 
             abstract = a.find_all("p", recursive=False)[1].find(text=True).strip()
             # Avoid bad characters
@@ -58,7 +68,7 @@ def get_data(start_date):
 
             primary_category = a.find_all("p", recursive=False)[1].find("a").text
 
-            contents = {'vixra_id': vixra_id,
+            contents = {'vixra_id': Id(vixra_id),
                         'title': title,
                         'abstract': abstract,
                         'primary_category': primary_category,
@@ -69,6 +79,10 @@ def get_data(start_date):
             df = df.append(contents, ignore_index=True)
 
         curr_date = curr_date - relativedelta(months=1)
+
+        df = df.drop_duplicates(subset=["vixra_id"], keep="first")
+
+        df.to_json("./data/viXra" + start_date + ".json", orient='records', lines=True)
 
     return df
 
