@@ -3,11 +3,6 @@ import pandas as pd
 import arxiv
 
 
-class Id:
-    def __init__(self, arxiv):
-        self.arxiv = arxiv
-
-
 def get_data_by_category(category, start_date):
     """
     get_data query arXiv in order to retrieve metadata associated with all the papers that were published onto
@@ -41,7 +36,7 @@ def get_data_by_category(category, start_date):
         # extracting only the paper id
         arxiv_id = result.entry_id.split("/")[4][:10]
 
-        contents = {'arxiv_id': Id(arxiv_id),
+        contents = {'arxiv_id': arxiv_id,
                     'title': result.title,
                     'abstract': result.summary.strip(),
                     'primary_category': result.primary_category,

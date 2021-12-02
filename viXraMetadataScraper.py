@@ -15,11 +15,6 @@ class Author:
         self.name = name
 
 
-class Id:
-    def __init__(self, vixra):
-        self.vixra = vixra
-
-
 def get_data(start_date):
     """
     get_data query viXra in order to retrieve metadata associated with all the papers that were published onto
@@ -68,7 +63,7 @@ def get_data(start_date):
 
             primary_category = a.find_all("p", recursive=False)[1].find("a").text
 
-            contents = {'vixra_id': Id(vixra_id),
+            contents = {'vixra_id': vixra_id,
                         'title': title,
                         'abstract': abstract,
                         'primary_category': primary_category,
