@@ -3,7 +3,7 @@ import numpy as np
 
 def rename_categories(df):
     """
-    Function that rename viXra and arXiv categories so that the corresponding category names are equal
+    Function that renames viXra and arXiv categories so that the corresponding category names are equal
     :param DataFrame:
     """
     print("Renaming categories ...")
