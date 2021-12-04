@@ -1,44 +1,37 @@
-import pandas as pd
+import numpy as np
 
 
 def rename_categories(df):
+    """
+    Function that rename viXra and arXiv categories so that the corresponding category names are equal
+    :param DataFrame:
+    :return:
+    """
+    print("Renaming categories ...")
 
-    # Physics
+    ### Physics
+    # viXra
     df['category'].replace({"Quantum Gravity and String Theory": "Quantum Physics",
                             "Relativity and Cosmology": "General Relativity and Quantum Cosmology",
                             "Thermodynamics and Energy": "Physics",
                             "Geophysics": "Physics",
                             "Climate Research": "Physics",
-                            "History and Philosophy of Physics": "Physics",
-                            "astro-ph.GA": "Astrophysics",
-                            "astro-ph.CO": "Astrophysics",
-                            "astro-ph.EP": "Astrophysics",
-                            "astro-ph.HE": "Astrophysics",
-                            "astro-ph.IM": "Astrophysics",
-                            "astro-ph.SR": "Astrophysics",
-                            "cond-mat.dis-nn": "Condensed Matter",
-                            "cond-mat.mtrl-sci": "Condensed Matter",
-                            "cond-mat.mes-hall": "Condensed Matter",
-                            "cond-mat.other": "Condensed Matter",
-                            "cond-mat.quant-gas": "Condensed Matter",
-                            "cond-mat.soft": "Condensed Matter",
-                            "cond-mat.stat-mech": "Condensed Matter",
-                            "cond-mat.str-el": "Condensed Matter",
-                            "cond-mat.supr-con": "Condensed Matter",
-                            "gr-qc": "General Relativity and Quantum Cosmology",
-                            "hep-ex": "High Energy Particle Physics",
-                            "hep-lat": "High Energy Particle Physics",
-                            "hep-ph": "High Energy Particle Physics",
-                            "hep-th": "High Energy Particle Physics",
-                            "math-ph": "Mathematical Physics",
-                            "nlin": "Nonlinear Sciences",
-                            "nucl-ex": "Nuclear and Atomic Physics",
-                            "nucl-th": "Nuclear and Atomic Physics",
-                            "physics": "Physics",
-                            "quant-ph": "Quantum Physics",
-                            }, inplace=True)
+                            "History and Philosophy of Physics": "Physics"},
+                           inplace=True)
 
-    # Mathematics
+    # arXiv
+    df.category = np.where(df.category.str.startswith('astro'), "Astrophysics",
+                           (np.where(df.category.str.startswith('cond'), "Condensed Matter",
+                            (np.where(df.category.str.startswith('gr'), "General Relativity and Quantum Cosmology",
+                             (np.where(df.category.str.startswith('hep'), "High Energy Particle Physics",
+                              (np.where(df.category.str.startswith('math'), "Mathematical Physics",
+                               (np.where(df.category.str.startswith('nlin'), "Nonlinear Sciences",
+                                (np.where(df.category.str.startswith('nucl'), "Nuclear and Atomic Physics",
+                                 (np.where(df.category.str.startswith('physics'), "Physics",
+                                  (np.where(df.category.str.startswith('quant'), "Quantum Physics", df.category)))))))))))))))))
+
+    ### Mathematics
+    #viXra
     df['category'].replace({"Set Theory":"Mathematics",
                             "Number Theory":"Mathematics",
                             "Combinatorics and Graph Theory":"Mathematics",
@@ -46,129 +39,39 @@ def rename_categories(df):
                             "Geometry":"Mathematics",
                             "Topology":"Mathematics",
                             "Functions and Analysis":"Mathematics",
-                            "General Mathematics":"Mathematics",
-                            "math.AC":"Mathematics",
-                            "math.AG":"Mathematics",
-                            "math.AP":"Mathematics",
-                            "math.AT":"Mathematics",
-                            "math.CA":"Mathematics",
-                            "math.CO":"Mathematics",
-                            "math.CT":"Mathematics",
-                            "math.CV":"Mathematics",
-                            "math.DG":"Mathematics",
-                            "math.DS":"Mathematics",
-                            "math.FA":"Mathematics",
-                            "math.GM":"Mathematics",
-                            "math.GN":"Mathematics",
-                            "math.GR":"Mathematics",
-                            "math.GT":"Mathematics",
-                            "math.HO":"Mathematics",
-                            "math.IT":"Mathematics",
-                            "math.KT":"Mathematics",
-                            "math.LO":"Mathematics",
-                            "math.MG":"Mathematics",
-                            "math.MP":"Mathematics",
-                            "math.NA":"Mathematics",
-                            "math.OA":"Mathematics",
-                            "math.OC":"Mathematics",
-                            "math.PR":"Mathematics",
-                            "math.QA":"Mathematics",
-                            "math.RA":"Mathematics",
-                            "math.RT":"Mathematics",
-                            "math.SG":"Mathematics",
-                            "math.SP":"Mathematics",
-                            "math.ST":"Mathematics"
-                            }, inplace=True)
+                            "General Mathematics":"Mathematics"},
+                            inplace=True)
 
-    # Computational Science
+    # arXiv
+    df.category = np.where(df.category.str.startswith('math'), "Mathematics", df.category)
+
+    ### Computational Science
+    #viXra
     df['category'].replace({"Digital Signal Processing":"Computational Science",
                             "Data Structures and Algorithms":"Computational Science",
-                            "Artificial Intelligence":"Computational Science",
-                            "cs.AI":"Computational Science",
-                            "cs.AR":"Computational Science",
-                            "cs.CC":"Computational Science",
-                            "cs.CE":"Computational Science",
-                            "cs.CG":"Computational Science",
-                            "cs.CL":"Computational Science",
-                            "cs.CR":"Computational Science",
-                            "cs.CV":"Computational Science",
-                            "cs.CY":"Computational Science",
-                            "cs.DB":"Computational Science",
-                            "cs.DC":"Computational Science",
-                            "cs.DL":"Computational Science",
-                            "cs.DM":"Computational Science",
-                            "cs.DS":"Computational Science",
-                            "cs.ET":"Computational Science",
-                            "cs.FL":"Computational Science",
-                            "cs.GL":"Computational Science",
-                            "cs.GR":"Computational Science",
-                            "cs.GT":"Computational Science",
-                            "cs.HC":"Computational Science",
-                            "cs.IR":"Computational Science",
-                            "cs.IT":"Computational Science",
-                            "cs.LG":"Computational Science",
-                            "cs.LO":"Computational Science",
-                            "cs.MA":"Computational Science",
-                            "cs.MM":"Computational Science",
-                            "cs.MS":"Computational Science",
-                            "cs.NA":"Computational Science",
-                            "cs.NE":"Computational Science",
-                            "cs.NI":"Computational Science",
-                            "cs.OH":"Computational Science",
-                            "cs.OS":"Computational Science",
-                            "cs.PF":"Computational Science",
-                            "cs.PL":"Computational Science",
-                            "cs.RO":"Computational Science",
-                            "cs.SC":"Computational Science",
-                            "cs.SD":"Computational Science",
-                            "cs.SE":"Computational Science",
-                            "cs.SI":"Computational Science",
-                            "cs.SY":"Computational Science"
-                            }, inplace=True)
+                            "Artificial Intelligence":"Computational Science"},
+                            inplace=True)
 
-    # Biology
-    df['category'].replace({"q-bio.BM": "Quantitative Biology",
-                            "q-bio.CB": "Quantitative Biology",
-                            "q-bio.GN": "Quantitative Biology",
-                            "q-bio.MN": "Quantitative Biology",
-                            "q-bio.NC": "Quantitative Biology",
-                            "q-bio.OT": "Quantitative Biology",
-                            "q-bio.PE": "Quantitative Biology",
-                            "q-bio.QM": "Quantitative Biology",
-                            "q-bio.SC": "Quantitative Biology",
-                            "q-bio.TO": "Quantitative Biology"
-                            }, inplace=True)
+    # arXiv
+    df.category = np.where(df.category.str.startswith('cs'), "Computational Science", df.category)
 
-    # Chemistry
+    ### Biology
+    # arXiv
+    df.category = np.where(df.category.str.startswith('q-bio'), "Quantitative Biology", df.category)
 
-    # Statistics
-    df['category'].replace({"stat.AP": "Statistics",
-                            "stat.CO": "Statistics",
-                            "stat.ML": "Statistics",
-                            "stat.ME": "Statistics",
-                            "stat.OT": "Statistics",
-                            "stat.TH": "Statistics",
-                            }, inplace=True)
+    # Chemistry (invariate)
 
-    # Electrical Engineering and Systems Science
-    df['category'].replace({"eess.AS": "Electrical Engineering and Systems Science ",
-                            "eess.IV": "Electrical Engineering and Systems Science ",
-                            "eess.SP": "Electrical Engineering and Systems Science ",
-                            "eess.SY": "Electrical Engineering and Systems Science "
-                            }, inplace=True)
+    ### Statistics
+    # arXiv
+    df.category = np.where(df.category.str.startswith('stat'), "Statistics", df.category)
 
-    # Humanities
-    df['category'].replace({"q-fin.CP": "Economics and Finance",
-                            "q-fin.EC": "Economics and Finance",
-                            "q-fin.GN": "Economics and Finance",
-                            "q-fin.MF": "Economics and Finance",
-                            "q-fin.PM": "Economics and Finance",
-                            "q-fin.PR": "Economics and Finance",
-                            "q-fin.RM": "Economics and Finance",
-                            "q-fin.ST": "Economics and Finance",
-                            "q-fin.TR": "Economics and Finance",
-                            "econ.EM": "Economics and Finance",
-                            "econ.GN": "Economics and Finance",
-                            "econ.TH": "Economics and Finance"
-                            }, inplace=True)
+    ### Electrical Engineering and Systems Science
+    # arXiv
+    df.category = np.where(df.category.str.startswith('eess'), "Electrical Engineering and Systems Science", df.category)
+
+    ### Humanities
+    # arXiv
+    df.category = np.where(df.category.str.startswith('q-fin'), "Economics and Finance",
+                           (np.where(df.category.str.startswith('econ'), "Economics and Finance", df.category)))
+
     return df
