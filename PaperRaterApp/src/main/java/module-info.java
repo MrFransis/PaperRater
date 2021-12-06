@@ -6,4 +6,6 @@ module it.unipi.pr.paperraterapp {
 
     opens it.unipi.pr.paperraterapp to javafx.fxml;
     exports it.unipi.pr.paperraterapp;
+    exports it.unipi.pr.paperraterapp.GUIcontroller;
+    opens it.unipi.pr.paperraterapp.GUIcontroller to javafx.fxml;
 }
