@@ -52,7 +52,6 @@ public class RegisterController {
             root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/login.fxml"));
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("PaperRater");
             stage.show();
             System.out.println("LOG: move to login.");
         }
