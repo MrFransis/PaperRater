@@ -7,21 +7,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #3700B3;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.pr.paperraterapp.GUIcontroller.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.pr.paperraterapp.GUIcontroller.LoginController">
    <children>
-      <AnchorPane layoutX="422.0" layoutY="68.0" prefHeight="400.0" prefWidth="306.0" style="-fx-background-color: #6200EE;">
+      <AnchorPane layoutX="430.0" layoutY="50.0" prefHeight="400.0" prefWidth="306.0" styleClass="lite" stylesheets="@../style/main.css">
          <children>
-            <TextField fx:id="usernameTf" layoutX="28.0" layoutY="125.0" prefHeight="25.0" prefWidth="250.0" promptText="Username" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;">
+            <TextField fx:id="usernameTf" layoutX="28.0" layoutY="125.0" prefHeight="25.0" prefWidth="250.0" promptText="Username" styleClass="login" stylesheets="@../style/main.css">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <PasswordField fx:id="passwordTf" layoutX="28.0" layoutY="218.0" prefHeight="25.0" prefWidth="250.0" promptText="Password" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;">
+            <PasswordField fx:id="passwordTf" layoutX="28.0" layoutY="218.0" prefHeight="25.0" prefWidth="250.0" promptText="Password" styleClass="login" stylesheets="@../style/main.css">
                <font>
                   <Font size="14.0" />
                </font>
             </PasswordField>
-            <Button fx:id="loginButton" layoutX="40.0" layoutY="320.0" mnemonicParsing="false" onAction="#checkCredential" prefHeight="25.0" prefWidth="225.0" style="-fx-background-color: #03DAC5;" text="Login" textFill="WHITE">
+            <Button fx:id="loginButton" layoutX="40.0" layoutY="320.0" mnemonicParsing="false" onAction="#checkCredential" prefHeight="25.0" prefWidth="225.0" styleClass="buttonlog" stylesheets="@../style/main.css" text="Login" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
@@ -33,22 +33,22 @@
             </Label>
          </children>
       </AnchorPane>
-      <Label layoutX="14.0" layoutY="148.0" style="-fx-background-color: #3700B3;" text="Welcome to PaperRater" textFill="WHITE">
+      <Label layoutX="14.0" layoutY="168.0" style="-fx-background-color: #3700B3;" text="Welcome to PaperRater" textFill="WHITE">
          <font>
             <Font size="36.0" />
          </font>
       </Label>
-      <Label layoutX="26.0" layoutY="201.0" prefHeight="27.0" prefWidth="352.0" text="The first social where the culture come" textFill="WHITE">
+      <Label layoutX="26.0" layoutY="222.0" prefHeight="27.0" prefWidth="352.0" text="The first social where the culture come" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="26.0" layoutY="228.0" prefHeight="27.0" prefWidth="352.0" text="before the people" textFill="WHITE">
+      <Label layoutX="26.0" layoutY="250.0" prefHeight="27.0" prefWidth="352.0" text="before the people" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="registerButton" layoutX="26.0" layoutY="276.0" mnemonicParsing="false" onAction="#loadRegisterForm" prefHeight="30.0" prefWidth="154.0" style="-fx-background-color: #03DAC5;" text="Register" textFill="WHITE">
+      <Button fx:id="registerButton" layoutX="26.0" layoutY="294.0" mnemonicParsing="false" onAction="#loadRegisterForm" prefHeight="30.0" prefWidth="154.0" styleClass="buttonlog" stylesheets="@../style/main.css" text="Register" textFill="WHITE">
          <font>
             <Font size="14.0" />
          </font>
