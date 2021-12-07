@@ -1,10 +1,8 @@
 package it.unipi.pr.paperraterapp.GUIcontroller;
 
-import it.unipi.pr.paperraterapp.GUIApp;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,7 +12,19 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class LoginController {
+public class RegisterController {
+
+    @FXML
+    private TextField ageTf;
+
+    @FXML
+    private TextField emailTf;
+
+    @FXML
+    private TextField firstNameTf;
+
+    @FXML
+    private TextField lastNameTf;
 
     @FXML
     private Button loginButton;
@@ -23,28 +33,28 @@ public class LoginController {
     private PasswordField passwordTf;
 
     @FXML
-    private Button registerButton;
+    private Button signUPButton;
 
     @FXML
     private TextField usernameTf;
 
     @FXML
-    void checkCredential(ActionEvent event) {
-        System.out.println("test");
+    void checkForm(ActionEvent event) {
+
     }
 
     @FXML
-    void loadRegisterForm(ActionEvent event) throws IOException {
+    void loadLogin(ActionEvent event) throws IOException {
         Stage stage;
         Parent root;
-        if (event.getSource() == registerButton) {
-            stage = (Stage) registerButton.getScene().getWindow();
-            root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/register.fxml"));
+        if (event.getSource() == loginButton) {
+            stage = (Stage) loginButton.getScene().getWindow();
+            root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/login.fxml"));
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("PaperRater");
             stage.show();
-            System.out.println("LOG: move to register.");
+            System.out.println("LOG: move to login.");
         }
     }
 
