@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="Create the register form and the controller to switch from login page to register page and the other way." />
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="add the logo at the app">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIcontroller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIcontroller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIcontroller/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIcontroller/RegisterController.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -86,7 +90,8 @@
       <workItem from="1638799462618" duration="642000" />
       <workItem from="1638812542457" duration="4781000" />
       <workItem from="1638819062252" duration="6303000" />
-      <workItem from="1638876231867" duration="3002000" />
+      <workItem from="1638876231867" duration="3785000" />
+      <workItem from="1638885428662" duration="1111000" />
     </task>
     <task id="LOCAL-00001" summary="create the folder to start the app dev">
       <created>1638650378848</created>
@@ -144,7 +149,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638879135474</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="add the logo at the app">
+      <created>1638879593572</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1638879593572</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,6 +179,7 @@
     <MESSAGE value="create the folder to start the app dev" />
     <MESSAGE value="create the GUI for the login and prepared the contoller" />
     <MESSAGE value="Create the register form and the controller to switch from login page to register page and the other way." />
-    <option name="LAST_COMMIT_MESSAGE" value="Create the register form and the controller to switch from login page to register page and the other way." />
+    <MESSAGE value="add the logo at the app" />
+    <option name="LAST_COMMIT_MESSAGE" value="add the logo at the app" />
   </component>
 </project>

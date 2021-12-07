@@ -1,10 +1,8 @@
 package it.unipi.pr.paperraterapp.GUIcontroller;
 
-import it.unipi.pr.paperraterapp.GUIApp;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,19 +28,35 @@ public class LoginController {
 
     @FXML
     void checkCredential(ActionEvent event) {
-        System.out.println("test");
+        System.out.println("LOG: test credential");
+        String username = usernameTf.getText();
+        String password = passwordTf.getText();
+        // TO DO: check login credential in the DB
+        usernameTf.setText("");
+        passwordTf.setText("");
     }
 
+    /**
+     * If the user click the button register this function
+     * will change the app stage and show the register form
+     *
+     * @param event
+     */
     @FXML
-    void loadRegisterForm(ActionEvent event) throws IOException {
+    void loadRegisterForm(ActionEvent event) {
         Stage stage;
         Parent root;
         if (event.getSource() == registerButton) {
             stage = (Stage) registerButton.getScene().getWindow();
-            root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/register.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            try{
+                root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/register.fxml"));
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                System.err.println("ERROR: Can't find the fxml file.");
+                e.printStackTrace();
+            }
             System.out.println("LOG: move to register.");
         }
     }

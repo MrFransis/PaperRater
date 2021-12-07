@@ -49,10 +49,15 @@ public class RegisterController {
         Parent root;
         if (event.getSource() == loginButton) {
             stage = (Stage) loginButton.getScene().getWindow();
-            root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/login.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            try{
+                root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/login.fxml"));
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                System.err.println("ERROR: Can't find the fxml file.");
+                e.printStackTrace();
+            }
             System.out.println("LOG: move to login.");
         }
     }
