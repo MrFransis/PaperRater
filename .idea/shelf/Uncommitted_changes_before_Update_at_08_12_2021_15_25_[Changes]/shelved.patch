@@ -1,0 +1,17 @@
+Index: PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIApp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.pr.paperraterapp;\r\n\r\nimport javafx.application.Application;\r\nimport javafx.fxml.FXML;\r\nimport javafx.fxml.FXMLLoader;\r\nimport javafx.scene.Parent;\r\nimport javafx.scene.Scene;\r\nimport javafx.scene.image.Image;\r\nimport javafx.stage.Stage;\r\n\r\npublic class GUIApp extends Application {\r\n\r\n    @Override\r\n    public void start(Stage stage) {\r\n        try {\r\n            Parent root = FXMLLoader.load(getClass().getResource(\"layouts/login.fxml\"));\r\n            Scene scene = new Scene(root);\r\n            stage.setScene(scene);\r\n            stage.setTitle(\"    PaperRater\");\r\n            stage.getIcons().add(new Image(getClass().getResourceAsStream( \"images/PRlogo.png\")));\r\n            stage.show();\r\n        } catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n\r\n    public static void main(String[] args) {\r\n        launch();\r\n    }\r\n}
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIApp.java b/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIApp.java
+--- a/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIApp.java	
++++ b/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/GUIApp.java	
+@@ -17,7 +17,7 @@
+             Scene scene = new Scene(root);
+             stage.setScene(scene);
+             stage.setTitle("    PaperRater");
+-            stage.getIcons().add(new Image(getClass().getResourceAsStream( "images/PRlogo.png")));
++            stage.getIcons().add(new Image(getClass().getResourceAsStream( "images/PaperRater.png")));
+             stage.show();
+         } catch (Exception e) {
+             e.printStackTrace();

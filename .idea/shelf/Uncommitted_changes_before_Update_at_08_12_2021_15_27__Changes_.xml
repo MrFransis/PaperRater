@@ -1,0 +1,14 @@
+<changelist name="Uncommitted_changes_before_Update_at_08_12_2021_15_27_[Changes]" date="1638973647675" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_12_2021_15_27_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 08/12/2021 15.27 [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/GUIcontroller/RegisterController.class" />
+    <option name="AFTER_PATH" value="PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/GUIcontroller/RegisterController.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_12_2021_15_27_[Changes]/RegisterController.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/GUIcontroller/LoginController.class" />
+    <option name="AFTER_PATH" value="PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/GUIcontroller/LoginController.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_12_2021_15_27_[Changes]/LoginController.class" />
+  </binary>
+</changelist>

@@ -1,0 +1,150 @@
+Index: PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/login.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<?import javafx.scene.control.Button?>\r\n<?import javafx.scene.control.Label?>\r\n<?import javafx.scene.control.PasswordField?>\r\n<?import javafx.scene.control.TextField?>\r\n<?import javafx.scene.layout.AnchorPane?>\r\n<?import javafx.scene.text.Font?>\r\n\r\n<AnchorPane maxHeight=\"-Infinity\" maxWidth=\"-Infinity\" minHeight=\"-Infinity\" minWidth=\"-Infinity\" prefHeight=\"500.0\" prefWidth=\"800.0\" styleClass=\"dark\" stylesheets=\"@../style/main.css\" xmlns=\"http://javafx.com/javafx/17\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"it.unipi.pr.paperraterapp.GUIcontroller.LoginController\">\r\n   <children>\r\n      <AnchorPane layoutX=\"430.0\" layoutY=\"50.0\" prefHeight=\"400.0\" prefWidth=\"306.0\" styleClass=\"lite\" stylesheets=\"@../style/main.css\">\r\n         <children>\r\n            <TextField fx:id=\"usernameTf\" layoutX=\"28.0\" layoutY=\"125.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Username\" styleClass=\"login\" stylesheets=\"@../style/main.css\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </TextField>\r\n            <PasswordField fx:id=\"passwordTf\" layoutX=\"28.0\" layoutY=\"218.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Password\" styleClass=\"login\" stylesheets=\"@../style/main.css\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </PasswordField>\r\n            <Button fx:id=\"loginButton\" layoutX=\"40.0\" layoutY=\"320.0\" mnemonicParsing=\"false\" onAction=\"#checkCredential\" prefHeight=\"25.0\" prefWidth=\"225.0\" styleClass=\"buttonlog\" stylesheets=\"@../style/main.css\" text=\"Login\" textFill=\"WHITE\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </Button>\r\n            <Label layoutX=\"98.0\" layoutY=\"42.0\" text=\"Sign In\" textFill=\"WHITE\">\r\n               <font>\r\n                  <Font size=\"36.0\" />\r\n               </font>\r\n            </Label>\r\n         </children>\r\n      </AnchorPane>\r\n      <Label layoutX=\"14.0\" layoutY=\"168.0\" style=\"-fx-background-color: #3700B3;\" text=\"Welcome to PaperRater\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"36.0\" />\r\n         </font>\r\n      </Label>\r\n      <Label layoutX=\"26.0\" layoutY=\"222.0\" prefHeight=\"27.0\" prefWidth=\"352.0\" text=\"The first social where the culture come\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"18.0\" />\r\n         </font>\r\n      </Label>\r\n      <Label layoutX=\"26.0\" layoutY=\"250.0\" prefHeight=\"27.0\" prefWidth=\"352.0\" text=\"before the people\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"18.0\" />\r\n         </font>\r\n      </Label>\r\n      <Button fx:id=\"registerButton\" layoutX=\"26.0\" layoutY=\"294.0\" mnemonicParsing=\"false\" onAction=\"#loadRegisterForm\" prefHeight=\"30.0\" prefWidth=\"154.0\" styleClass=\"buttonlog\" stylesheets=\"@../style/main.css\" text=\"Register\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"14.0\" />\r\n         </font>\r\n      </Button>\r\n   </children>\r\n</AnchorPane>\r\n
+===================================================================
+diff --git a/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/login.fxml b/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/login.fxml
+--- a/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/login.fxml	
++++ b/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/login.fxml	
+@@ -7,7 +7,7 @@
+ <?import javafx.scene.layout.AnchorPane?>
+ <?import javafx.scene.text.Font?>
+ 
+-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.pr.paperraterapp.GUIcontroller.LoginController">
++<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.paperrater.GUIcontroller.LoginController">
+    <children>
+       <AnchorPane layoutX="430.0" layoutY="50.0" prefHeight="400.0" prefWidth="306.0" styleClass="lite" stylesheets="@../style/main.css">
+          <children>
+Index: PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/register.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<?import javafx.scene.control.Button?>\r\n<?import javafx.scene.control.Label?>\r\n<?import javafx.scene.control.PasswordField?>\r\n<?import javafx.scene.control.TextField?>\r\n<?import javafx.scene.layout.AnchorPane?>\r\n<?import javafx.scene.text.Font?>\r\n\r\n<AnchorPane prefHeight=\"600.0\" prefWidth=\"400.0\" style=\"-fx-background-color: #3700B3FF;\" xmlns=\"http://javafx.com/javafx/17\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"it.unipi.pr.paperraterapp.GUIcontroller.RegisterController\">\r\n   <children>\r\n      <AnchorPane layoutX=\"-1.0\" layoutY=\"72.0\" prefHeight=\"533.0\" prefWidth=\"406.0\" style=\"-fx-background-color: #6200EEFF;\">\r\n         <children>\r\n            <TextField fx:id=\"firstNameTf\" layoutX=\"78.0\" layoutY=\"22.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"First name\" style=\"-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;\" AnchorPane.bottomAnchor=\"480.00000000000006\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </TextField>\r\n            <TextField fx:id=\"lastNameTf\" layoutX=\"78.0\" layoutY=\"89.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Last name\" style=\"-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;\" AnchorPane.bottomAnchor=\"420.0\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </TextField>\r\n            <TextField fx:id=\"emailTf\" layoutX=\"78.0\" layoutY=\"150.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Email\" style=\"-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;\" AnchorPane.bottomAnchor=\"360.0\" AnchorPane.leftAnchor=\"78.0\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </TextField>\r\n            <TextField fx:id=\"ageTf\" layoutX=\"78.0\" layoutY=\"285.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Age\" style=\"-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;\" AnchorPane.bottomAnchor=\"240.0\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </TextField>\r\n            <TextField fx:id=\"usernameTf\" layoutX=\"78.0\" layoutY=\"330.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Username\" style=\"-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;\" AnchorPane.bottomAnchor=\"180.0\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </TextField>\r\n            <Button fx:id=\"signUPButton\" layoutX=\"90.0\" layoutY=\"393.0\" mnemonicParsing=\"false\" onAction=\"#checkForm\" prefHeight=\"25.0\" prefWidth=\"225.0\" style=\"-fx-background-color: #03DAC5;\" text=\"Sign up\" textFill=\"WHITE\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </Button>\r\n            <Label layoutX=\"115.0\" layoutY=\"441.0\" text=\"If you are already registered:\" textFill=\"WHITE\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </Label>\r\n            <Button fx:id=\"loginButton\" layoutX=\"90.0\" layoutY=\"475.0\" mnemonicParsing=\"false\" onAction=\"#loadLogin\" prefHeight=\"25.0\" prefWidth=\"225.0\" style=\"-fx-background-color: #03DAC5;\" text=\"Login\" textFill=\"WHITE\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </Button>\r\n            <PasswordField fx:id=\"passwordTf\" layoutX=\"84.0\" layoutY=\"216.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Password\" style=\"-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;\" AnchorPane.bottomAnchor=\"300.0\" AnchorPane.leftAnchor=\"78.0\" />\r\n         </children>\r\n      </AnchorPane>\r\n      <Label layoutX=\"137.0\" layoutY=\"14.0\" text=\"Register\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"36.0\" />\r\n         </font>\r\n      </Label>\r\n   </children>\r\n</AnchorPane>\r\n
+===================================================================
+diff --git a/PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/register.fxml b/PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/register.fxml
+--- a/PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/register.fxml	
++++ b/PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/register.fxml	
+@@ -7,36 +7,36 @@
+ <?import javafx.scene.layout.AnchorPane?>
+ <?import javafx.scene.text.Font?>
+ 
+-<AnchorPane prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: #3700B3FF;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.pr.paperraterapp.GUIcontroller.RegisterController">
++<AnchorPane prefHeight="600.0" prefWidth="400.0" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.pr.paperraterapp.GUIcontroller.RegisterController">
+    <children>
+-      <AnchorPane layoutX="-1.0" layoutY="72.0" prefHeight="533.0" prefWidth="406.0" style="-fx-background-color: #6200EEFF;">
++      <AnchorPane layoutX="-1.0" layoutY="72.0" prefHeight="533.0" prefWidth="406.0" styleClass="lite" stylesheets="@../style/main.css">
+          <children>
+-            <TextField fx:id="firstNameTf" layoutX="78.0" layoutY="22.0" prefHeight="25.0" prefWidth="250.0" promptText="First name" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;" AnchorPane.bottomAnchor="480.00000000000006">
++            <TextField fx:id="firstNameTf" layoutX="78.0" layoutY="22.0" prefHeight="25.0" prefWidth="250.0" promptText="First name" styleClass="login" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="480.00000000000006">
+                <font>
+                   <Font size="14.0" />
+                </font>
+             </TextField>
+-            <TextField fx:id="lastNameTf" layoutX="78.0" layoutY="89.0" prefHeight="25.0" prefWidth="250.0" promptText="Last name" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;" AnchorPane.bottomAnchor="420.0">
++            <TextField fx:id="lastNameTf" layoutX="78.0" layoutY="89.0" prefHeight="25.0" prefWidth="250.0" promptText="Last name" styleClass="login" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="420.0">
+                <font>
+                   <Font size="14.0" />
+                </font>
+             </TextField>
+-            <TextField fx:id="emailTf" layoutX="78.0" layoutY="150.0" prefHeight="25.0" prefWidth="250.0" promptText="Email" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="78.0">
++            <TextField fx:id="emailTf" layoutX="78.0" layoutY="150.0" prefHeight="25.0" prefWidth="250.0" promptText="Email" styleClass="login" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="78.0">
+                <font>
+                   <Font size="14.0" />
+                </font>
+             </TextField>
+-            <TextField fx:id="ageTf" layoutX="78.0" layoutY="285.0" prefHeight="25.0" prefWidth="250.0" promptText="Age" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;" AnchorPane.bottomAnchor="240.0">
++            <TextField fx:id="ageTf" layoutX="78.0" layoutY="285.0" prefHeight="25.0" prefWidth="250.0" promptText="Age" styleClass="login" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="240.0">
+                <font>
+                   <Font size="14.0" />
+                </font>
+             </TextField>
+-            <TextField fx:id="usernameTf" layoutX="78.0" layoutY="330.0" prefHeight="25.0" prefWidth="250.0" promptText="Username" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;" AnchorPane.bottomAnchor="180.0">
++            <TextField fx:id="usernameTf" layoutX="78.0" layoutY="330.0" prefHeight="25.0" prefWidth="250.0" promptText="Username" styleClass="login" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="180.0">
+                <font>
+                   <Font size="14.0" />
+                </font>
+             </TextField>
+-            <Button fx:id="signUPButton" layoutX="90.0" layoutY="393.0" mnemonicParsing="false" onAction="#checkForm" prefHeight="25.0" prefWidth="225.0" style="-fx-background-color: #03DAC5;" text="Sign up" textFill="WHITE">
++            <Button fx:id="signUPButton" layoutX="90.0" layoutY="393.0" mnemonicParsing="false" onAction="#checkForm" prefHeight="25.0" prefWidth="225.0" styleClass="buttonlog" stylesheets="@../style/main.css" text="Sign up" textFill="WHITE">
+                <font>
+                   <Font size="14.0" />
+                </font>
+@@ -46,12 +46,12 @@
+                   <Font size="14.0" />
+                </font>
+             </Label>
+-            <Button fx:id="loginButton" layoutX="90.0" layoutY="475.0" mnemonicParsing="false" onAction="#loadLogin" prefHeight="25.0" prefWidth="225.0" style="-fx-background-color: #03DAC5;" text="Login" textFill="WHITE">
++            <Button fx:id="loginButton" layoutX="90.0" layoutY="475.0" mnemonicParsing="false" onAction="#loadLogin" prefHeight="25.0" prefWidth="225.0" styleClass="buttonlog" stylesheets="@../style/main.css" text="Login" textFill="WHITE">
+                <font>
+                   <Font size="14.0" />
+                </font>
+             </Button>
+-            <PasswordField fx:id="passwordTf" layoutX="84.0" layoutY="216.0" prefHeight="25.0" prefWidth="250.0" promptText="Password" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="78.0" />
++            <PasswordField fx:id="passwordTf" layoutX="84.0" layoutY="216.0" prefHeight="25.0" prefWidth="250.0" promptText="Password" styleClass="login" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="78.0" />
+          </children>
+       </AnchorPane>
+       <Label layoutX="137.0" layoutY="14.0" text="Register" textFill="WHITE">
+Index: PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/login.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<?import javafx.scene.control.Button?>\r\n<?import javafx.scene.control.Label?>\r\n<?import javafx.scene.control.PasswordField?>\r\n<?import javafx.scene.control.TextField?>\r\n<?import javafx.scene.layout.AnchorPane?>\r\n<?import javafx.scene.text.Font?>\r\n\r\n<AnchorPane maxHeight=\"-Infinity\" maxWidth=\"-Infinity\" minHeight=\"-Infinity\" minWidth=\"-Infinity\" prefHeight=\"500.0\" prefWidth=\"800.0\" style=\"-fx-background-color: #3700B3;\" xmlns=\"http://javafx.com/javafx/17\" xmlns:fx=\"http://javafx.com/fxml/1\" fx:controller=\"it.unipi.pr.paperraterapp.GUIcontroller.LoginController\">\r\n   <children>\r\n      <AnchorPane layoutX=\"422.0\" layoutY=\"68.0\" prefHeight=\"400.0\" prefWidth=\"306.0\" style=\"-fx-background-color: #6200EE;\">\r\n         <children>\r\n            <TextField fx:id=\"usernameTf\" layoutX=\"28.0\" layoutY=\"125.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Username\" style=\"-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </TextField>\r\n            <PasswordField fx:id=\"passwordTf\" layoutX=\"28.0\" layoutY=\"218.0\" prefHeight=\"25.0\" prefWidth=\"250.0\" promptText=\"Password\" style=\"-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </PasswordField>\r\n            <Button fx:id=\"loginButton\" layoutX=\"40.0\" layoutY=\"320.0\" mnemonicParsing=\"false\" onAction=\"#checkCredential\" prefHeight=\"25.0\" prefWidth=\"225.0\" style=\"-fx-background-color: #03DAC5;\" text=\"Login\" textFill=\"WHITE\">\r\n               <font>\r\n                  <Font size=\"14.0\" />\r\n               </font>\r\n            </Button>\r\n            <Label layoutX=\"98.0\" layoutY=\"42.0\" text=\"Sign In\" textFill=\"WHITE\">\r\n               <font>\r\n                  <Font size=\"36.0\" />\r\n               </font>\r\n            </Label>\r\n         </children>\r\n      </AnchorPane>\r\n      <Label layoutX=\"14.0\" layoutY=\"148.0\" style=\"-fx-background-color: #3700B3;\" text=\"Welcome to PaperRater\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"36.0\" />\r\n         </font>\r\n      </Label>\r\n      <Label layoutX=\"26.0\" layoutY=\"201.0\" prefHeight=\"27.0\" prefWidth=\"352.0\" text=\"The first social where the culture come\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"18.0\" />\r\n         </font>\r\n      </Label>\r\n      <Label layoutX=\"26.0\" layoutY=\"228.0\" prefHeight=\"27.0\" prefWidth=\"352.0\" text=\"before the people\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"18.0\" />\r\n         </font>\r\n      </Label>\r\n      <Button fx:id=\"registerButton\" layoutX=\"26.0\" layoutY=\"276.0\" mnemonicParsing=\"false\" onAction=\"#loadRegisterForm\" prefHeight=\"30.0\" prefWidth=\"154.0\" style=\"-fx-background-color: #03DAC5;\" text=\"Register\" textFill=\"WHITE\">\r\n         <font>\r\n            <Font size=\"14.0\" />\r\n         </font>\r\n      </Button>\r\n   </children>\r\n</AnchorPane>\r\n
+===================================================================
+diff --git a/PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/login.fxml b/PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/login.fxml
+--- a/PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/login.fxml	
++++ b/PaperRaterApp/target/classes/it/unipi/pr/paperraterapp/layouts/login.fxml	
+@@ -7,21 +7,21 @@
+ <?import javafx.scene.layout.AnchorPane?>
+ <?import javafx.scene.text.Font?>
+ 
+-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #3700B3;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.pr.paperraterapp.GUIcontroller.LoginController">
++<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.pr.paperraterapp.GUIcontroller.LoginController">
+    <children>
+-      <AnchorPane layoutX="422.0" layoutY="68.0" prefHeight="400.0" prefWidth="306.0" style="-fx-background-color: #6200EE;">
++      <AnchorPane layoutX="430.0" layoutY="50.0" prefHeight="400.0" prefWidth="306.0" styleClass="lite" stylesheets="@../style/main.css">
+          <children>
+-            <TextField fx:id="usernameTf" layoutX="28.0" layoutY="125.0" prefHeight="25.0" prefWidth="250.0" promptText="Username" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;">
++            <TextField fx:id="usernameTf" layoutX="28.0" layoutY="125.0" prefHeight="25.0" prefWidth="250.0" promptText="Username" styleClass="login" stylesheets="@../style/main.css">
+                <font>
+                   <Font size="14.0" />
+                </font>
+             </TextField>
+-            <PasswordField fx:id="passwordTf" layoutX="28.0" layoutY="218.0" prefHeight="25.0" prefWidth="250.0" promptText="Password" style="-fx-background-color: #6200EE; -fx-border-color: transparent transparent white transparent; -fx-text-fill: white;">
++            <PasswordField fx:id="passwordTf" layoutX="28.0" layoutY="218.0" prefHeight="25.0" prefWidth="250.0" promptText="Password" styleClass="login" stylesheets="@../style/main.css">
+                <font>
+                   <Font size="14.0" />
+                </font>
+             </PasswordField>
+-            <Button fx:id="loginButton" layoutX="40.0" layoutY="320.0" mnemonicParsing="false" onAction="#checkCredential" prefHeight="25.0" prefWidth="225.0" style="-fx-background-color: #03DAC5;" text="Login" textFill="WHITE">
++            <Button fx:id="loginButton" layoutX="40.0" layoutY="320.0" mnemonicParsing="false" onAction="#checkCredential" prefHeight="25.0" prefWidth="225.0" styleClass="buttonlog" stylesheets="@../style/main.css" text="Login" textFill="WHITE">
+                <font>
+                   <Font size="14.0" />
+                </font>
+@@ -33,22 +33,22 @@
+             </Label>
+          </children>
+       </AnchorPane>
+-      <Label layoutX="14.0" layoutY="148.0" style="-fx-background-color: #3700B3;" text="Welcome to PaperRater" textFill="WHITE">
++      <Label layoutX="14.0" layoutY="168.0" style="-fx-background-color: #3700B3;" text="Welcome to PaperRater" textFill="WHITE">
+          <font>
+             <Font size="36.0" />
+          </font>
+       </Label>
+-      <Label layoutX="26.0" layoutY="201.0" prefHeight="27.0" prefWidth="352.0" text="The first social where the culture come" textFill="WHITE">
++      <Label layoutX="26.0" layoutY="222.0" prefHeight="27.0" prefWidth="352.0" text="The first social where the culture come" textFill="WHITE">
+          <font>
+             <Font size="18.0" />
+          </font>
+       </Label>
+-      <Label layoutX="26.0" layoutY="228.0" prefHeight="27.0" prefWidth="352.0" text="before the people" textFill="WHITE">
++      <Label layoutX="26.0" layoutY="250.0" prefHeight="27.0" prefWidth="352.0" text="before the people" textFill="WHITE">
+          <font>
+             <Font size="18.0" />
+          </font>
+       </Label>
+-      <Button fx:id="registerButton" layoutX="26.0" layoutY="276.0" mnemonicParsing="false" onAction="#loadRegisterForm" prefHeight="30.0" prefWidth="154.0" style="-fx-background-color: #03DAC5;" text="Register" textFill="WHITE">
++      <Button fx:id="registerButton" layoutX="26.0" layoutY="294.0" mnemonicParsing="false" onAction="#loadRegisterForm" prefHeight="30.0" prefWidth="154.0" styleClass="buttonlog" stylesheets="@../style/main.css" text="Register" textFill="WHITE">
+          <font>
+             <Font size="14.0" />
+          </font>
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/paperrater/main/Main.java b/PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/Main.java
+rename from PaperRaterApp/src/main/java/it/unipi/dii/paperrater/main/Main.java
+rename to PaperRaterApp/src/main/java/it/unipi/pr/paperraterapp/Main.java
