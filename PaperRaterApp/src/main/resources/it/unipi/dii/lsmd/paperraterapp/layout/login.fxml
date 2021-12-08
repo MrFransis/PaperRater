@@ -9,7 +9,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.LoginController">
    <children>
-      <AnchorPane layoutX="430.0" layoutY="50.0" prefHeight="400.0" prefWidth="306.0" styleClass="lite" stylesheets="@../style/main.css">
+      <AnchorPane layoutX="447.0" layoutY="49.0" prefHeight="400.0" prefWidth="306.0" styleClass="lite" stylesheets="@../style/main.css">
          <children>
             <TextField fx:id="usernameTf" layoutX="28.0" layoutY="125.0" prefHeight="25.0" prefWidth="250.0" promptText="Username" styleClass="login" stylesheets="@../style/main.css">
                <font>

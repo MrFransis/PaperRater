@@ -50,7 +50,7 @@ public class RegisterController {
         if (event.getSource() == loginButton) {
             stage = (Stage) loginButton.getScene().getWindow();
             try{
-                root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/login.fxml"));
+                root = FXMLLoader.load(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml"));
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
                 stage.show();

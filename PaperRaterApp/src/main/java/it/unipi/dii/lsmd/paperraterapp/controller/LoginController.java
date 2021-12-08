@@ -49,7 +49,7 @@ public class LoginController {
         if (event.getSource() == registerButton) {
             stage = (Stage) registerButton.getScene().getWindow();
             try{
-                root = FXMLLoader.load(getClass().getResource("/it/unipi/pr/paperraterapp/layouts/register.fxml"));
+                root = FXMLLoader.load(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/register.fxml"));
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
                 stage.show();
