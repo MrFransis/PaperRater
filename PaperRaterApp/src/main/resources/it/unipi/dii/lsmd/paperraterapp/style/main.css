@@ -1,0 +1,20 @@
+.dark {
+    -fx-background-color:  #3700B3;
+}
+
+.lite {
+    -fx-background-color:  #6200EE;
+}
+
+.login {
+    -fx-background-color:  #6200EE;
+    -fx-border-color:  transparent transparent white transparent;
+    -fx-text-fill: white;
+}
+
+.buttonlog {
+    -fx-background-color:  #03DAC5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
