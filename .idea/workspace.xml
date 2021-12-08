@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="add javadoc and handle IOException">
-      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/style/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/login.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/register.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/pr/paperraterapp/layouts/register.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/arXiv2018-01-01.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/viXra2021-09-01.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/merge.py" beforeDir="false" afterPath="$PROJECT_DIR$/merge.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,11 +73,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.GUIApp" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -192,5 +188,11 @@
     <MESSAGE value="add the logo at the app" />
     <MESSAGE value="add javadoc and handle IOException" />
     <option name="LAST_COMMIT_MESSAGE" value="add javadoc and handle IOException" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/script_py$viXraMetadataScraper.coverage" NAME="viXraMetadataScraper Coverage Results" MODIFIED="1637854112390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/script_py$arXivMetadataScraper.coverage" NAME="arXivMetadataScraper Coverage Results" MODIFIED="1637840313155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PaperRater$script.coverage" NAME="script Coverage Results" MODIFIED="1637692770927" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/script_py$arXivMetadataScraper__1_.coverage" NAME="arXivMetadataScraper (1) Coverage Results" MODIFIED="1637851302681" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
