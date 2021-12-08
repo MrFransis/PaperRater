@@ -6,4 +6,6 @@ module it.unipi.dii.lsmd.paperraterapp {
 
     opens it.unipi.dii.lsmd.paperraterapp to javafx.fxml;
     exports it.unipi.dii.lsmd.paperraterapp;
+    opens it.unipi.dii.lsmd.paperraterapp.controller to javafx.fxml;
+    exports it.unipi.dii.lsmd.paperraterapp.controller;
 }

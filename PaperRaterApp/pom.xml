@@ -65,7 +65,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                it.unipi.dii.lsmd.paperraterapp/it.unipi.dii.lsmd.paperraterapp.HelloApplication
+                                it.unipi.dii.lsmd.paperraterapp/it.unipi.dii.lsmd.paperraterapp.Main
                             </mainClass>
                         </configuration>
                     </execution>
