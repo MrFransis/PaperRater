@@ -26,7 +26,7 @@ def merge_data(path_arXiv, path_viXra):
     return data_merge
 
 def import_data(start_date):
-    print("Importing ...")
+    print("Importing papers data  ...")
     arXivMetadataScraper.get_data(start_date)
     viXraMetadataScraper.get_data(start_date)
 
@@ -37,8 +37,11 @@ def import_data(start_date):
     data = data.append(merge_data(path_arXiv, path_viXra))
     data = categoriesRenamer.rename_categories(data)
 
-    data.to_json("./data/merge" + start_date + ".json", orient='records', lines=True)
+    path = "./data/papers" + start_date + ".json"
+    data.to_json(path, orient='records', lines=True)
     print("Saved merged Json file for papers from ", start_date, " until today")
+
+    return path
 
 if __name__ == "__main__":
     start_date = "2021-11-30"
