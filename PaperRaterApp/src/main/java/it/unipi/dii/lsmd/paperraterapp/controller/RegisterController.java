@@ -61,5 +61,4 @@ public class RegisterController {
             System.out.println("LOG: move to login.");
         }
     }
-
 }
