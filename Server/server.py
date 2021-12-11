@@ -29,8 +29,8 @@ class App(cmd.Cmd):
 
         ### Papers
         papers_col = db["Papers"]
-        data = pd.read_json(self.papers_path, lines=True)
-        data_dict = data.to_dict("records")
+        papers_df = pd.read_json(self.papers_path, lines=True)
+        data_dict = papers_df.to_dict("records")
         papers_col.insert_many(data_dict)
         print("Added papers to database")
 
@@ -53,9 +53,37 @@ class App(cmd.Cmd):
                            'timestamp': now.strftime("%Y-%m-%d %H:%M:%S")}
                 comments.append(comment)
 
-            result = db.Papers.update_one({'_id': paper['_id']}, {'$set': {'comments': comments}})
+            db.Papers.update_one({'_id': paper['_id']}, {'$set': {'comments': comments}})
 
         print("Added comments to database")
+
+        ### Reading Lists
+        for user in users_col.find():
+            num_reading_lists = int(random.random() * 6)
+            reading_lists = []
+
+            # Generate a random number of reading lists
+            for i in range(0, num_reading_lists):
+                reading_list = []
+
+                num_papers_in_reading_list = int(random.random() * 31)
+
+                # Select a random number of papers to add to the reading list
+                for j in range(0, num_papers_in_reading_list):
+                    random_paper = papers_df.sample()
+
+                    paper_to_add = {'arxiv_id': random_paper['arxiv_id'].values[0],
+                                    'vixra_id': random_paper['vixra_id'].values[0],
+                                    'title': random_paper['title'].values[0],
+                                    'authors': random_paper['authors'].values[0],
+                                    }
+
+                    reading_list.append(paper_to_add)
+
+                reading_lists.append(reading_list)
+
+                result = db.Users.update_one({'_id': user['_id']}, {'$set': {'reading_lists': reading_lists}})
+                print("Added Reading Lists to the database")
 
 
     def do_exit(self, arg):
