@@ -4,29 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="Resolve path 2.0">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_sync_4_1_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDriver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_7_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_8_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_7_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_8_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_7_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_8_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_7_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_8_2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_17_ea_11.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_17_0_0_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_win_17_ea_11.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_mac_aarch64_17_0_0_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_17_ea_11.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_17_0_0_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_win_17_ea_11.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_mac_aarch64_17_0_0_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_17_ea_11.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_17_0_0_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_win_17_ea_11.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_mac_aarch64_17_0_0_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_17_ea_11.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_17_0_0_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_win_17_ea_11.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_mac_aarch64_17_0_0_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_04_12_2021_17_52_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_04_12_2021_17_52__Changes_.xml" beforeDir="false" />
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="Create driver for MongoDB">
+      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/DocumentManagerT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Comment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Like.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Paper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/ReadingList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/PaperRaterApp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/PaperRaterApp.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/module-info.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/module-info.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +128,7 @@
       <workItem from="1638975347186" duration="129000" />
       <workItem from="1639055002386" duration="351000" />
       <workItem from="1639213375449" duration="17000" />
-      <workItem from="1639322407762" duration="4107000" />
+      <workItem from="1639322407762" duration="5692000" />
     </task>
     <task id="LOCAL-00001" summary="create the folder to start the app dev">
       <created>1638650378848</created>
@@ -263,7 +249,14 @@
       <option name="project" value="LOCAL" />
       <updated>1638977864284</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Create driver for MongoDB">
+      <created>1639327313886</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1639327313886</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -293,6 +286,7 @@
     <MESSAGE value="adjust path" />
     <MESSAGE value="Resolve path" />
     <MESSAGE value="Resolve path 2.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="Resolve path 2.0" />
+    <MESSAGE value="Create driver for MongoDB" />
+    <option name="LAST_COMMIT_MESSAGE" value="Create driver for MongoDB" />
   </component>
 </project>
