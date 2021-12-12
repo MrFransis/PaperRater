@@ -83,7 +83,8 @@ class App(cmd.Cmd):
                 reading_lists.append(reading_list)
 
                 result = db.Users.update_one({'_id': user['_id']}, {'$set': {'reading_lists': reading_lists}})
-            print("Added Reading Lists to the database")
+
+        print("Added Reading Lists to the database")
 
 
     def do_exit(self, arg):
