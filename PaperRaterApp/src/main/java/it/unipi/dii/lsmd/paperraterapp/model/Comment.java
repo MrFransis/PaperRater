@@ -1,4 +1,45 @@
 package it.unipi.dii.lsmd.paperraterapp.model;
 
+import java.util.Date;
+
 public class Comment {
+    private String username;
+    private String text;
+    private Date timestamp;
+
+    public Comment(String text, Date timestamp) {
+        this.text = text;
+        this.timestamp = timestamp;
+    }
+
+    public String getUsername() { return username; }
+
+    public String getText() {
+        return text;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "Username='" + username + '\'' +
+                ", text='" + text + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }
