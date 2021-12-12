@@ -7,7 +7,8 @@ public class Comment {
     private String text;
     private Date timestamp;
 
-    public Comment(String text, Date timestamp) {
+    public Comment(String username, String text, Date timestamp) {
+        this.username = username;
         this.text = text;
         this.timestamp = timestamp;
     }
