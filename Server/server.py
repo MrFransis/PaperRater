@@ -30,6 +30,10 @@ class App(cmd.Cmd):
         ### Papers
         papers_col = db["Papers"]
         papers_df = pd.read_json(self.papers_path, lines=True)
+
+        # Converts IDs to str
+        papers_df['arxiv_id'] = papers_df['arxiv_id'].map(str)
+        papers_df['vixra_id'] = papers_df['vixra_id'].map(str)
         data_dict = papers_df.to_dict("records")
         papers_col.insert_many(data_dict)
         print("Added papers to database")
