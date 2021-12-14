@@ -2,6 +2,7 @@ import cmd
 import sys
 from asyncio import sleep
 from pymongo import MongoClient
+from neo4j import GraphDatabase
 import pandas as pd
 import random
 from datetime import datetime
@@ -19,9 +20,7 @@ class App(cmd.Cmd):
     # users_path = getUsers.import_data(num_users)
     users_path = './data/users.json'
 
-
-    def do_initDB(self, arg):
-        'Initialize the database'
+    def mongoDBinit(self):
         # Drop old database
         self.client.drop_database('PaperRater')
 
@@ -68,8 +67,9 @@ class App(cmd.Cmd):
 
             # Generate a random number of reading lists
             for i in range(0, num_reading_lists):
-                reading_list = []
+                reading_list = {'title': 'r_list' + str(i)}
 
+                papers = []
                 num_papers_in_reading_list = int(random.random() * 31)
 
                 # Select a random number of papers to add to the reading list
@@ -80,20 +80,54 @@ class App(cmd.Cmd):
                                     'vixra_id': random_paper['vixra_id'].values[0],
                                     'title': random_paper['title'].values[0],
                                     'authors': random_paper['authors'].values[0],
+                                    'category': random_paper['category'].values[0]
                                     }
 
-                    reading_list.append(paper_to_add)
+                    papers.append(paper_to_add)
 
+                reading_list['papers'] = papers
                 reading_lists.append(reading_list)
 
-                result = db.Users.update_one({'_id': user['_id']}, {'$set': {'reading_lists': reading_lists}})
+            result = db.Users.update_one({'_id': user['_id']}, {'$set': {'reading_lists': reading_lists}})
 
-        print("Added Reading Lists to the database")
+        print("Added reading lists to the database")
+
+    def neo4j_init(self):
+
+        uri = "bolt://localhost:7687"
+
+        try:
+            driver = GraphDatabase.driver(uri, auth=("neo4j", "root"))
+        except Exception as e:
+            print("Failed to create the driver:", e)
+
+        with driver.session() as session:
+            session.write_transaction(create_friend_of, "Alice", "Bob")
+            print("Added node")
+
+        with driver.session() as session:
+            session.write_transaction(create_friend_of, "Alice", "Carl")
+
+        driver.close()
+
+
+    def do_initDB(self, arg):
+        'Initialize MongoDB database'
+        self.mongoDBinit()
+
+        #self.neo4j_init()
 
 
     def do_exit(self, arg):
         'Exit PaperRater Server'
         sys.exit()
 
+def create_friend_of(tx, name, friend):
+    tx.run("CREATE (p1:Person { name: $name }) "
+            "CREATE (p2:Person { name: $friend }) "
+           "CREATE (a)-[:KNOWS]->(:Person {name: $friend})",
+           name=name, friend=friend)
+
 if __name__ == '__main__':
     App().cmdloop()
+
