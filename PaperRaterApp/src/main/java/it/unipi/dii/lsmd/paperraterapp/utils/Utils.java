@@ -3,7 +3,7 @@ package it.unipi.dii.lsmd.paperraterapp.utils;
 import it.unipi.dii.lsmd.paperraterapp.config.ConfigurationParameters;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
+import com.thoughtworks.xstream.XStream;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
