@@ -6,6 +6,7 @@ module it.unipi.dii.lsmd.paperraterapp {
     requires org.mongodb.driver.core;
     requires org.mongodb.driver.sync.client;
     requires org.mongodb.bson;
+    requires java.xml;
 
     opens it.unipi.dii.lsmd.paperraterapp to javafx.fxml;
     exports it.unipi.dii.lsmd.paperraterapp;
