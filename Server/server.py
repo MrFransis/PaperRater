@@ -101,32 +101,52 @@ class App(cmd.Cmd):
         except Exception as e:
             print("Failed to create the driver:", e)
 
-        with driver.session() as session:
-            session.write_transaction(create_friend_of, "Alice", "Bob")
-            print("Added node")
+        users_df = pd.read_json(self.users_path, lines=True)
 
         with driver.session() as session:
-            session.write_transaction(create_friend_of, "Alice", "Carl")
+            query = (
+                "MATCH(n) DETACH DELETE n "
+            )
+            session.write_transaction(lambda tx: tx.run(query))
+
+            # Users
+            for index, row in users_df.iterrows():
+                query = (
+                    "CREATE (u:User { name: $username }) "
+                )
+                session.write_transaction(lambda tx: tx.run(query, username=row['username']))
+
+                print("Added node")
+
+            # Follows
+            for index, row in users_df.iterrows():
+                query = (
+                    "MATCH (a:User), (b:User) "
+                    "WHERE a.name = $username1 AND b.name = $username2 "
+                    "CREATE (a)-[r:FOLLOWS]->(b)"
+                )
+
+                n_follows = int(random.random() * 11)
+                for i in range(0, n_follows):
+                    rand_user = users_df.sample()['username'].values[0]
+                    session.write_transaction(lambda tx: tx.run(query, username1=row['username'], username2=rand_user))
+                    #session.write_transaction(lambda tx: tx.run(query, username1=row['username'], readinglist=rand_rlist))
+                    print("Added relationship")
 
         driver.close()
 
 
     def do_initDB(self, arg):
         'Initialize MongoDB database'
-        self.mongoDBinit()
+        #self.mongoDBinit()
 
-        #self.neo4j_init()
+        self.neo4j_init()
 
 
     def do_exit(self, arg):
         'Exit PaperRater Server'
         sys.exit()
 
-def create_friend_of(tx, name, friend):
-    tx.run("CREATE (p1:Person { name: $name }) "
-            "CREATE (p2:Person { name: $friend }) "
-           "CREATE (a)-[:KNOWS]->(:Person {name: $friend})",
-           name=name, friend=friend)
 
 if __name__ == '__main__':
     App().cmdloop()
