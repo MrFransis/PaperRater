@@ -85,6 +85,7 @@ public class MongoDriver {
      */
     public void closeConnection() {
         if (client != null)
+            System.out.println("Connection closed ...");
             client.close();
     }
 }

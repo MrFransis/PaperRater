@@ -5,19 +5,19 @@ import java.util.List;
 
 public class ReadingList {
     private String username;
-    private String name;
+    private String title;
     private List<Paper> papers;
 
-    public ReadingList(String username, String name, List<Paper> papers) {
+    public ReadingList(String username, String title, List<Paper> papers) {
         this.username = username;
-        this.name = name;
+        this.title = title;
         this.papers = papers;
     }
 
     public String getUsername() { return username; }
 
     public String getName() {
-        return name;
+        return title;
     }
 
     public List<Paper> getPapers() {
@@ -28,8 +28,8 @@ public class ReadingList {
         this.username = username;
     }
 
-    public void setName(String name ) {
-        this.name = name;
+    public void setName(String title) {
+        this.title = title;
     }
 
     public void setPaper(List<Paper> papers) { this.papers = papers; }

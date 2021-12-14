@@ -91,4 +91,18 @@ public class User {
     public void deleteReadingList(ReadingList readingList) {
         readingLists.remove(readingList);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", picture='" + picture + '\'' +
+                ", age=" + age +
+                ", readingLists=" + readingLists +
+                '}';
+    }
 }
