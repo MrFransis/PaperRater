@@ -27,13 +27,13 @@ public class Utils {
 
             String text = null;
             try {
-                /// PROBLEMA
-                text = new String(Files.readAllBytes(Paths.get(String.valueOf(Utils.class.getResource("/it/unipi/dii/lsmd/paperraterapp/config/config.xml")).)));
+                text = new String(Files.readAllBytes(Paths.get(Utils.class.getResource("/it/unipi/dii/lsmd/paperraterapp/config/config.xml").toURI())));
             }
             catch (Exception e) {
                 System.err.println(e.getMessage());
             }
-            System.out.println(text);
+
+            // Problem
             return (ConfigurationParameters) xs.fromXML(text);
         }
         else
