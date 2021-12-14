@@ -21,16 +21,16 @@ public class DocumentManagerT {
     MongoDriver driver = new MongoDriver();
 
     /**
-     * Search a user by his MongoDB _id
-     * @param userId
+     * Search a user by his username
+     * @param username
      * @return
      */
-    public User searchUser(String userId) {
-        MongoDatabase database = driver.openConnection();
-        MongoCollection<Document> collection = database.getCollection("Users");
-        Document result = collection.find((eq("_id", new ObjectId(userId)))).first();
+    public User searchUser(String username) {
+        driver.openConnection();
+        MongoCollection<Document> collection = driver.chooseCollection("User");
+        Document result = collection.find((eq("username", username))).first();
         if (result == null) {
-            System.out.println("User " + userId + " do not found.");
+            System.out.println("User " + username + " do not found.");
             return null;
         }
         User user = null;
@@ -40,10 +40,10 @@ public class DocumentManagerT {
         return user;
     }
 
-    public ReadingList createReadingList(String userId) {
+    public ReadingList createReadingList(String username, String name) {
         MongoDatabase database = driver.openConnection();
         MongoCollection<Document> collection = database.getCollection("Users");
-        // search the user
+        User user = searchUser(username);
         driver.closeConnection();
         return null;
     }
@@ -51,7 +51,8 @@ public class DocumentManagerT {
     // test
     public static void main(String[] args) {
         DocumentManagerT test = new DocumentManagerT();
-        User user = test.searchUser("61b84622d8a93b1d8e06eea9");
+        // test 1
+        User user = test.searchUser("crazymouse258");
         System.out.println(user.getFirstName());
     }
 }

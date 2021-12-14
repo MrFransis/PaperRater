@@ -10,19 +10,18 @@ import org.bson.Document;
 import java.util.function.Consumer;
 
 public class MongoDriver implements DatabaseDriver {
-    private static MongoDriver instance;
 
+    private static MongoDriver instance;
     private MongoClient client = null;
     private MongoDatabase database = null;
-    private MongoCollection collection;
     public String firstIp;
     public int firstPort;
     public String dbName;
 
     private MongoDriver(ConfigurationParameters configurationParameters){
-        this.firstIp = configurationParameters.getMongoFirstIp();
-        this.firstPort = configurationParameters.getMongoFirstPort();
-        this.dbName = configurationParameters.getMongoDbName();
+        this.firstIp = configurationParameters.mongoFirstIp;
+        this.firstPort = configurationParameters.mongoFirstPort;
+        this.dbName = configurationParameters.mongoDbName;
     };
 
     public static MongoDriver getInstance() {

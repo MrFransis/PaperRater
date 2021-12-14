@@ -1,4 +1,11 @@
-D:\APPUNTI\Large-Scale\progetto\PaperRater\PaperRaterApp\src\main\java\it\unipi\dii\lsmd\paperraterapp\controller\RegisterController.java
-D:\APPUNTI\Large-Scale\progetto\PaperRater\PaperRaterApp\src\main\java\module-info.java
-D:\APPUNTI\Large-Scale\progetto\PaperRater\PaperRaterApp\src\main\java\it\unipi\dii\lsmd\paperraterapp\Main.java
-D:\APPUNTI\Large-Scale\progetto\PaperRater\PaperRaterApp\src\main\java\it\unipi\dii\lsmd\paperraterapp\controller\LoginController.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDriver.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Comment.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/DocumentManagerT.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Paper.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/module-info.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Like.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/User.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java
+/Users/tom/IdeaProjects/PaperRater/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/ReadingList.java
