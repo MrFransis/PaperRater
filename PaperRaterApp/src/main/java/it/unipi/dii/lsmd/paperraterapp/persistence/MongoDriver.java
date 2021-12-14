@@ -36,24 +36,16 @@ public class MongoDriver implements DatabaseDriver {
      * Method that inits the MongoClient and choose the correct database
      */
     @Override
-    public boolean openConnection() {
-        try
-        {
-            String string = "mongodb://localhost:27017";
+    public MongoClient openConnection() {
+        String string = "mongodb://localhost:27017";
 
-            ConnectionString connectionString = new ConnectionString(string);
+        ConnectionString connectionString = new ConnectionString(string);
 
-            client = MongoClients.create(connectionString);
+        client = MongoClients.create(connectionString);
 
-            database = client.getDatabase("PaperRater");
-            System.out.println("Connected to MongoDB ...");
-        }
-        catch (Exception ex)
-        {
-            System.out.println("MongoDB is not available");
-            return false;
-        }
-        return true;
+        database = client.getDatabase("PaperRater");
+        System.out.println("Connected to MongoDB ...");
+        return client;
     }
 
     /**
