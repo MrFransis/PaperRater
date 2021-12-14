@@ -5,6 +5,7 @@ module it.unipi.dii.lsmd.paperraterapp {
     requires org.controlsfx.controls;
     requires org.mongodb.driver.core;
     requires org.mongodb.driver.sync.client;
+    requires org.mongodb.bson;
 
     opens it.unipi.dii.lsmd.paperraterapp to javafx.fxml;
     exports it.unipi.dii.lsmd.paperraterapp;
