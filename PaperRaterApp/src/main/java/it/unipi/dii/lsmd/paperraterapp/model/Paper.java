@@ -72,6 +72,8 @@ public class Paper {
 
     public void addComments(Comment comment) {this.comments.add(comment);}
 
+    public void deleteComment(Comment comment) {this.comments.remove(comment);}
+
     @Override
     public String toString() {
         return "Paper{" +
