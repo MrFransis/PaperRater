@@ -27,12 +27,13 @@ public class Utils {
 
             String text = null;
             try {
-                text = new String(Files.readAllBytes(Paths.get("./config.xml")));
+                /// PROBLEMA
+                text = new String(Files.readAllBytes(Paths.get(String.valueOf(Utils.class.getResource("/it/unipi/dii/lsmd/paperraterapp/config/config.xml")).)));
             }
             catch (Exception e) {
                 System.err.println(e.getMessage());
             }
-
+            System.out.println(text);
             return (ConfigurationParameters) xs.fromXML(text);
         }
         else
@@ -58,8 +59,8 @@ public class Utils {
         {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Document document = documentBuilder.parse("./config.xml");
-            Schema schema = schemaFactory.newSchema(new StreamSource("./config.xsd"));
+            Document document = documentBuilder.parse(String.valueOf(Utils.class.getResource("/it/unipi/dii/lsmd/paperraterapp/config/config.xml")));
+            Schema schema = schemaFactory.newSchema(new StreamSource(String.valueOf(Utils.class.getResource("/it/unipi/dii/lsmd/paperraterapp/config/config.xsd"))));
             schema.newValidator().validate(new DOMSource(document));
         }
         catch (Exception e)
