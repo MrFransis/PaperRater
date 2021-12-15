@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="work in progress tom">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="complete the mongoDB query -Tom">
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/DocumentManagerT.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/DocumentManagerT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManagerE$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManagerE$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManagerE$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManagerE$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManagerE.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManagerE.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,7 +26,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -158,7 +159,7 @@
       <workItem from="1639466031517" duration="10985000" />
       <workItem from="1639491067331" duration="5410000" />
       <workItem from="1639504618303" duration="1175000" />
-      <workItem from="1639552384638" duration="20628000" />
+      <workItem from="1639552384638" duration="21418000" />
     </task>
     <task id="LOCAL-00001" summary="create the folder to start the app dev">
       <created>1638650378848</created>
@@ -307,7 +308,21 @@
       <option name="project" value="LOCAL" />
       <updated>1639505772058</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="complete the mongoDB query -Tom">
+      <created>1639577395471</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1639577395471</updated>
+    </task>
+    <task id="LOCAL-00023" summary="complete the mongoDB query -Tom">
+      <created>1639577427117</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1639577427117</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -341,6 +356,7 @@
     <MESSAGE value="create user entity" />
     <MESSAGE value="start working on my query" />
     <MESSAGE value="work in progress tom" />
-    <option name="LAST_COMMIT_MESSAGE" value="work in progress tom" />
+    <MESSAGE value="complete the mongoDB query -Tom" />
+    <option name="LAST_COMMIT_MESSAGE" value="complete the mongoDB query -Tom" />
   </component>
 </project>

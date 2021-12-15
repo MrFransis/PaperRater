@@ -2,21 +2,13 @@ package it.unipi.dii.lsmd.paperraterapp.persistence;
 
 import com.google.gson.*;
 import com.mongodb.client.*;
-import com.mongodb.client.model.BsonField;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.lsmd.paperraterapp.model.Comment;
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
-import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
@@ -25,14 +17,13 @@ import static com.mongodb.client.model.Accumulators.sum;
 import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Indexes.*;
-import static com.mongodb.client.model.Projections.*;
 
 
 public class DocumentManagerT {
 
-    private MongoDatabase database;
-    private MongoCollection usersCollection;
-    private MongoCollection papersCollection;
+    private final MongoDatabase database;
+    private  final MongoCollection usersCollection;
+    private final MongoCollection papersCollection;
 
     public DocumentManagerT (MongoClient client) {
         database = client.getDatabase("PaperRater");
@@ -41,7 +32,7 @@ public class DocumentManagerT {
     }
     /**
      * Search a user by his username
-     * @param username
+     * @param username username of the user
      * @return User
      */
     public User searchUser(String username) {
@@ -50,16 +41,14 @@ public class DocumentManagerT {
             System.out.println("User " + username + " do not found.");
             return null;
         }
-        User user = null;
         Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
-        user = gson.fromJson(gson.toJson(result), User.class);
-        return user;
+        return gson.fromJson(gson.toJson(result), User.class);
     }
 
     /**
-     * Add a new empty reading called "title" list at the user identify by username
-     * @param username
-     * @param title
+     * Add a new empty reading list called "title" list at the user identify by username
+     * @param username username of the user
+     * @param title title of the new reading list
      * @return true if it adds the reading list, otherwise it returns false
      */
     public boolean createReadingList(String username, String title) {
@@ -87,8 +76,8 @@ public class DocumentManagerT {
 
     /**
      * Delete the reading list of user by specifying the title
-     * @param username
-     * @param title
+     * @param username username of the user
+     * @param title title of the reading list which i want remove
      * @return true if it removes the reading list, otherwise it returns false
      */
     public boolean deleteReadingList(String username, String title){
@@ -107,7 +96,7 @@ public class DocumentManagerT {
 
     /**
      * Search al the papers published by an author
-     * @param author
+     * @param author name of the target author
      * @return list of Paper
      */
     public List<Paper> searchPaperByAuthor(String author) {
@@ -125,7 +114,7 @@ public class DocumentManagerT {
 
     /**
      * Braws all comments that has been written "numDays" ago
-     * @param numDays
+     * @param numDays how may day i want to scan
      * @return list of comments
      */
     public List<Comment> searchLastComments(int numDays) {
@@ -158,27 +147,21 @@ public class DocumentManagerT {
      */
     public HashMap<String, Integer> summaryCategoriesByComments(String period, int top) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime startOfDay = null;
+        LocalDateTime startOfDay;
         switch (period) {
-            case "all":
-                startOfDay = localDateTime.MIN;
-                break;
-            case "month":
-                startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
-                break;
-            case "week":
-                startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
-                break;
-            default:
+            case "all" -> startOfDay = LocalDateTime.MIN;
+            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
+            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
+            default -> {
                 System.err.println("ERROR: Wrong period.");
                 return null;
+            }
         }
         String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         HashMap<String, Integer> results = new HashMap<>();
-        Consumer<Document> rankCategories = doc -> {
-            results.put((String) doc.get("_id"), (Integer) doc.get("tots"));
-        };
+        Consumer<Document> rankCategories = doc ->
+                results.put((String) doc.get("_id"), (Integer) doc.get("tots"));
 
         Bson unwind = unwind("$comments");
         Bson filter = match(gte("comments.timestamp", filterDate));
@@ -198,27 +181,21 @@ public class DocumentManagerT {
      */
     public HashMap<String, Integer> summaryPapersByComments(String period, int top) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime startOfDay = null;
+        LocalDateTime startOfDay;
         switch (period) {
-            case "all":
-                startOfDay = localDateTime.MIN;
-                break;
-            case "month":
-                startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
-                break;
-            case "week":
-                startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
-                break;
-            default:
+            case "all" -> startOfDay = LocalDateTime.MIN;
+            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
+            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
+            default -> {
                 System.err.println("ERROR: Wrong period.");
                 return null;
+            }
         }
         String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         HashMap<String, Integer> results = new HashMap<>();
-        Consumer<Document> rankPapers = doc -> {
-            results.put((String) doc.get("_id"), (Integer) doc.get("tots"));
-        };
+        Consumer<Document> rankPapers = doc ->
+                results.put((String) doc.get("_id"), (Integer) doc.get("tots"));
 
         Bson unwind = unwind("$comments");
         Bson filter = match(gte("comments.timestamp", filterDate));
