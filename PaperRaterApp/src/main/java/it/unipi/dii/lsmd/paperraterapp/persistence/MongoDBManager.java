@@ -6,9 +6,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
-import javafx.util.Pair;
+import com.mongodb.client.result.*;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -16,30 +15,32 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import javafx.util.Pair;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
+import java.lang.reflect.Type;
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Indexes.ascending;
-import static com.mongodb.client.model.Updates.*;
 import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Projections.*;
-import static com.mongodb.client.model.Accumulators.*;
-import static com.mongodb.client.model.Accumulators.addToSet;
 import static com.mongodb.client.model.Accumulators.sum;
 import static com.mongodb.client.model.Sorts.descending;
 
 import it.unipi.dii.lsmd.paperraterapp.model.*;
-import java.util.*;
-import java.lang.reflect.Type;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
+
+
 
 public class MongoDBManager {
     public MongoDatabase db;
-    private MongoCollection usersCollection;
-    private MongoCollection papersCollection;
+    private final MongoCollection usersCollection;
+    private final MongoCollection papersCollection;
 
 
+    /**
+     *
+     * @param client MongoDBClient
+     */
     public MongoDBManager(MongoClient client) {
         this.db = client.getDatabase("PaperRater");;
         usersCollection = db.getCollection("Users");
@@ -81,7 +82,7 @@ public class MongoDBManager {
      * @param u user to delete
      * @return true if operation is successfully executed, false otherwise
      */
-    public boolean deleteUser (User u) {
+    public boolean deleteUser(User u) {
         try {
             usersCollection.deleteOne(eq("username", u.getUsername()));
             return true;
@@ -133,7 +134,7 @@ public class MongoDBManager {
      * @param username username of the user
      * @return User
      */
-    public User searchUser(String username) {
+    public User searchUserByUsername(String username) {
         Document result = (Document) usersCollection.find((eq("username", username))).first();
         if (result == null) {
             System.out.println("User " + username + " do not found.");
@@ -185,7 +186,7 @@ public class MongoDBManager {
      * @param p Paper to delete
      * @return true if operation is successfully executed, false otherwise
      */
-    public boolean deletePaper (Paper p) {
+    public boolean deletePaper(Paper p) {
         try {
             if(!p.getArxiv_id().isEmpty())
                 papersCollection.deleteOne(eq("arxiv_id", p.getArxiv_id()));
@@ -222,66 +223,11 @@ public class MongoDBManager {
     }
 
     /**
-     * Method that adds a Paper to a ReadingList
-     * @param r ReadingList
-     * @param p Paper
-     * @return true if the operation is successfully executed, false otherwise
-     */
-    public boolean addPaperToReadingList(ReadingList r, Paper p) {
-        try {
-            Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
-                    .append("vixra_id", p.getVixra_id())
-                    .append("title", p.getTitle())
-                    .append("auhtors", p.getAuthors())
-                    .append("category", p.getCategory());
-
-            Bson find = and(eq("username", r.getUsername()),
-                            eq("reading_lists.title", r.getName()));
-            Bson update = Updates.addToSet("reading_lists.$.papers", paperReduced);
-            usersCollection.updateOne(find, update);
-            return true;
-        }
-        catch (Exception e)
-        {
-            System.out.println("Error in adding a paper to a Reading List");
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Method that remove a Paper from a ReadingList
-     * @param r ReadingList
-     * @param p Paper
-     * @return true if the operation is successfully executed, false otherwise
-     */
-    public boolean removePaperFromReadingList(ReadingList r, Paper p) {
-        try {
-            Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
-                    .append("vixra_id", p.getVixra_id())
-                    .append("title", p.getTitle())
-                    .append("auhtors", p.getAuthors());
-
-            Bson find = and(eq("username", r.getUsername()),
-                    eq("reading_lists.title", r.getName()));
-            Bson delete = Updates.pull("reading_lists.$.papers", paperReduced);
-            usersCollection.updateOne(find, delete);
-            return true;
-        }
-        catch (Exception e)
-        {
-            System.out.println("Error in removing a paper from a Reading List");
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
      * Function that return the list of papers that partially match a title
      * @param title title of the papers
      * @return The list of papers
      */
-    public List<Paper> searchPapersByTitle (String title) {
+    public List<Paper> searchPapersByTitle(String title) {
         List<Paper> papers = new ArrayList<>();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
         Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
@@ -301,28 +247,26 @@ public class MongoDBManager {
     }
 
     /**
-     * Search al the papers published by an author
-     * @param author name of the target author
-     * @return list of Paper
+     * Function that retrieves all the papers published by an author
+     * @param author name of the author
+     * @return list of Papers
      */
     public List<Paper> searchPaperByAuthor(String author) {
-        // convert document in object
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").serializeSpecialFloatingPointValues().create();
         List<Paper> results = new ArrayList<>();
         Consumer<Document> transformDocument = doc -> {
             Paper paper = gson.fromJson(gson.toJson(doc), Paper.class);
             results.add(paper);
         };
-        // query mongo
         papersCollection.find(eq("authors", author)).forEach(transformDocument);
         return results;
     }
 
     /**
      * Return all the papers between a given time interval
-     * @param start_date
-     * @param end_date
-     * @return
+     * @param start_date start date
+     * @param end_date end date
+     * @return the list of Papers
      */
     public List<Paper> searchPapersByPublicationDate (String start_date, String end_date) {
         List<Paper> papers = new ArrayList<>();
@@ -407,6 +351,61 @@ public class MongoDBManager {
         } else {
             System.out.println("Reading list " + title + " has been deleted");
             return true;
+        }
+    }
+
+    /**
+     * Method that adds a Paper to a ReadingList
+     * @param r ReadingList
+     * @param p Paper
+     * @return true if the operation is successfully executed, false otherwise
+     */
+    public boolean addPaperToReadingList(ReadingList r, Paper p) {
+        try {
+            Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
+                    .append("vixra_id", p.getVixra_id())
+                    .append("title", p.getTitle())
+                    .append("auhtors", p.getAuthors())
+                    .append("category", p.getCategory());
+
+            Bson find = and(eq("username", r.getUsername()),
+                    eq("reading_lists.title", r.getName()));
+            Bson update = Updates.addToSet("reading_lists.$.papers", paperReduced);
+            usersCollection.updateOne(find, update);
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error in adding a paper to a Reading List");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Method that remove a Paper from a ReadingList
+     * @param r ReadingList
+     * @param p Paper
+     * @return true if the operation is successfully executed, false otherwise
+     */
+    public boolean removePaperFromReadingList(ReadingList r, Paper p) {
+        try {
+            Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
+                    .append("vixra_id", p.getVixra_id())
+                    .append("title", p.getTitle())
+                    .append("auhtors", p.getAuthors());
+
+            Bson find = and(eq("username", r.getUsername()),
+                    eq("reading_lists.title", r.getName()));
+            Bson delete = Updates.pull("reading_lists.$.papers", paperReduced);
+            usersCollection.updateOne(find, delete);
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error in removing a paper from a Reading List");
+            e.printStackTrace();
+            return false;
         }
     }
 
