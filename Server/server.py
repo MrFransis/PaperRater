@@ -63,7 +63,7 @@ class App(cmd.Cmd):
             session.write_transaction(lambda tx: tx.run(query, username=row['username']))
 
         print("Added users to database")
-
+       
         ### Comments
         for paper in papers_col.find():
             num_comments = int(random.random() * 10)
@@ -137,7 +137,7 @@ class App(cmd.Cmd):
 
         print("Added Reading Lists and Reading List Follows")
 
-        ### User Follows
+        ### User Follows and Likes
         for index, row in users_df.iterrows():
             query = (
                     "MATCH (a:User), (b:User) "
@@ -150,7 +150,20 @@ class App(cmd.Cmd):
                 rand_user = users_df.sample()['username'].values[0]
                 session.write_transaction(lambda tx: tx.run(query, username1=row['username'], username2=rand_user))
 
-        print("Added User Follows")
+            query = (
+                    "MATCH (a:User), (b:Paper) "
+                    "WHERE a.name = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) "
+                    "CREATE (a)-[r:LIKES]->(b)"
+            )
+
+            n_follows = int(random.random() * 11)
+            for i in range(0, n_follows):
+                rand_paper = papers_df.sample()
+                session.write_transaction(lambda tx: tx.run(query, username=row['username'],
+                                                            arxiv_id=rand_paper['arxiv_id'].values[0],
+                                                            vixra_id=rand_paper['vixra_id'].values[0]))
+
+        print("Added User Follows and Likes")
 
         session.close()
 
