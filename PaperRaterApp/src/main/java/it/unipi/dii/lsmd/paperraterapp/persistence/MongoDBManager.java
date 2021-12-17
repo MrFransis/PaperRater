@@ -460,6 +460,29 @@ public class MongoDBManager {
     }
 
     /**
+     * Function that return the ReadingLists given the user and the name
+     * @param username Username of the user
+     * @param title Name of the reading list
+     * @return  The list of reading lists
+     */
+    public ReadingList getReadingList (String username, String title) {
+        ReadingList readingList = null;
+        Gson gson = new GsonBuilder().serializeNulls().create();
+
+        Bson match = match(eq("username", username));
+        Bson unwind = unwind("$reading_lists");
+        Bson match2 = match(eq("reading_lists.title", title));
+        Bson project = project(fields(excludeId(), computed("ReadingList", "$reading_lists")));
+        MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(match, unwind, match2, project)).iterator();
+        if(iterator.hasNext()){
+            Document document = iterator.next();
+            Document ReadingListDocument = (Document) document.get("ReadingList");
+            readingList = gson.fromJson(gson.toJson(ReadingListDocument), ReadingList.class);
+        }
+        return readingList;
+    }
+
+    /**
      * Function that returns the most common category in a Reading List
      * @param r Reading List to process
      * @return the name of the category
