@@ -133,7 +133,7 @@ class App(cmd.Cmd):
                                                                 username2=user['username'], title=reading_list['title']))
 
 
-            result = db.Users.update_one({'_id': user['_id']}, {'$set': {'reading_lists': reading_lists}})
+            result = db.Users.update_one({'_id': user['_id']}, {'$set': {'readingLists': reading_lists}})
 
         print("Added Reading Lists and Reading List Follows")
 
