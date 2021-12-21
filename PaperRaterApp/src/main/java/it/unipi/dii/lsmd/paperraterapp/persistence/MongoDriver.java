@@ -62,6 +62,7 @@ public class MongoDriver {
         MongoClient mongoClient = null;
         try
         {
+            //String string = "mongodb://172.16.4.66:27020,172.16.4.67:27020,172.16.4.66:27020";
             String string = "mongodb://localhost:27017";
             ConnectionString connectionString = new ConnectionString(string);
 
