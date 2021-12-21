@@ -48,8 +48,6 @@ public class MongoDriver {
     };
     */
 
-
-
     public static MongoDriver getInstance() {
         if (instance == null)
             //instance = new MongoDriver(Utils.readConfigurationParameters());

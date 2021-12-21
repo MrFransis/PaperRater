@@ -48,11 +48,26 @@ public class MongoDBManager {
     }
 
     /**
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    public User login (String username, String password) {
+        Document result = (Document) usersCollection.find(Filters.and(eq("username", username),
+                                                                eq("password", password))).
+                                                                first();
+
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(result), User.class);
+    }
+
+    /**
      * Add a new User to MongoDB
      * @param u The object User which contains all the necessary information
      * @return true if operation is successfully executed, false otherwise
      */
-    public boolean addUser(User u) {
+    public boolean addUser (User u) {
         try {
             Document doc = new Document("username", u.getUsername())
                                 .append("email", u.getEmail())
@@ -134,13 +149,14 @@ public class MongoDBManager {
      * @param username username of the user
      * @return User
      */
-    public User searchUserByUsername(String username) {
+    public User getUserByUsername(String username) {
         Document result = (Document) usersCollection.find((eq("username", username))).first();
         if (result == null) {
             System.out.println("User " + username + " do not found.");
             return null;
         }
-        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+
+        Gson gson = new Gson();
         return gson.fromJson(gson.toJson(result), User.class);
     }
 
