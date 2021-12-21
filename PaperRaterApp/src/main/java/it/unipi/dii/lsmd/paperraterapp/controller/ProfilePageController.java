@@ -1,6 +1,7 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
+import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
@@ -62,14 +63,17 @@ public class ProfilePageController {
         profileImg.setImage(new Image(user.getPicture()));
 
         /*if (man.userAFollowsUserB(Session.user, user))
-            followBtn.setText("Unfollow");
+            followBtn.setText("Unfollow");*/
 
-         */
-        /* if (user.equals(Session.user)
+
+         if (user.equals(Session.getInstance().getUser().getUsername())) {
             followBtn.setVisible(false);
-            editBtn.setVisible(true);
-        */
-
+            editIcon.setVisible(true);
+         }
+         else {
+             followBtn.setVisible(true);
+             editIcon.setVisible(false);
+         }
 
         if (user.getReadingLists() != null) {
             Iterator<ReadingList> it = user.getReadingLists().iterator();
@@ -108,7 +112,7 @@ public class ProfilePageController {
     private void clickOnFollowBtn (MouseEvent mouseEvent) {
         String tmp = followBtn.getText();
         if (tmp.equals("Follow")) {
-            //neoMan.follow(Session.getUsername(), user.getUsername());
+            //neoMan.follow(Session.getInstance().getUser().getUsername(), user.getUsername());
             System.out.println("Follow");
             followBtn.setText("Unfollow");
         }

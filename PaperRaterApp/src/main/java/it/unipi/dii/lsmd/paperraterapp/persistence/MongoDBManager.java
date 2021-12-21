@@ -73,11 +73,11 @@ public class MongoDBManager {
                                 .append("email", u.getEmail())
                                 .append("password", u.getPassword());
 
-            if (!u.getFirstName().isEmpty())
+            if (u.getFirstName() != null)
                 doc.append("firstName", u.getFirstName());
-            if (!u.getLastName().isEmpty())
+            if (u.getLastName() != null)
                 doc.append("lastName", u.getLastName());
-            if (!u.getPicture().isEmpty())
+            if (u.getPicture() != null)
                 doc.append("picture", u.getPicture());
             if (u.getAge() != -1)
                 doc.append("age", u.getAge());
