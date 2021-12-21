@@ -12,7 +12,7 @@ public class Session {
 
     private Session () {}
 
-    public static void setUser(User u) {
+    public void setUser(User u) {
         instance.user = u;
     }
     public User getUser() {
