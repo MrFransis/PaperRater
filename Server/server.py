@@ -15,6 +15,7 @@ class App(cmd.Cmd):
     start_date = '2021-11-30'
     num_users = '1000'
     mongo_client = MongoClient('localhost', 27017)
+    #mongo_client = MongoClient('172.16.4.68', 27020)
     neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
     # papers_path = getPapers.import_data(start_date)
     papers_path = './data/papers2021-11-30.json'
