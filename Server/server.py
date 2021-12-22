@@ -74,7 +74,7 @@ class App(cmd.Cmd):
                 rand_user = users_df.sample()['username'].values[0]
 
                 comment = {'username': rand_user,
-                           'comment': "Commento",  # getRandom Comment
+                           'text': "Commento",  # getRandom Comment
                            'timestamp': now.strftime("%Y-%m-%d %H:%M:%S")}
                 comments.append(comment)
 
