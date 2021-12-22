@@ -6,6 +6,7 @@ import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReadingListCtrl {
+public class ReadingListCardCtrl {
     ReadingList r;
     private MongoDBManager mongoMan;
     private Neo4jManagerE neoMan;
@@ -28,7 +29,7 @@ public class ReadingListCtrl {
     @FXML private Text mostFamousPaperTitle;
 
     public void initialize () {
-        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+        //neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         readingListTitle.setOnMouseClicked(mouseEvent -> clickOnReadingListTitle(mouseEvent));
@@ -38,10 +39,19 @@ public class ReadingListCtrl {
         this.r = r;
 
         readingListTitle.setText(r.getName());
+
         //nFollower.setText(neoMan.getFollowers());
-        mostCommonCategory.setText(mostCommonCategory(r.getPapers()));
-        nPapers.setText(String.valueOf(r.getPapers().size()));
-        //mostFamousPaperTitle.setText(getMostFamousPaperInReadingList()
+
+        if (!r.getPapers().isEmpty()) {
+            mostCommonCategory.setText(mostCommonCategory(r.getPapers()));
+            nPapers.setText(String.valueOf(r.getPapers().size()));
+            //mostFamousPaperTitle.setText(getMostFamousPaperInReadingList()
+        }
+        else {
+            mostCommonCategory.setText("N/A");
+            nPapers.setText("0");
+            mostFamousPaperTitle.setText(("N/A"));
+        }
     }
 
     private String mostCommonCategory(List<Paper> papers) {
@@ -66,5 +76,8 @@ public class ReadingListCtrl {
         System.out.println("Click on Reading List " + r.getName());
 
         // Change scene View Reading List
+        ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(
+                "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
+        ctrl.setReadingList(r);
     }
 }

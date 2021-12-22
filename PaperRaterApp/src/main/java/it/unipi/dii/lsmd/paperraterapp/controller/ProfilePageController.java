@@ -5,13 +5,11 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -57,6 +55,7 @@ public class ProfilePageController {
 
     public void setProfilePage (User user) {
         this.user = user;
+        Session.getInstance().setPreviousPageUser(user);
 
         username.setText(user.getUsername());
         email.setText(user.getEmail());
@@ -105,9 +104,9 @@ public class ProfilePageController {
     private Pane loadReadingListCard (ReadingList r) {
         Pane pane = null;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/readinglist_card.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml"));
             pane = loader.load();
-            ReadingListCtrl ctrl = loader.getController();
+            ReadingListCardCtrl ctrl = loader.getController();
             ctrl.setReadingListCard(r);
 
         }
@@ -179,16 +178,17 @@ public class ProfilePageController {
         Optional<User> optionalResult = dialog.showAndWait();
         optionalResult.ifPresent((User u) -> {
             mongoMan.updateUser(u);
-            User refreshUser = mongoMan.getUserByUsername(Session.getInstance().getUser().getUsername());
-            Session.getInstance().setUser(refreshUser);
-            setProfilePage(refreshUser);
+
+            // Refresh Page Content
+            Session.getInstance().setUser(u);
+            setProfilePage(u);
         });
     }
 
     private void clickOnAddReadingListBtn (MouseEvent mouseEvent) {
         // create a text input dialog
         TextInputDialog td = new TextInputDialog("r_list" +
-                Session.getInstance().getUser().getReadingLists().size() + 1);
+                (Session.getInstance().getUser().getReadingLists().size() + 1));
         td.setHeaderText("Insert the title of the Reading List");
         td.showAndWait();
 

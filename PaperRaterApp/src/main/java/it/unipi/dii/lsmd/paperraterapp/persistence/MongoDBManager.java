@@ -147,7 +147,7 @@ public class MongoDBManager {
      * @param username username of the user
      * @return User
      */
-    public User getUserByUsername(String username) {
+    public User getUserByUsername (String username) {
         Document result = (Document) usersCollection.find((eq("username", username))).first();
         if (result == null) {
             System.out.println("User " + username + " do not found.");
@@ -163,7 +163,7 @@ public class MongoDBManager {
      * @param p The object Paper which contains all the necessary information about it
      * @return  true if operation is successfully executed, false otherwise
      */
-    public boolean addPaper(Paper p) {
+    public boolean addPaper (Paper p) {
         try {
             Document doc = new Document();
             //Data conversion to string
@@ -200,7 +200,7 @@ public class MongoDBManager {
      * @param p Paper to delete
      * @return true if operation is successfully executed, false otherwise
      */
-    public boolean deletePaper(Paper p) {
+    public boolean deletePaper (Paper p) {
         try {
             if(!p.getArxiv_id().isEmpty())
                 papersCollection.deleteOne(eq("arxiv_id", p.getArxiv_id()));
@@ -221,10 +221,11 @@ public class MongoDBManager {
      * @param id of the paper to retrieve
      * @return the paper object
      */
-    public Paper getPaperById(String id) {
+    public Paper getPaperById (String id) {
         try {
             Paper p = null;
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
+
             Document myDoc = (Document) papersCollection.find(
                     or(eq("arxiv_id", id), eq("vixra_id", id))).first();
             p = gson.fromJson(gson.toJson(myDoc), Paper.class);

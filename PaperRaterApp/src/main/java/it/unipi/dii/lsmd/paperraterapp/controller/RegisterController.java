@@ -52,12 +52,11 @@ public class RegisterController {
         }
 
         User newUser = new User(username, emailTf.getText(), passwordTf.getText(), firstNameTf.getText(),
-                                lastNameTf.getText(), null, Integer.parseInt(ageTf.getText()), new ArrayList<ReadingList>());
+                                lastNameTf.getText(), "", Integer.parseInt(ageTf.getText()), new ArrayList<ReadingList>());
 
         mongoMan.addUser(newUser);
 
         // add to neo4j
-
         Session.getInstance().setUser(newUser);
         ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
