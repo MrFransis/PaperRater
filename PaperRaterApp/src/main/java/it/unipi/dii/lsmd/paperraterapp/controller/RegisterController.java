@@ -6,6 +6,7 @@ import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -65,31 +66,25 @@ public class RegisterController {
                                 lastNameTf.getText(), null, Integer.parseInt(ageTf.getText()),null);
 
         mongoMan.addUser(newUser);
+
         // add to neo4j
 
         Session session = Session.getInstance();
         session.setUser(newUser);
         System.out.println("User added");
-            //Change scene
+
+        //Change scene
 
     }
 
+    /**
+     * If the user click the button register this function
+     * will change the app stage and show the register form
+     *
+     * @param event
+     */
     @FXML
-    void loadLogin(ActionEvent event) throws IOException {
-        Stage stage;
-        Parent root;
-        if (event.getSource() == loginButton) {
-            stage = (Stage) loginButton.getScene().getWindow();
-            try{
-                root = FXMLLoader.load(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml"));
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                System.err.println("ERROR: Can't find the fxml file.");
-                e.printStackTrace();
-            }
-            System.out.println("LOG: move to login.");
-        }
+    void loadLogin(ActionEvent event) {
+        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml", event);
     }
 }
