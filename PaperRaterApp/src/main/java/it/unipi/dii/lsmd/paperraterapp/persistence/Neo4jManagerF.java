@@ -2,6 +2,7 @@ package it.unipi.dii.lsmd.paperraterapp.persistence;
 
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import javafx.util.Pair;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.*;
 
 import java.util.ArrayList;
