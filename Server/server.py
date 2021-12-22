@@ -45,7 +45,12 @@ class App(cmd.Cmd):
 
         ### Papers
         papers_col = db["Papers"]
+
+        # abstract is a Java 8 keyword
+        papers_df = papers_df.rename(columns={"abstract": "_abstract"})
+
         data_dict = papers_df.to_dict("records")
+
         papers_col.insert_many(data_dict)
 
         for index, row in papers_df.iterrows():
