@@ -132,7 +132,13 @@ class App(cmd.Cmd):
 
                 n_follows = int(random.random() * 4)
                 for i in range(0, n_follows):
-                    rand_follower = users_df.sample()['username'].values[0]
+
+                    while True:
+                        rand_follower = users_df.sample()['username'].values[0]
+                        # Users can not follow their Reading Lists
+                        if rand_follower != user['username']:
+                            break
+
                     query = (
                             "MATCH (a:User), (b:ReadingList) "
                             "WHERE a.name = $username1 AND (b.username = $username2 AND b.title = $title) "
@@ -156,7 +162,11 @@ class App(cmd.Cmd):
 
             n_follows = int(random.random() * 11)
             for i in range(0, n_follows):
-                rand_user = users_df.sample()['username'].values[0]
+                while True:
+                    rand_user = users_df.sample()['username'].values[0]
+                    # Users can not follow themselves
+                    if rand_user != row['username']:
+                        break
                 session.write_transaction(lambda tx: tx.run(query, username1=row['username'], username2=rand_user))
 
             query = (
