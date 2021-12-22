@@ -1,6 +1,11 @@
 package it.unipi.dii.lsmd.paperraterapp.utils;
 
 import it.unipi.dii.lsmd.paperraterapp.config.ConfigurationParameters;
+import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import com.thoughtworks.xstream.XStream;
@@ -11,6 +16,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -73,5 +79,21 @@ public class Utils {
             return false;
         }
         return true;
+    }
+
+    public static Object changeScene (String fileName, Event event) {
+        Scene scene = null;
+        FXMLLoader loader = null;
+        try {
+            loader=new FXMLLoader(Utils.class.getResource(fileName));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(loader.load());
+            stage.setScene(scene);
+            stage.show();
+            return loader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

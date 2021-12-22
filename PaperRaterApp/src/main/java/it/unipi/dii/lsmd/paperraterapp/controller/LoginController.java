@@ -1,16 +1,11 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
+import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class LoginController {
 
@@ -44,21 +39,7 @@ public class LoginController {
      */
     @FXML
     void loadRegisterForm(ActionEvent event) {
-        Stage stage;
-        Parent root;
-        if (event.getSource() == registerButton) {
-            stage = (Stage) registerButton.getScene().getWindow();
-            try{
-                root = FXMLLoader.load(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/register.fxml"));
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                System.err.println("ERROR: Can't find the fxml file.");
-                e.printStackTrace();
-            }
-            System.out.println("LOG: move to register.");
-        }
+        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/register.fxml", event);
     }
 
 }
