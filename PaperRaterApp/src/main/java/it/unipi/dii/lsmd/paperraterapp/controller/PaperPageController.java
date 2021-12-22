@@ -56,7 +56,7 @@ public class PaperPageController implements Initializable {
         authors.setText(paper.getAuthors().toString());
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         published.setText(formatter.format(paper.getPublished()));
-        System.out.println(paper);
+
         abstractPaper.setText(paper.getAbstract());
 
         if (paper.getComments() != null) {
