@@ -116,11 +116,9 @@ public class MongoDBManager {
      * @param u the new user information to replace the old one
      * @return  true if operation is successfully executed, false otherwise
      */
-    public boolean updateUser(User u){
+    public boolean updateUser (User u){
         try {
             Document doc = new Document().append("username", u.getUsername());
-            if (!u.getEmail().isEmpty())
-                doc.append("email", u.getEmail());
             if (!u.getPassword().isEmpty())
                 doc.append("password", u.getPassword());
             if (!u.getFirstName().isEmpty())
@@ -131,16 +129,14 @@ public class MongoDBManager {
                 doc.append("picture", u.getPicture());
             if (u.getAge() != -1)
                 doc.append("age", u.getAge());
-            if (u.getReadingLists() != null)
-                doc.append("reading_lists", u.getReadingLists());
 
             Bson updateOperation = new Document("$set", doc);
-
             usersCollection.updateOne(new Document("username", u.getUsername()), updateOperation);
             return true;
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
             System.err.println("Error in updating user on MongoDB");
             return false;
         }
