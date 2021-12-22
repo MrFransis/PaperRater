@@ -332,7 +332,7 @@ public class MongoDBManager {
     public boolean createReadingList(String username, String title) {
         // check if there are other list with the same name
         Document document = (Document) usersCollection.find(and(eq("username", username),
-                eq("reading_lists.title", title))).first();
+                eq("readingLists.title", title))).first();
         if (document != null) {
             System.err.println("ERROR: name already in use.");
             return false;
@@ -345,7 +345,7 @@ public class MongoDBManager {
                 eq("username", username),
                 new Document().append(
                         "$push",
-                        new Document("reading_lists", readingList)
+                        new Document("readingLists", readingList)
                 )
         );
         System.out.println("Reading list " + title + " has been added");
