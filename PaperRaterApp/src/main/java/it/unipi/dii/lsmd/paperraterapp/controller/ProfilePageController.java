@@ -5,12 +5,11 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -21,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 public class ProfilePageController {
     private User user;
@@ -29,7 +29,7 @@ public class ProfilePageController {
 
     @FXML private ImageView backIcon;
     @FXML private ImageView editIcon;
-    @FXML ImageView profileImg;
+    @FXML private ImageView profileImg;
     @FXML private Label username;
     @FXML private Text email;
     @FXML private Text firstName;
@@ -42,7 +42,7 @@ public class ProfilePageController {
 
 
     public void initialize () {
-        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+       // neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));
@@ -55,6 +55,7 @@ public class ProfilePageController {
 
     public void setProfilePage (User user) {
         this.user = user;
+        Session.getInstance().setPreviousPageUser(user);
 
         username.setText(user.getUsername());
         email.setText(user.getEmail());
@@ -63,7 +64,7 @@ public class ProfilePageController {
         nFollower.setText("100"); // neoMan.getNumberOfFollowers(u.getUsername())
         nFollowing.setText("2000"); // neoMan.getNumberOfFollowing(u.getUsername())
 
-        if (user.getPicture() != null)
+        if (!user.getPicture().isEmpty())
             profileImg.setImage(new Image(user.getPicture()));
 
         /*if (man.userAFollowsUserB(Session.user, user))
@@ -81,6 +82,7 @@ public class ProfilePageController {
              addReadingListBtn.setVisible(false);
          }
 
+        readingListsBox.getChildren().clear();
         if (!user.getReadingLists().isEmpty()) {
             Iterator<ReadingList> it = user.getReadingLists().iterator();
 
@@ -95,7 +97,6 @@ public class ProfilePageController {
             }
         }
         else {
-            readingListsBox.setAlignment(Pos.CENTER);
             readingListsBox.getChildren().add(new Label("No Reading Lists :("));
         }
     }
@@ -103,9 +104,9 @@ public class ProfilePageController {
     private Pane loadReadingListCard (ReadingList r) {
         Pane pane = null;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/readinglist_card.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml"));
             pane = loader.load();
-            ReadingListCtrl ctrl = loader.getController();
+            ReadingListCardCtrl ctrl = loader.getController();
             ctrl.setReadingListCard(r);
 
         }
@@ -143,16 +144,68 @@ public class ProfilePageController {
     }
 
     private void clickOnEditIcon (MouseEvent mouseEvent) {
-        System.out.println("Edit profile Info");
+        /* Edit form */
+        Dialog<User> dialog = new Dialog<>();
+        dialog.setTitle("Edit Profile Information");
+
+        dialog.setHeaderText("Please specify…");
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        TextField firstName = new TextField(Session.getInstance().getUser().getFirstName());
+        firstName.setPromptText("First Name");
+        TextField lastName = new TextField(Session.getInstance().getUser().getLastName());
+        lastName.setPromptText("Last Name");
+        TextField age = new TextField(String.valueOf(Session.getInstance().getUser().getAge()));
+        age.setPromptText("Age");
+        PasswordField password = new PasswordField();
+        password.setPromptText("Password");
+
+        dialogPane.setContent(new VBox(8, firstName, lastName, age, password));
+        Platform.runLater(firstName::requestFocus);
+        dialog.setResultConverter((ButtonType button) -> {
+            if (button == ButtonType.OK) {
+                return new User(Session.getInstance().getUser().getUsername(),
+                        Session.getInstance().getUser().getEmail(),
+                        Session.getInstance().getUser().getPassword(),
+                        firstName.getText(),
+                        lastName.getText(),
+                        Session.getInstance().getUser().getPicture(),
+                        Integer.parseInt(age.getText()),
+                        Session.getInstance().getUser().getReadingLists());
+            }
+            return null;
+        });
+        Optional<User> optionalResult = dialog.showAndWait();
+        optionalResult.ifPresent((User u) -> {
+            mongoMan.updateUser(u);
+
+            // Refresh Page Content
+            Session.getInstance().setUser(u);
+            setProfilePage(u);
+        });
     }
 
     private void clickOnAddReadingListBtn (MouseEvent mouseEvent) {
         // create a text input dialog
-        TextInputDialog td = new TextInputDialog("enter any text");
+        TextInputDialog td = new TextInputDialog("r_list" +
+                (Session.getInstance().getUser().getReadingLists().size() + 1));
+        td.setHeaderText("Insert the title of the Reading List");
+        td.showAndWait();
 
-        // setHeaderText
-        td.setHeaderText("enter your name");
+        // Add new Reading List to DB
+        boolean res = mongoMan.createReadingList(Session.getInstance().getUser().getUsername(), td.getEditor().getText());
+        //neoMan.createReadingList
 
-        td.show();
+        if (!res) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("There is already a Reading List with this Title");
+            alert.show();
+            return;
+        }
+
+        // refresh page
+        User refreshUser = mongoMan.getUserByUsername(Session.getInstance().getUser().getUsername());
+        Session.getInstance().setUser(refreshUser);
+        setProfilePage(refreshUser);
     }
 }

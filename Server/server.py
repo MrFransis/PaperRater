@@ -45,7 +45,12 @@ class App(cmd.Cmd):
 
         ### Papers
         papers_col = db["Papers"]
+
+        # abstract is a Java 8 keyword
+        papers_df = papers_df.rename(columns={"abstract": "_abstract"})
+
         data_dict = papers_df.to_dict("records")
+
         papers_col.insert_many(data_dict)
 
         for index, row in papers_df.iterrows():
@@ -74,7 +79,7 @@ class App(cmd.Cmd):
                 rand_user = users_df.sample()['username'].values[0]
 
                 comment = {'username': rand_user,
-                           'comment': "Commento",  # getRandom Comment
+                           'text': "Commento",  # getRandom Comment
                            'timestamp': now.strftime("%Y-%m-%d %H:%M:%S")}
                 comments.append(comment)
 
@@ -127,7 +132,13 @@ class App(cmd.Cmd):
 
                 n_follows = int(random.random() * 4)
                 for i in range(0, n_follows):
-                    rand_follower = users_df.sample()['username'].values[0]
+
+                    while True:
+                        rand_follower = users_df.sample()['username'].values[0]
+                        # Users can not follow their Reading Lists
+                        if rand_follower != user['username']:
+                            break
+
                     query = (
                             "MATCH (a:User), (b:ReadingList) "
                             "WHERE a.name = $username1 AND (b.username = $username2 AND b.title = $title) "
@@ -151,7 +162,11 @@ class App(cmd.Cmd):
 
             n_follows = int(random.random() * 11)
             for i in range(0, n_follows):
-                rand_user = users_df.sample()['username'].values[0]
+                while True:
+                    rand_user = users_df.sample()['username'].values[0]
+                    # Users can not follow themselves
+                    if rand_user != row['username']:
+                        break
                 session.write_transaction(lambda tx: tx.run(query, username1=row['username'], username2=rand_user))
 
             query = (

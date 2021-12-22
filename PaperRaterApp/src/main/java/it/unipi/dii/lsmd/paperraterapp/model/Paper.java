@@ -32,6 +32,13 @@ public class Paper {
         return vixra_id;
     }
 
+    public String getId() {
+        if(!getArxiv_id().isEmpty())
+            return  arxiv_id;
+        else
+            return vixra_id;
+    }
+
     public String getTitle() {
         return title;
     }

@@ -23,7 +23,7 @@ public class LoginController {
     @FXML private TextField usernameTf;
 
     public void initialize () {
-        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+       // neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
     }
 
