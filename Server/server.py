@@ -119,7 +119,10 @@ class App(cmd.Cmd):
                 reading_list['papers'] = papers
                 reading_lists.append(reading_list)
 
-                query = ("CREATE (r:ReadingList { username: $username, title: $title}) ")
+                query = ("MATCH (a:User) "
+                         "WHERE a.name = $username "
+                         "CREATE (b:ReadingList { username: $username, title: $title}) "
+                         "CREATE (a)-[r:OWNS]->(b)")
                 session.write_transaction(lambda tx: tx.run(query, username=user['username'], title=reading_list['title']))
 
                 n_follows = int(random.random() * 4)
@@ -136,7 +139,7 @@ class App(cmd.Cmd):
 
             result = db.Users.update_one({'_id': user['_id']}, {'$set': {'readingLists': reading_lists}})
 
-        print("Added Reading Lists and Reading List Follows")
+        print("Added Reading Lists, Owns and Follows")
 
         ### User Follows and Likes
         for index, row in users_df.iterrows():
