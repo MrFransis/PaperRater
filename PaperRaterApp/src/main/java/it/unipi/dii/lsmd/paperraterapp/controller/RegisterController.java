@@ -1,5 +1,6 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
+import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
 import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
@@ -18,6 +19,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegisterController {
     private MongoDBManager mongoMan;
@@ -47,8 +50,9 @@ public class RegisterController {
             System.out.println("Username already registered");
             return;
         }
+
         User newUser = new User(username, emailTf.getText(), passwordTf.getText(), firstNameTf.getText(),
-                                lastNameTf.getText(), null, Integer.parseInt(ageTf.getText()),null);
+                                lastNameTf.getText(), null, Integer.parseInt(ageTf.getText()), new ArrayList<ReadingList>());
 
         mongoMan.addUser(newUser);
 

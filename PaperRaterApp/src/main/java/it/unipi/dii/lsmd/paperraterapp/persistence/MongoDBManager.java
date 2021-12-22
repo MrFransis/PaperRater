@@ -82,6 +82,8 @@ public class MongoDBManager {
             if (u.getAge() != -1)
                 doc.append("age", u.getAge());
 
+            doc.append("readingLists", u.getReadingLists());
+
             usersCollection.insertOne(doc);
             return true;
 

@@ -7,10 +7,11 @@ import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -37,6 +38,7 @@ public class ProfilePageController {
     @FXML private Text nFollowing;
     @FXML private Button followBtn;
     @FXML private VBox readingListsBox;
+    @FXML private Button addReadingListBtn;
 
 
     public void initialize () {
@@ -48,6 +50,7 @@ public class ProfilePageController {
         nFollowing.setOnMouseClicked(mouseEvent -> clickOnFollowing(mouseEvent));
         nFollower.setOnMouseClicked(mouseEvent -> clickOnFollower(mouseEvent));
         editIcon.setOnMouseClicked(mouseEvent -> clickOnEditIcon(mouseEvent));
+        addReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnAddReadingListBtn(mouseEvent));
     }
 
     public void setProfilePage (User user) {
@@ -67,16 +70,18 @@ public class ProfilePageController {
             followBtn.setText("Unfollow");*/
 
 
-         if (user.equals(Session.getInstance().getUser().getUsername())) {
+         if (user.getUsername().equals(Session.getInstance().getUser().getUsername())) {
             followBtn.setVisible(false);
             editIcon.setVisible(true);
+            addReadingListBtn.setVisible(true);
          }
          else {
              followBtn.setVisible(true);
              editIcon.setVisible(false);
+             addReadingListBtn.setVisible(false);
          }
 
-        if (user.getReadingLists() != null) {
+        if (!user.getReadingLists().isEmpty()) {
             Iterator<ReadingList> it = user.getReadingLists().iterator();
 
             while(it.hasNext()) {
@@ -88,6 +93,10 @@ public class ProfilePageController {
                 row.getChildren().addAll(p);
                 readingListsBox.getChildren().add(row);
             }
+        }
+        else {
+            readingListsBox.setAlignment(Pos.CENTER);
+            readingListsBox.getChildren().add(new Label("No Reading Lists :("));
         }
     }
 
@@ -108,6 +117,7 @@ public class ProfilePageController {
 
     private void clickOnBackIcon (MouseEvent mouseEvent) {
         System.out.println("Back");
+        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/homepage.fxml", mouseEvent);
     }
 
     private void clickOnFollowBtn (MouseEvent mouseEvent) {
@@ -134,5 +144,15 @@ public class ProfilePageController {
 
     private void clickOnEditIcon (MouseEvent mouseEvent) {
         System.out.println("Edit profile Info");
+    }
+
+    private void clickOnAddReadingListBtn (MouseEvent mouseEvent) {
+        // create a text input dialog
+        TextInputDialog td = new TextInputDialog("enter any text");
+
+        // setHeaderText
+        td.setHeaderText("enter your name");
+
+        td.show();
     }
 }

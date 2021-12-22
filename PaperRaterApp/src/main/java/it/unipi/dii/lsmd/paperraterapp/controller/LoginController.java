@@ -29,7 +29,6 @@ public class LoginController {
 
     @FXML
     void checkCredential(ActionEvent event) {
-        System.out.println("LOG: test credential");
         String username = usernameTf.getText();
         String password = passwordTf.getText();
 
@@ -38,7 +37,7 @@ public class LoginController {
         if (u == null) {
             usernameTf.setText("");
             passwordTf.setText("");
-            System.out.println("User already registered");
+            System.out.println("Username or password not valid");
         }
         else {
             Session.getInstance().setUser(u);
