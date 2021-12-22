@@ -23,29 +23,14 @@ public class RegisterController {
     private MongoDBManager mongoMan;
     private Neo4jManagerE neoMan;
 
-    @FXML
-    private TextField ageTf;
-
-    @FXML
-    private TextField emailTf;
-
-    @FXML
-    private TextField firstNameTf;
-
-    @FXML
-    private TextField lastNameTf;
-
-    @FXML
-    private Button loginButton;
-
-    @FXML
-    private PasswordField passwordTf;
-
-    @FXML
-    private Button signUPButton;
-
-    @FXML
-    private TextField usernameTf;
+    @FXML private TextField ageTf;
+    @FXML private TextField emailTf;
+    @FXML private TextField firstNameTf;
+    @FXML private TextField lastNameTf;
+    @FXML private Button loginButton;
+    @FXML private PasswordField passwordTf;
+    @FXML private Button signUPButton;
+    @FXML private TextField usernameTf;
 
 
     public void initialize () {
@@ -69,12 +54,10 @@ public class RegisterController {
 
         // add to neo4j
 
-        Session session = Session.getInstance();
-        session.setUser(newUser);
-        System.out.println("User added");
-
-        //Change scene
-
+        Session.getInstance().setUser(newUser);
+        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
+                "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
+        ctrl.setProfilePage(Session.getInstance().getUser());
     }
 
     /**

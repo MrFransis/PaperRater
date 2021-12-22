@@ -60,7 +60,8 @@ public class ProfilePageController {
         nFollower.setText("100"); // neoMan.getNumberOfFollowers(u.getUsername())
         nFollowing.setText("2000"); // neoMan.getNumberOfFollowing(u.getUsername())
 
-        profileImg.setImage(new Image(user.getPicture()));
+        if (user.getPicture() != null)
+            profileImg.setImage(new Image(user.getPicture()));
 
         /*if (man.userAFollowsUserB(Session.user, user))
             followBtn.setText("Unfollow");*/
