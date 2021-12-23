@@ -205,7 +205,7 @@ public class MongoDBManager {
     /**
      * Add a new comment
      * @param id Id of the paper
-     * @param comment text of the comment
+     * @param text text of the comment
      * @return  true if operation is successfully executed, false otherwise
      */
     public boolean addComment (String id, String text, String user) {
@@ -267,6 +267,53 @@ public class MongoDBManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     *
+     * @param title
+     * @param author
+     * @param start_date
+     * @param end_date
+     * @param category
+     * @return
+     */
+    public List<Paper> searchPapersByParameters (String title, String author, String start_date,
+                                                 String end_date, String category, int skip, int limit) {
+        List<Paper> papers = new ArrayList<>();
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
+
+        List<Bson> pipeline = new ArrayList<>();
+
+        if (!title.isEmpty()) {
+            Pattern pattern1 = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
+            pipeline.add(Aggregates.match(Filters.regex("title", pattern1)));
+        }
+
+        if (!author.isEmpty()) {
+            Pattern pattern2 = Pattern.compile("^.*" + author + ".*$", Pattern.CASE_INSENSITIVE);
+            pipeline.add(Aggregates.match(Filters.regex("authors", pattern2)));
+        }
+
+        if (!start_date.isEmpty() && !end_date.isEmpty()) {
+            pipeline.add(Aggregates.match(and(
+                    Filters.gte("published", start_date),
+                    Filters.lte("published", end_date))));
+        }
+
+        if (!category.isEmpty()) {
+            pipeline.add(Aggregates.match(Filters.eq("category", category)));
+        }
+
+        pipeline.add(sort(descending("published")));
+        pipeline.add(skip(skip));
+        pipeline.add(limit(limit));
+
+        List<Document> results = (List<Document>) papersCollection.aggregate(pipeline)
+                .into(new ArrayList<>());
+        Type papersListType = new TypeToken<ArrayList<Paper>>(){}.getType();
+        papers = gson.fromJson(gson.toJson(results), papersListType);
+        return papers;
     }
 
     /**
@@ -403,7 +450,7 @@ public class MongoDBManager {
 
     /**
      * Method that adds a Paper to a ReadingList
-     * @param r ReadingList
+     * @param user owner of the ReadingList
      * @param p Paper
      * @return true if the operation is successfully executed, false otherwise
      */
@@ -430,7 +477,7 @@ public class MongoDBManager {
 
     /**
      * Method that remove a Paper from a ReadingList
-     * @param r ReadingList
+     * @param user ReadingList
      * @param p Paper
      * @return true if the operation is successfully executed, false otherwise
      */
@@ -530,7 +577,7 @@ public class MongoDBManager {
 
     /**
      * Function that returns the most common category in a Reading List
-     * @param r Reading List to process
+     * @param user Reading List to process
      * @return the name of the category
      */
     public String getMostCommonCategoryInReadingList(String user, String title) {
