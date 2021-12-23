@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="473.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ReadingListPageController">
+<VBox prefHeight="577.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ReadingListPageController">
    <children>
       <HBox prefHeight="32.0" prefWidth="640.0" style="-fx-border-width: 1px; -fx-border-color: lightgrey;">
          <children>
@@ -28,9 +28,9 @@
             <Insets />
          </VBox.margin>
       </HBox>
-      <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="383.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+      <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="529.0" prefWidth="775.0" VBox.vgrow="ALWAYS">
          <children>
-            <HBox alignment="TOP_CENTER" layoutX="81.0" prefHeight="29.0" prefWidth="485.0" spacing="10.0">
+            <HBox alignment="TOP_CENTER" layoutX="209.0" layoutY="3.0" prefHeight="27.0" prefWidth="485.0" spacing="10.0">
                <children>
                   <Label fx:id="readingListTitle" alignment="CENTER" style="&#10;" text="Reading List Title" textAlignment="CENTER" textFill="#100000" wrapText="false">
                      <font>
@@ -49,7 +49,7 @@
                   </Label>
                </children>
             </HBox>
-            <ScrollPane layoutX="34.0" layoutY="31.0" prefHeight="372.0" prefWidth="567.0">
+            <ScrollPane layoutX="34.0" layoutY="31.0" prefHeight="459.0" prefWidth="845.0">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
@@ -59,6 +59,9 @@
                </content>
             </ScrollPane>
          </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
       </AnchorPane>
    </children>
 </VBox>
