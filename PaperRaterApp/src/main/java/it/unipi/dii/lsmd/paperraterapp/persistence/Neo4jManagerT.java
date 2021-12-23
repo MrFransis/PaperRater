@@ -168,7 +168,7 @@ public class Neo4jManagerT {
     }
 
 
-
+/*
     //test
     public static void main(String[] args) {
         Neo4jDriverE driver = Neo4jDriverE.getInstance();
@@ -192,4 +192,6 @@ public class Neo4jManagerT {
         // close connection
         driver.closeConnection();
     }
+
+ */
 }
