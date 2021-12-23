@@ -1,20 +1,15 @@
 package it.unipi.dii.lsmd.paperraterapp.model;
 
-import java.util.Date;
 import java.util.List;
 
 public class ReadingList {
-    private String username;
     private String title;
     private List<Paper> papers;
 
-    public ReadingList(String username, String title, List<Paper> papers) {
-        this.username = username;
+    public ReadingList(String title, List<Paper> papers) {
         this.title = title;
         this.papers = papers;
     }
-
-    public String getUsername() { return username; }
 
     public String getName() {
         return title;
@@ -22,10 +17,6 @@ public class ReadingList {
 
     public List<Paper> getPapers() {
         return papers;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public void setName(String title) {

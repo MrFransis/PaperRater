@@ -4,30 +4,37 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.mongodb.client.*;
-import com.mongodb.client.model.*;
-import com.mongodb.client.result.*;
-
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
+import it.unipi.dii.lsmd.paperraterapp.model.Comment;
+import it.unipi.dii.lsmd.paperraterapp.model.Paper;
+import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
+import it.unipi.dii.lsmd.paperraterapp.model.User;
+import javafx.util.Pair;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import javafx.util.Pair;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
-import java.lang.reflect.Type;
 
+import static com.mongodb.client.model.Accumulators.sum;
+import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Indexes.ascending;
-import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Projections.*;
-import static com.mongodb.client.model.Accumulators.sum;
 import static com.mongodb.client.model.Sorts.descending;
-
-import it.unipi.dii.lsmd.paperraterapp.model.*;
 
 
 
@@ -195,6 +202,31 @@ public class MongoDBManager {
         }
     }
 
+    /**
+     * Add a new comment
+     * @param id Id of the paper
+     * @param comment text of the comment
+     * @return  true if operation is successfully executed, false otherwise
+     */
+    public boolean addComment (String id, String text, String user) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Document comment = new Document("username", user)
+                    .append("text",text)
+                    .append("timestamp",dateFormat.format(new Date()));
+
+            Bson find = or(eq("arxiv_id", id), eq("vixra_id", id));
+            Bson update = Updates.addToSet("comments", comment);
+            papersCollection.updateOne(find, update);
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error in adding a commnet to a Paper");
+            e.printStackTrace();
+            return false;
+        }
+    }
     /**
      * Function that deletes the paper from the database
      * @param p Paper to delete
@@ -375,17 +407,16 @@ public class MongoDBManager {
      * @param p Paper
      * @return true if the operation is successfully executed, false otherwise
      */
-    public boolean addPaperToReadingList(ReadingList r, Paper p) {
+    public boolean addPaperToReadingList(String user, String title, Paper p) {
         try {
             Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
                     .append("vixra_id", p.getVixra_id())
                     .append("title", p.getTitle())
                     .append("auhtors", p.getAuthors())
                     .append("category", p.getCategory());
-
-            Bson find = and(eq("username", r.getUsername()),
-                    eq("reading_lists.title", r.getName()));
-            Bson update = Updates.addToSet("reading_lists.$.papers", paperReduced);
+            Bson find = and(eq("username", user),
+                    eq("readingLists.title", title));
+            Bson update = Updates.addToSet("readingLists.$.papers", paperReduced);
             usersCollection.updateOne(find, update);
             return true;
         }
@@ -403,15 +434,15 @@ public class MongoDBManager {
      * @param p Paper
      * @return true if the operation is successfully executed, false otherwise
      */
-    public boolean removePaperFromReadingList(ReadingList r, Paper p) {
+    public boolean removePaperFromReadingList(String user, String title, Paper p) {
         try {
             Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
                     .append("vixra_id", p.getVixra_id())
                     .append("title", p.getTitle())
                     .append("auhtors", p.getAuthors());
 
-            Bson find = and(eq("username", r.getUsername()),
-                    eq("reading_lists.title", r.getName()));
+            Bson find = and(eq("username", user),
+                    eq("reading_lists.title", title));
             Bson delete = Updates.pull("reading_lists.$.papers", paperReduced);
             usersCollection.updateOne(find, delete);
             return true;
@@ -461,7 +492,7 @@ public class MongoDBManager {
 
         Bson match = match(eq("username", username));
         Bson unwind = unwind("$reading_lists");
-        Bson project = project(fields(excludeId(), computed("ReadingList", "$reading_lists")));
+        Bson project = project(fields(excludeId() ,computed("ReadingList", "$reading_lists")));
         MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(match, unwind, project)).iterator();
         while (iterator.hasNext())
         {
@@ -502,11 +533,11 @@ public class MongoDBManager {
      * @param r Reading List to process
      * @return the name of the category
      */
-    public String getMostCommonCategoryInReadingList(ReadingList r) {
+    public String getMostCommonCategoryInReadingList(String user, String title) {
 
-        Bson match1 = match(Filters.eq("username", r.getUsername()));
+        Bson match1 = match(Filters.eq("username", user));
         Bson unwind1 = unwind("$reading_lists");
-        Bson match2 = match(Filters.eq("reading_lists.title", r.getName()));
+        Bson match2 = match(Filters.eq("reading_lists.title", title));
         Bson unwind2 = unwind("$reading_lists.papers");
         Bson group = group("$reading_lists.papers.category",
                 sum("nPapers", 1));

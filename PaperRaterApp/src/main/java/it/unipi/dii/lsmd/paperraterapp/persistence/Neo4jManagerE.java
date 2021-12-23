@@ -115,8 +115,7 @@ public class Neo4jManagerE {
                 System.out.println(result.hasNext());
                 while (result.hasNext()) {
                     Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("username").asString(),
-                                                        r.get("title").asString(), null);
+                    ReadingList snap = new ReadingList(r.get("title").asString(), null);
                     readingListsSnap.add(snap);
                 }
 
