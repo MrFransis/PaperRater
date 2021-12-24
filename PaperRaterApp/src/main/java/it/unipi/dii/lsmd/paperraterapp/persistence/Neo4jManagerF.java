@@ -106,10 +106,17 @@ public class Neo4jManagerF {
         List<Pair<String, String>> readingLists = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (r:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS]-(me:User{name:$username}) RETURN r.title AS title, r.username AS username LIMIT $firstlevel " +
-                        "UNION " +
-                        "MATCH (r:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS*2..2]-(me:User{name:$username}) RETURN r.title AS title, r.username AS username LIMIT $secondLevel",
-                parameters("username", user, "firstlevel", numberFirstLv, "secondLevel", numberSecondLv));
+                Result result = tx.run("MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS]-(me:User{name:$username}), " +
+                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.username AS username, target.title AS title, " +
+                                "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
+                                "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $firstLevel" +
+                                "UNION " +
+                                 "MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS*2..2]-(me:User{name:$username}), " +
+                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.username AS username, target.title AS title, " +
+                                "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
+                                "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $secondLevel",
+                        parameters("username", user, "firstlevel", numberFirstLv, "secondLevel", numberSecondLv));
+
                 while(result.hasNext()){
                     Record r = result.next();
                     String title = r.get("title").asString();
