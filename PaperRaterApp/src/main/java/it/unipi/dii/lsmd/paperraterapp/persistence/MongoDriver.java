@@ -59,7 +59,9 @@ public class MongoDriver {
      * Method that inits the MongoClient and choose the correct database
      */
     public MongoClient openConnection() {
-        MongoClient mongoClient = null;
+        if (client != null)
+            return client;
+
         try
         {
             //String string = "mongodb://172.16.4.66:27020,172.16.4.67:27020,172.16.4.66:27020";
