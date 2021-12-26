@@ -52,8 +52,8 @@ public class PaperPageController implements Initializable {
         scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 
-    public void setPaperPage (Paper paper) {
-        this.paper = paper;
+    public void setPaperPage (Paper p) {
+        this.paper = mongoMan.getPaperById(p.getId());
         this.user = Session.getInstance().getUser();
         title.setText(paper.getTitle());
         id.setText(paper.getId());
