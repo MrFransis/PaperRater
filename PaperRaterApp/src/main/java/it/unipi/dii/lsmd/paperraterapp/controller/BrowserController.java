@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 import java.net.URL;
@@ -39,6 +40,7 @@ public class BrowserController implements Initializable {
     @FXML private HBox keywordContainer;
     @FXML private HBox dateContainer;
     @FXML private Label errorTf;
+    @FXML private GridPane cardsGrid;
 
     private MongoDBManager manager = new MongoDBManager(MongoDriver.getInstance().openConnection());
     private User user = Session.getInstance().getUser();
@@ -103,7 +105,21 @@ public class BrowserController implements Initializable {
 
     @FXML
     void startResearch(ActionEvent event) {
+        switch (chooseType.getValue()) {
+            case "Papers" -> {
 
+            }
+            case "Users" -> {
+                if (keywordTf.getText().equals("")) {
+                    errorTf.setText("You have to insert a keyword.");
+                    return;
+                }
+                List<>
+            }
+            case "Reading lists" -> {
+
+            }
+        }
     }
 
     @Override

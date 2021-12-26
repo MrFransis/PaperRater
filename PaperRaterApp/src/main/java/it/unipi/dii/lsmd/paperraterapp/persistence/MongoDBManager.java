@@ -53,6 +53,10 @@ public class MongoDBManager {
         usersCollection = db.getCollection("Users");
         papersCollection = db.getCollection("Papers");
     }
+    //
+    //public List<User> getUsersByKeyword (String keyword) {
+    //
+    //}
 
     /**
      *
@@ -358,10 +362,12 @@ public class MongoDBManager {
             pipeline.add(Aggregates.match(Filters.regex("authors", pattern2)));
         }
 
-        if (!start_date.isEmpty() && !end_date.isEmpty()) {
-            pipeline.add(Aggregates.match(and(
-                    Filters.gte("published", start_date),
-                    Filters.lte("published", end_date))));
+        if (!start_date.isEmpty()) {
+            pipeline.add(Aggregates.match(and(Filters.gte("published", start_date))));
+        }
+
+        if(!end_date.isEmpty()) {
+            pipeline.add(Aggregates.match(and(Filters.lte("published", end_date))));
         }
 
         if (!category.isEmpty()) {

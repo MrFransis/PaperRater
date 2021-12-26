@@ -14,7 +14,7 @@
    <children>
       <HBox alignment="CENTER" prefHeight="40.0" prefWidth="280.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="-0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="readingListTitle" alignment="CENTER" prefHeight="40.0" prefWidth="262.0" styleClass="dynamic-effect" stylesheets="@../style/main.css" text="Title" textAlignment="CENTER" underline="true" HBox.hgrow="ALWAYS">
+            <Label fx:id="readingListTitle" alignment="CENTER" prefHeight="40.0" prefWidth="262.0" stylesheets="@../style/main.css" text="Title" textAlignment="CENTER" underline="true" HBox.hgrow="ALWAYS">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -24,6 +24,10 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <styleClass>
+                  <String fx:value="dynamic-effect" />
+                  <String fx:value="title" />
+               </styleClass>
             </Label>
          </children>
       </HBox>

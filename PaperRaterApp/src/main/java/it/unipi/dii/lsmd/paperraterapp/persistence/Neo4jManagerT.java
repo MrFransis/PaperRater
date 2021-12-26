@@ -16,6 +16,40 @@ public class Neo4jManagerT {
     }
 
     /**
+     * return the number of reading lists of the user
+     * @param username username of the user
+     * @return number of reading list
+     */
+    public int getNumReadingList(final String username) {
+        int numReadingList;
+        try (Session session = driver.session()) {
+            numReadingList = session.writeTransaction((TransactionWork<Integer>) tx -> {
+                Result result = tx.run("MATCH (:User {name: $username})-[r:OWNS]->() " +
+                        "RETURN count(r) AS numReadingList", parameters("username", username));
+                return result.next().get("numReadingList").asInt();
+            });
+        }
+        return numReadingList;
+    }
+
+    /**
+     * return the number of follower of the user
+     * @param username username of the user
+     * @return number of followers
+     */
+    public int getNumFollowersUser(final String username) {
+        int numFollowers;
+        try (Session session = driver.session()) {
+            numFollowers = session.writeTransaction((TransactionWork<Integer>) tx -> {
+                Result result = tx.run("MATCH (:User {name: $username})<-[r:FOLLOWS]-() " +
+                        "RETURN count(r) AS numFollowers", parameters("username", username));
+                return result.next().get("numFollowers").asInt();
+            });
+        }
+        return numFollowers;
+    }
+
+    /**
      * return the number of follower of a reading list
      * @param title the title of the reading list
      * @param owner the username of the owner
