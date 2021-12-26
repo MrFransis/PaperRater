@@ -1,5 +1,6 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
+import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.lsmd.paperraterapp.model.*;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
@@ -113,7 +114,14 @@ public class PaperPageController implements Initializable {
 
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()){
-                mongoMan.addPaperToReadingList(Session.getInstance().getUser().getUsername(), result.get(), paper);
+                UpdateResult res = mongoMan.addPaperToReadingList(Session.getInstance().getUser().getUsername(), result.get(), paper);
+                if(res.getModifiedCount() == 0){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("This paper is already present in this reading list!");
+                    alert.showAndWait();
+                }
             }
         }
         else {

@@ -21,6 +21,7 @@ import javafx.util.Pair;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import javax.xml.transform.Result;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -523,25 +524,17 @@ public class MongoDBManager {
      * @param p Paper
      * @return true if the operation is successfully executed, false otherwise
      */
-    public boolean addPaperToReadingList(String user, String title, Paper p) {
-        try {
-            Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
-                    .append("vixra_id", p.getVixra_id())
-                    .append("title", p.getTitle())
-                    .append("auhtors", p.getAuthors())
-                    .append("category", p.getCategory());
-            Bson find = and(eq("username", user),
-                    eq("readingLists.title", title));
-            Bson update = Updates.addToSet("readingLists.$.papers", paperReduced);
-            usersCollection.updateOne(find, update);
-            return true;
-        }
-        catch (Exception e)
-        {
-            System.out.println("Error in adding a paper to a Reading List");
-            e.printStackTrace();
-            return false;
-        }
+    public UpdateResult addPaperToReadingList(String user, String title, Paper p) {
+        Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
+                .append("vixra_id", p.getVixra_id())
+                .append("title", p.getTitle())
+                .append("auhtors", p.getAuthors())
+                .append("category", p.getCategory());
+        Bson find = and(eq("username", user),
+                eq("readingLists.title", title));
+        Bson update = Updates.addToSet("readingLists.$.papers", paperReduced);
+        UpdateResult result = usersCollection.updateOne(find, update);
+        return result;
     }
 
     /**
