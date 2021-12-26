@@ -45,6 +45,11 @@
     -fx-cursor: hand;
 }
 
+.dynamic-button:hover {
+    -fx-background-color: orange;
+    -fx-cursor: hand;
+}
+
 .title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;

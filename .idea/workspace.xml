@@ -4,14 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="working on the browser">
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="users browse complete 2.0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/UserCardCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/UserCardCtrl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/register.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/register.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/usercard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/usercard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperPageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperPageController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +233,7 @@
       <workItem from="1640258970646" duration="602000" />
       <workItem from="1640334449657" duration="14195000" />
       <workItem from="1640471068033" duration="8495000" />
-      <workItem from="1640511428116" duration="18592000" />
+      <workItem from="1640511428116" duration="19233000" />
     </task>
     <task id="LOCAL-00001" summary="create the folder to start the app dev">
       <created>1638650378848</created>
@@ -428,7 +438,28 @@
       <option name="project" value="LOCAL" />
       <updated>1640515010800</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="users browse complete">
+      <created>1640538971626</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1640538971626</updated>
+    </task>
+    <task id="LOCAL-00031" summary="users browse complete">
+      <created>1640539004260</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1640539004260</updated>
+    </task>
+    <task id="LOCAL-00032" summary="users browse complete 2.0">
+      <created>1640539178667</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1640539178667</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -469,7 +500,9 @@
     <MESSAGE value="neo4j query" />
     <MESSAGE value="work no:&#10;- graphic design&#10;- browser navigation&#10;- backends useful query" />
     <MESSAGE value="working on the browser" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on the browser" />
+    <MESSAGE value="users browse complete" />
+    <MESSAGE value="users browse complete 2.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="users browse complete 2.0" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

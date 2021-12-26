@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -36,20 +37,28 @@
                   <Font size="14.0" />
                </font>
             </TextField>
-            <Button fx:id="signUPButton" layoutX="90.0" layoutY="393.0" mnemonicParsing="false" onAction="#checkForm" prefHeight="25.0" prefWidth="225.0" styleClass="buttonlog" stylesheets="@../style/main.css" text="Sign up" textFill="WHITE">
+            <Button fx:id="signUPButton" layoutX="90.0" layoutY="393.0" mnemonicParsing="false" onAction="#checkForm" prefHeight="25.0" prefWidth="225.0" stylesheets="@../style/main.css" text="Sign up" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
+               <styleClass>
+                  <String fx:value="buttonlog" />
+                  <String fx:value="dynamic-button" />
+               </styleClass>
             </Button>
             <Label layoutX="115.0" layoutY="441.0" text="If you are already registered:" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button fx:id="loginButton" layoutX="90.0" layoutY="475.0" mnemonicParsing="false" onAction="#loadLogin" prefHeight="25.0" prefWidth="225.0" styleClass="buttonlog" stylesheets="@../style/main.css" text="Login" textFill="WHITE">
+            <Button fx:id="loginButton" layoutX="90.0" layoutY="475.0" mnemonicParsing="false" onAction="#loadLogin" prefHeight="25.0" prefWidth="225.0" stylesheets="@../style/main.css" text="Login" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
+               <styleClass>
+                  <String fx:value="buttonlog" />
+                  <String fx:value="dynamic-button" />
+               </styleClass>
             </Button>
             <PasswordField fx:id="passwordTf" layoutX="84.0" layoutY="216.0" prefHeight="25.0" prefWidth="250.0" promptText="Password" styleClass="login" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="78.0" />
          </children>

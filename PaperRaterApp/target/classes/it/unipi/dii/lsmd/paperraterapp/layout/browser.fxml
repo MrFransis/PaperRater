@@ -114,7 +114,11 @@
                         <Insets bottom="50.0" left="30.0" right="30.0" top="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Button fx:id="searchBt" disable="true" mnemonicParsing="false" onAction="#startResearch" prefHeight="30.0" prefWidth="200.0" styleClass="search-button" text="Search" />
+                  <Button fx:id="searchBt" disable="true" mnemonicParsing="false" onAction="#startResearch" prefHeight="30.0" prefWidth="200.0" text="Search">
+                     <styleClass>
+                        <String fx:value="search-button" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass></Button>
                   <Label fx:id="errorTf" alignment="CENTER" textAlignment="CENTER" textFill="RED">
                      <font>
                         <Font size="14.0" />
@@ -178,7 +182,7 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="backBt" disable="true" mnemonicParsing="false" styleClass="buttonlog">
+                        <Button fx:id="backBt" disable="true" mnemonicParsing="false">
                            <graphic>
                               <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">
                                  <image>
@@ -186,6 +190,10 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <styleClass>
+                              <String fx:value="buttonlog" />
+                              <String fx:value="dynamic-button" />
+                           </styleClass>
                         </Button>
                         <HBox alignment="TOP_RIGHT" prefHeight="66.0" prefWidth="750.0" HBox.hgrow="ALWAYS">
                            <children>
@@ -211,7 +219,7 @@
                                     </Label>
                                  </children>
                               </HBox>
-                              <Button fx:id="forwardBt" disable="true" mnemonicParsing="false" styleClass="buttonlog">
+                              <Button fx:id="forwardBt" disable="true" mnemonicParsing="false">
                                  <graphic>
                                     <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">
                                        <image>
@@ -219,6 +227,10 @@
                                        </image>
                                     </ImageView>
                                  </graphic>
+                                 <styleClass>
+                                    <String fx:value="buttonlog" />
+                                    <String fx:value="dynamic-button" />
+                                 </styleClass>
                               </Button>
                            </children>
                         </HBox>
