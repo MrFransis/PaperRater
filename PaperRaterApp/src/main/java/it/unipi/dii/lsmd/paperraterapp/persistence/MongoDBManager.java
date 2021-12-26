@@ -54,10 +54,40 @@ public class MongoDBManager {
         usersCollection = db.getCollection("Users");
         papersCollection = db.getCollection("Papers");
     }
-    //
-    //public List<User> getUsersByKeyword (String keyword) {
-    //
-    //}
+
+    // da correggere
+    public int getNumUsers (String keyword) {
+        List<User> results = new ArrayList<>();
+        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        Consumer<Document> convertInUser = doc -> {
+            User user = gson.fromJson(gson.toJson(doc), User.class);
+            results.add(user);
+        };
+        Pattern pattern= Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
+        Bson filter = Aggregates.match(Filters.regex("username", pattern));
+        usersCollection.aggregate(Arrays.asList(filter)).forEach(convertInUser);
+        return results.size();
+    }
+
+    /**
+     * Return users the contains the keyword, by
+     * @param keyword keyword to search users
+     * @return list of users
+     */
+    public List<User> getUsersByKeyword (String keyword, int next) {
+        List<User> results = new ArrayList<>();
+        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        Consumer<Document> convertInUser = doc -> {
+            User user = gson.fromJson(gson.toJson(doc), User.class);
+            results.add(user);
+        };
+        Pattern pattern= Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
+        Bson filter = Aggregates.match(Filters.regex("username", pattern));
+        Bson limit = limit(8);
+        Bson skip = skip(next*8);
+        usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
+        return results;
+    }
 
     /**
      *
@@ -234,8 +264,8 @@ public class MongoDBManager {
     }
     /**
      * Update the list of comments of a paper
-     * @param paper
-     * @param comment
+     * @param p
+     * @param comments
      * @return  true if operation is successfully executed, false otherwise
      */
     public boolean updateComments(Paper p, List<Comment> comments){

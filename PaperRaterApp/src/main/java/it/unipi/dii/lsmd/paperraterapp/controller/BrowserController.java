@@ -9,11 +9,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,9 +45,14 @@ public class BrowserController implements Initializable {
     @FXML private HBox dateContainer;
     @FXML private Label errorTf;
     @FXML private GridPane cardsGrid;
+    @FXML private Label currentPage;
+    @FXML private Label totalPage;
+    @FXML private HBox pageContainer;
 
-    private MongoDBManager manager = new MongoDBManager(MongoDriver.getInstance().openConnection());
-    private User user = Session.getInstance().getUser();
+    private final MongoDBManager manager = new MongoDBManager(MongoDriver.getInstance().openConnection());
+    private final User user = Session.getInstance().getUser();
+    private int page = 0;
+    private int totPage;
 
     @FXML
     void goToProfilePage(MouseEvent event) {
@@ -54,7 +63,7 @@ public class BrowserController implements Initializable {
     }
 
     @FXML
-    void activeResearch(ActionEvent event) {
+    void activeResearch() {
         searchBt.setDisable(false);
         switch (chooseType.getValue()) {
             case "Papers" -> {
@@ -84,16 +93,6 @@ public class BrowserController implements Initializable {
     }
 
     @FXML
-    void showBackCards(ActionEvent event) {
-
-    }
-
-    @FXML
-    void showForwardCards(ActionEvent event) {
-
-    }
-
-    @FXML
     void showSuggestion(ActionEvent event) {
 
     }
@@ -114,7 +113,37 @@ public class BrowserController implements Initializable {
                     errorTf.setText("You have to insert a keyword.");
                     return;
                 }
-                List<>
+                errorTf.setText("");
+                // show page
+                int totCards = manager.getNumUsers(keywordTf.getText());
+                if (totCards % 8 == 0)
+                    totPage = totCards / 8;
+                else
+                    totPage = (totCards / 8) + 1;
+                page = 0;
+                currentPage.setText(Integer.toString(page+1));
+                totalPage.setText(Integer.toString(totPage));
+                pageContainer.setVisible(true);
+                // handle cards display
+                fillUsers(keywordTf.getText());
+                forwardBt.setDisable(false);
+                forwardBt.setOnMouseClicked(mouseEvent -> {
+                    page++;
+                    currentPage.setText(Integer.toString(page+1));
+                    if (page == totPage-1)
+                        forwardBt.setDisable(true);
+                    backBt.setDisable(false);
+                    fillUsers(keywordTf.getText());
+                });
+                backBt.setDisable(true);
+                backBt.setOnMouseClicked(mouseEvent -> {
+                    page--;
+                    currentPage.setText(Integer.toString(page+1));
+                    forwardBt.setDisable(false);
+                    if (page == 0)
+                        backBt.setDisable(true);
+                    fillUsers(keywordTf.getText());
+                });
             }
             case "Reading lists" -> {
 
@@ -128,13 +157,27 @@ public class BrowserController implements Initializable {
         hideFilterForm();
     }
 
+    private Pane loadUsersCard (User user) {
+        Pane pane = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/usercard.fxml"));
+            pane = loader.load();
+            UserCardCtrl ctrl = loader.getController();
+            ctrl.setParameters(user);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pane;
+    }
+
     private void loadSpecialQuery () {
         // load suggestion
         List<String> suggestionList = new ArrayList<>();
         suggestionList.add("Suggested paper");
         suggestionList.add("Suggested reading list");
         suggestionList.add("Suggested user");
-        ObservableList observableListSuggestion = FXCollections.observableList(suggestionList);
+        ObservableList<String> observableListSuggestion = FXCollections.observableList(suggestionList);
         chooseSuggestion.getItems().clear();
         chooseSuggestion.setItems(observableListSuggestion);
 
@@ -145,7 +188,7 @@ public class BrowserController implements Initializable {
         analyticsList.add("Most popular Users");
         analyticsList.add("Most popular Papers");
         analyticsList.add("Most popular Categories");
-        ObservableList observableListAnalytics = FXCollections.observableList(analyticsList);
+        ObservableList<String> observableListAnalytics = FXCollections.observableList(analyticsList);
         chooseAnalytics.getItems().clear();
         chooseAnalytics.setItems(observableListAnalytics);
 
@@ -156,7 +199,7 @@ public class BrowserController implements Initializable {
         summaryList.add("Categories with more comments");
         summaryList.add("Papers with more likes");
         summaryList.add("Papers with more comments");
-        ObservableList observableListSummary = FXCollections.observableList(summaryList);
+        ObservableList<String> observableListSummary = FXCollections.observableList(summaryList);
         chooseSummary.getItems().clear();
         chooseSummary.setItems(observableListSummary);
 
@@ -165,13 +208,13 @@ public class BrowserController implements Initializable {
         typeList.add("Papers");
         typeList.add("Users");
         typeList.add("Reading lists");
-        ObservableList observableListType = FXCollections.observableList(typeList);
+        ObservableList<String> observableListType = FXCollections.observableList(typeList);
         chooseType.getItems().clear();
         chooseType.setItems(observableListType);
 
         // load categories
         List<String> categoriesList = manager.getCategories();
-        ObservableList observableListCategories = FXCollections.observableList(categoriesList);
+        ObservableList<String> observableListCategories = FXCollections.observableList(categoriesList);
         chooseCategory.getItems().clear();
         chooseCategory.setItems(observableListCategories);
     }
@@ -181,14 +224,35 @@ public class BrowserController implements Initializable {
         dateContainer.setVisible(false);
         keywordContainer.setVisible(false);
         categoryContainer.setVisible(false);
+        pageContainer.setVisible(false);
     }
 
-    private void showError(String text) {
-        errorTf.setText(text);
-    }
-
-    private void hideError() {
-        errorTf.setText("");
+    private void fillUsers(String keyword) {
+        // clean old settings
+        cardsGrid.getChildren().clear();
+        cardsGrid.getColumnConstraints().clear();
+        // set new layout
+        cardsGrid.setHgap(20);
+        cardsGrid.setVgap(20);
+        cardsGrid.setPadding(new Insets(30,40,30,40));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(25);
+        cardsGrid.getColumnConstraints().add(constraints);
+        // load users
+        List<User> usersList = manager.getUsersByKeyword(keyword, page);
+        System.out.println("Loading users()...");
+        System.out.println(usersList.toString());
+        int row = 0;
+        int col = 0;
+        for (User u : usersList) {
+            Pane card = loadUsersCard(u);
+            cardsGrid.add(card, col, row);
+            col++;
+            if (col == 4) {
+                col = 0;
+                row++;
+            }
+        }
     }
 
 }
