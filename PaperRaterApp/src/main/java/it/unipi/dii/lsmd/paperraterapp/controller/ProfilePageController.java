@@ -119,6 +119,7 @@ public class ProfilePageController {
 
     private void clickOnBackIcon (MouseEvent mouseEvent) {
         System.out.println("Back");
+
         //Utils.changeScene(Session.getInstance().getLastPageVisited(), mouseEvent);
     }
 

@@ -21,7 +21,6 @@ import javafx.util.Pair;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import javax.xml.transform.Result;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -406,7 +405,7 @@ public class MongoDBManager {
         }
 
         pipeline.add(sort(descending("published")));
-        pipeline.add(skip(skip));
+        pipeline.add(skip(skip * limit));
         pipeline.add(limit(limit));
 
         List<Document> results = (List<Document>) papersCollection.aggregate(pipeline)

@@ -1,5 +1,6 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
+import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
@@ -20,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -65,6 +67,8 @@ public class BrowserController implements Initializable {
     @FXML
     void activeResearch() {
         searchBt.setDisable(false);
+        backBt.setDisable(true);
+        page = 0;
         switch (chooseType.getValue()) {
             case "Papers" -> {
                 authorContainer.setVisible(true);
@@ -103,58 +107,19 @@ public class BrowserController implements Initializable {
     }
 
     @FXML
-    void startResearch(ActionEvent event) {
-        switch (chooseType.getValue()) {
-            case "Papers" -> {
-
-            }
-            case "Users" -> {
-                if (keywordTf.getText().equals("")) {
-                    errorTf.setText("You have to insert a keyword.");
-                    return;
-                }
-                errorTf.setText("");
-                // show page
-                int totCards = manager.getNumUsers(keywordTf.getText());
-                if (totCards % 8 == 0)
-                    totPage = totCards / 8;
-                else
-                    totPage = (totCards / 8) + 1;
-                page = 0;
-                currentPage.setText(Integer.toString(page+1));
-                totalPage.setText(Integer.toString(totPage));
-                pageContainer.setVisible(true);
-                // handle cards display
-                fillUsers(keywordTf.getText());
-                forwardBt.setDisable(false);
-                forwardBt.setOnMouseClicked(mouseEvent -> {
-                    page++;
-                    currentPage.setText(Integer.toString(page+1));
-                    if (page == totPage-1)
-                        forwardBt.setDisable(true);
-                    backBt.setDisable(false);
-                    fillUsers(keywordTf.getText());
-                });
-                backBt.setDisable(true);
-                backBt.setOnMouseClicked(mouseEvent -> {
-                    page--;
-                    currentPage.setText(Integer.toString(page+1));
-                    forwardBt.setDisable(false);
-                    if (page == 0)
-                        backBt.setDisable(true);
-                    fillUsers(keywordTf.getText());
-                });
-            }
-            case "Reading lists" -> {
-
-            }
-        }
+    void startResearch() {
+        page = 0;
+        forwardBt.setDisable(false);
+        backBt.setDisable(true);
+        handleResearch();
     }
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
         loadSpecialQuery();
         hideFilterForm();
+        forwardBt.setOnMouseClicked(mouseEvent -> goForward());
+        backBt.setOnMouseClicked(mouseEvent -> goBack());
     }
 
     private Pane loadUsersCard (User user) {
@@ -164,6 +129,20 @@ public class BrowserController implements Initializable {
             pane = loader.load();
             UserCardCtrl ctrl = loader.getController();
             ctrl.setParameters(user);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pane;
+    }
+
+    private Pane loadPapersCard (Paper paper) {
+        Pane pane = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml"));
+            pane = loader.load();
+            PaperCardCtrl ctrl = loader.getController();
+            ctrl.setPaperCard(paper);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -240,8 +219,7 @@ public class BrowserController implements Initializable {
         cardsGrid.getColumnConstraints().add(constraints);
         // load users
         List<User> usersList = manager.getUsersByKeyword(keyword, page);
-        System.out.println("Loading users()...");
-        System.out.println(usersList.toString());
+        System.out.println("Loading users...");
         int row = 0;
         int col = 0;
         for (User u : usersList) {
@@ -255,4 +233,99 @@ public class BrowserController implements Initializable {
         }
     }
 
+    private void fillPapers(String title, String author, String start_date, String end_date, String category) {
+        // clean old settings
+        cardsGrid.getChildren().clear();
+        cardsGrid.getColumnConstraints().clear();
+        // set new layout
+        cardsGrid.setHgap(20);
+        cardsGrid.setVgap(20);
+        cardsGrid.setPadding(new Insets(30,40,30,40));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(100);
+        cardsGrid.getColumnConstraints().add(constraints);
+        // load papers
+        List<Paper> papersList = manager.searchPapersByParameters(title, author, start_date, end_date, category,
+                3*page, 3);
+        System.out.println("Loading papers...");
+        int row = 0;
+        for (Paper p : papersList) {
+            Pane card = loadPapersCard(p);
+            cardsGrid.add(card, 0, row);
+            row++;
+        }
+    }
+
+    private void handleResearch() {
+        switch (chooseType.getValue()) {
+            case "Papers" -> {
+                // check the form values
+                errorTf.setText("");
+                if (keywordTf.getText().equals("") && toDate.getValue() == null && fromDate.getValue() == null &&
+                        chooseCategory.getValue() == null && authorTf.getText().equals("")) {
+                    errorTf.setText("You have to set some filters.");
+                    return;
+                }
+                if (toDate.getValue() != null && fromDate.getValue() != null &&
+                        toDate.getValue().isBefore(fromDate.getValue())) {
+                    errorTf.setText("The From date have to be before the To date.");
+                    return;
+                }
+                String category = "";
+                String startDate = "";
+                String endDate = "";
+                if (chooseCategory.getValue() != null)
+                    category = chooseCategory.getValue();
+                if (toDate.getValue() != null)
+                    endDate = toDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                if (fromDate.getValue() != null)
+                    startDate = fromDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                //show page
+
+                // handle cards display
+                fillPapers(keywordTf.getText(), authorTf.getText(), startDate, endDate, category);
+
+            }
+            case "Users" -> {
+                // form control
+                errorTf.setText("");
+                if (keywordTf.getText().equals("")) {
+                    errorTf.setText("You have to insert a keyword.");
+                    return;
+                }
+                // show page
+                int totCards = manager.getNumUsers(keywordTf.getText());
+                if (totCards % 8 == 0)
+                    totPage = totCards / 8;
+                else
+                    totPage = (totCards / 8) + 1;
+                currentPage.setText(Integer.toString(page+1));
+                totalPage.setText(Integer.toString(totPage));
+                pageContainer.setVisible(true);
+                // handle cards display
+                fillUsers(keywordTf.getText());
+                if (page == totPage-1)
+                    forwardBt.setDisable(true);
+                if (page == 0)
+                    backBt.setDisable(true);
+            }
+            case "Reading lists" -> {
+                System.out.println("show reading lists");
+            }
+        }
+    }
+
+    private void goForward () {
+        page++;
+        currentPage.setText(Integer.toString(page+1));
+        backBt.setDisable(false);
+        handleResearch();
+    }
+
+    private void goBack () {
+        page--;
+        currentPage.setText(Integer.toString(page+1));
+        forwardBt.setDisable(false);
+        handleResearch();
+    }
 }
