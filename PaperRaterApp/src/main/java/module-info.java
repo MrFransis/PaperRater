@@ -18,4 +18,5 @@ module it.unipi.dii.lsmd.paperraterapp {
     exports it.unipi.dii.lsmd.paperraterapp.persistence;
     opens it.unipi.dii.lsmd.paperraterapp.persistence to javafx.fxml;
     opens it.unipi.dii.lsmd.paperraterapp.model to com.google.gson;
+    exports it.unipi.dii.lsmd.paperraterapp.model;
 }

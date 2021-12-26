@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="215.0" style="-fx-border-color: lightgrey; -fx-border-width: 1px;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.CommentCtrl">
+<AnchorPane fx:id="commentBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="110.0" prefWidth="210.0" style="-fx-border-color: lightgrey; -fx-border-width: 1px;" styleClass="buttonlog" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.CommentCtrl">
    <children>
-      <VBox prefHeight="130.0" prefWidth="215.0">
+      <VBox prefHeight="110.0" prefWidth="210.0">
          <children>
-            <Text fx:id="timestamp" strokeType="OUTSIDE" strokeWidth="0.0" text="Timestamp" textAlignment="RIGHT" wrappingWidth="215.0">
+            <Text fx:id="timestamp" strokeType="OUTSIDE" strokeWidth="0.0" text="Timestamp" textAlignment="RIGHT" wrappingWidth="205.0">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>
             </Text>
-            <Label fx:id="username" prefHeight="30.0" prefWidth="230.0" text="Username">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <ScrollPane prefHeight="91.0" prefWidth="215.0">
+            <AnchorPane prefHeight="22.0" prefWidth="210.0">
+               <children>
+                  <Label fx:id="username" prefHeight="19.0" prefWidth="171.0" text="Username">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <ImageView fx:id="modify" fitHeight="18.0" fitWidth="16.0" layoutX="164.0" layoutY="2.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/edit.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor>
+                  </ImageView>
+                  <ImageView fx:id="bin" fitHeight="22.0" fitWidth="16.0" layoutX="189.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/bin.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <ScrollPane fx:id="scrollpane" prefHeight="72.0" prefWidth="210.0">
                <content>
-                  <Text fx:id="comment" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment" />
+                  <Text fx:id="comment" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment" wrappingWidth="190.0">
+                     <font>
+                        <Font name="System Italic" size="13.0" />
+                     </font></Text>
                </content>
             </ScrollPane>
          </children>

@@ -40,8 +40,8 @@ import static com.mongodb.client.model.Sorts.descending;
 
 public class MongoDBManager {
     public MongoDatabase db;
-    private final MongoCollection usersCollection;
-    private final MongoCollection papersCollection;
+    private MongoCollection usersCollection;
+    private MongoCollection papersCollection;
 
 
     /**
@@ -49,7 +49,7 @@ public class MongoDBManager {
      * @param client MongoDBClient
      */
     public MongoDBManager(MongoClient client) {
-        this.db = client.getDatabase("PaperRater");;
+        this.db = client.getDatabase("PaperRater");
         usersCollection = db.getCollection("Users");
         papersCollection = db.getCollection("Papers");
     }
@@ -226,6 +226,69 @@ public class MongoDBManager {
             e.printStackTrace();
             return false;
         }
+    }
+    /**
+     * Update the list of comments of a paper
+     * @param paper
+     * @param comment
+     * @return  true if operation is successfully executed, false otherwise
+     */
+    public boolean updateComments(Paper p, List<Comment> comments){
+        try{
+            Bson update = new Document("comments", comments);
+            Bson updateOperation = new Document("$set", update);
+            if(!p.getArxiv_id().isEmpty())
+                papersCollection.updateOne(new Document("arxiv_id", p.getArxiv_id()), updateOperation);
+            else
+                papersCollection.updateOne(new Document("vixra_id", p.getVixra_id()), updateOperation);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            System.err.println("Error in updating user on MongoDB");
+            return false;
+        }
+    }
+
+    /**
+     * Update an existing comment
+     * @param paper
+     * @param comment
+     */
+    public void updateComment(Paper paper, Comment comment){
+        List<Comment> comments = paper.getComments();
+        int i=0;
+        for (Comment c: comments
+        ) {
+            if(c.getUsername().equals(comment.getUsername()) && c.getTimestamp().equals(
+                    comment.getTimestamp())){
+                comments.set(i, comment);
+                break;
+            }
+            i++;
+        }
+        updateComments(paper, comments);
+    }
+
+    /**
+     * Add a new comment
+     * @param paper
+     * @param comment
+     */
+    public void deleteComment (Paper paper, Comment comment) {
+        List<Comment> comments = paper.getComments();
+        int n = 0;
+        int d = 0;
+        for (Comment c : comments){
+            if (c.getTimestamp().equals(comment.getTimestamp()) && c.getUsername().equals(comment.getUsername())) {
+                d = n;
+                break;
+            }
+        n++;
+        }
+        comments.remove(d);
+        updateComments(paper, comments);
     }
     /**
      * Function that deletes the paper from the database

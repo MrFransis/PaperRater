@@ -1,32 +1,15 @@
 package it.unipi.dii.lsmd.paperraterapp.persistence;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.GsonBuilder;
 import com.mongodb.ConnectionString;
-import com.mongodb.client.*;
-import com.mongodb.client.model.Accumulators;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
-import com.mongodb.client.model.Projections;
-import it.unipi.dii.lsmd.paperraterapp.model.Comment;
-import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
-import org.bson.Document;
-import org.bson.json.JsonWriterSettings;
-import org.bson.conversions.Bson;
-
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import static com.mongodb.client.model.Aggregates.*;
-import it.unipi.dii.lsmd.paperraterapp.config.ConfigurationParameters;
-import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
-import it.unipi.dii.lsmd.paperraterapp.model.Paper;
-import it.unipi.dii.lsmd.paperraterapp.model.Comment;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 /**
  * This class is used to communicate with MongoDB
@@ -36,6 +19,7 @@ public class MongoDriver {
 
     private MongoClient client = null;
     private MongoDatabase database = null;
+    private CodecRegistry pojoCodecRegistry;
     public String firstIp;
     public int firstPort;
     public String dbName;
@@ -68,9 +52,18 @@ public class MongoDriver {
             String string = "mongodb://localhost:27017";
             ConnectionString connectionString = new ConnectionString(string);
 
-            client = MongoClients.create(connectionString);
+            pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                    fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+            MongoClientSettings clientSettings = MongoClientSettings.builder()
+                                                                    .applyConnectionString(connectionString)
+                                                                    .codecRegistry(pojoCodecRegistry)
+                                                                    .build();
+
+            client = MongoClients.create(clientSettings);
 
             database = client.getDatabase("PaperRater");
+
             System.out.println("Connected to MongoDB ...");
             return client;
         }

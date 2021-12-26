@@ -38,7 +38,7 @@ public class Comment {
     @Override
     public String toString() {
         return "Comment{" +
-                "Username='" + username + '\'' +
+                "username='" + username + '\'' +
                 ", text='" + text + '\'' +
                 ", timestamp=" + timestamp +
                 '}';

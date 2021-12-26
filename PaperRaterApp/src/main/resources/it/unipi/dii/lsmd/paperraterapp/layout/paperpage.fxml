@@ -45,9 +45,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="473.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.PaperPageController">
+<VBox prefHeight="510.0" prefWidth="700.0" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.PaperPageController">
   <children>
-      <HBox prefHeight="0.0" prefWidth="640.0" style="-fx-border-width: 1px; -fx-border-color: lightgrey;">
+      <HBox prefHeight="0.0" prefWidth="640.0" styleClass="lite">
          <children>
             <ImageView fx:id="backIcon" fitHeight="36.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -59,9 +59,9 @@
             </ImageView>
          </children>
       </HBox>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="435.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="435.0" prefWidth="700.0" styleClass="dark" VBox.vgrow="ALWAYS">
       <children>
-            <ScrollPane layoutX="397.0" layoutY="62.0" prefHeight="321.0" prefWidth="230.0">
+            <ScrollPane layoutX="467.0" layoutY="111.0" prefHeight="314.0" prefWidth="225.0">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
@@ -70,33 +70,67 @@
                   </AnchorPane>
                </content>
             </ScrollPane>
-            <Text fx:id="title" layoutX="32.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" textAlignment="CENTER" wrappingWidth="576.0">
+            <Text fx:id="title" fill="WHITE" layoutX="8.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" textAlignment="CENTER" wrappingWidth="684.0">
                <font>
-                  <Font size="16.0" />
+                  <Font name="System Bold" size="16.0" />
                </font></Text>
-            <Label layoutX="16.0" layoutY="65.0" text="Id:" />
-            <Label layoutX="15.0" layoutY="88.0" text="Category:" />
-            <Label layoutX="16.0" layoutY="135.0" text="Authors:" />
-            <Label layoutX="16.0" layoutY="112.0" text="Published:" />
-            <Label layoutX="14.0" layoutY="168.0" text="Abstract:" />
-            <Label layoutX="16.0" layoutY="400.0" text="Likes">
+            <Label layoutX="16.0" layoutY="70.0" text="Id:" textFill="WHITE">
                <font>
-                  <Font name="System Bold" size="12.0" />
+                  <Font name="System Bold Italic" size="14.0" />
                </font></Label>
-            <Label layoutX="397.0" layoutY="44.0" text="Comments:" />
-            <Text fx:id="id" layoutX="38.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0000.00000" wrappingWidth="149.00003051757812" />
-            <Text fx:id="category" layoutX="85.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0000.00000" wrappingWidth="149.00003051757812" />
-            <Text fx:id="authors" layoutX="71.0" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bob" wrappingWidth="317.0000305175781" />
-            <Text fx:id="published" layoutX="85.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="01-01-2020" wrappingWidth="149.00003051757812" />
-            <Text fx:id="likes" layoutX="47.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" text="111" wrappingWidth="75.00003051757812" />
-            <Button fx:id="addToReadingList" layoutX="260.0" layoutY="395.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Add to Reading List" />
-            <ScrollPane layoutX="13.0" layoutY="183.0" prefHeight="200.0" prefWidth="372.0">
+            <Label layoutX="15.0" layoutY="93.0" text="Category:" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <Label layoutX="16.0" layoutY="140.0" text="Authors:" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <Label layoutX="16.0" layoutY="117.0" text="Published:" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <Label layoutX="14.0" layoutY="216.0" text="Abstract:" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <Label layoutX="16.0" layoutY="442.0" text="Likes" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <Label layoutX="469.0" layoutY="91.0" text="Comments:" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font></Label>
+            <Text fx:id="id" fill="WHITE" layoutX="38.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0000.00000" wrappingWidth="149.00003051757812">
+               <font>
+                  <Font size="14.0" />
+               </font></Text>
+            <Text fx:id="category" fill="WHITE" layoutX="85.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="category" wrappingWidth="149.00003051757812">
+               <font>
+                  <Font size="14.0" />
+               </font></Text>
+            <Text fx:id="authors" fill="WHITE" layoutX="79.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bob" wrappingWidth="359.0000305175781">
+               <font>
+                  <Font size="14.0" />
+               </font></Text>
+            <Text fx:id="published" fill="WHITE" layoutX="87.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="01-01-2020" wrappingWidth="149.00003051757812">
+               <font>
+                  <Font size="14.0" />
+               </font></Text>
+            <Text fx:id="likes" fill="WHITE" layoutX="53.0" layoutY="457.0" strokeType="OUTSIDE" strokeWidth="0.0" text="111" wrappingWidth="75.00003051757812">
+               <font>
+                  <Font size="14.0" />
+               </font></Text>
+            <Button fx:id="addToReadingList" layoutX="304.0" layoutY="435.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="149.0" styleClass="buttonlog" text="Add to Reading List" />
+            <ScrollPane fx:id="scrollpane" layoutX="13.0" layoutY="236.0" prefHeight="189.0" prefWidth="440.0">
                <content>
-                  <Text fx:id="abstractPaper" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                  <Text fx:id="abstractPaper" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="423.13671875" />
                </content>
             </ScrollPane>
-            <Button fx:id="comment" layoutX="551.0" layoutY="389.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="75.0" text="Comment" />
-            <TextField fx:id="commentText" layoutX="397.0" layoutY="395.0" />
+            <Button fx:id="comment" layoutX="608.0" layoutY="436.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="84.0" styleClass="buttonlog" text="Comment" />
+            <TextField fx:id="commentText" layoutX="473.0" layoutY="439.0" prefHeight="25.0" prefWidth="128.0" />
+            <Button fx:id="likebtn" layoutX="249.0" layoutY="435.0" mnemonicParsing="false" styleClass="buttonlog" text="Like" />
       </children>
     </AnchorPane>
   </children>
