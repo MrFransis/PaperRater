@@ -4,7 +4,6 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
@@ -41,10 +40,7 @@ public class LoginController {
         }
         else {
             Session.getInstance().setUser(u);
-
-            ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
-                    "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
-            ctrl.setProfilePage(Session.getInstance().getUser());
+            Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
         }
     }
 

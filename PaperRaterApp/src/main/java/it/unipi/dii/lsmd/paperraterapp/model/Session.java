@@ -1,9 +1,15 @@
 package it.unipi.dii.lsmd.paperraterapp.model;
 
+import java.util.List;
+
 public class Session {
+
     private static Session instance = null;
-    private User user;
+    private User loggedUser;
     private User previousPageUser;
+    private ReadingList previousReadingList;
+    private Paper previousPaper;
+    private List<String> pageHistory;
 
     public static Session getInstance() {
         if(instance==null)
@@ -14,15 +20,29 @@ public class Session {
     private Session () {}
 
     public void setUser(User u) {
-        instance.user = u;
+        instance.loggedUser = u;
     }
+
     public User getUser() {
-        return user;
+        return loggedUser;
     }
+
     public void setPreviousPageUser(User u) {
-        instance.user = u;
+        instance.loggedUser = u;
     }
+
     public User getPreviousPageUser() {
-        return user;
+        return loggedUser;
     }
+
+    /*
+    public void setPreviousPageVisited(String lastPageVisited) {
+        this.lastPageVisited = lastPageVisited;
+    }
+
+    public String getLastPageVisited() {
+        return lastPageVisited;
+    }
+
+     */
 }

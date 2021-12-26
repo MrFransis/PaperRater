@@ -780,4 +780,10 @@ public class MongoDBManager {
 
         return results;
     }
+
+    public List<String> getCategories() {
+        List<String> categoriesList = new ArrayList<>();
+        papersCollection.distinct("category", String.class).into(categoriesList);
+        return categoriesList;
+    }
 }

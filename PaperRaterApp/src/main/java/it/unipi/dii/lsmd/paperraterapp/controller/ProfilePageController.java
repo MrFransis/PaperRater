@@ -6,10 +6,10 @@ import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
-import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,6 +51,7 @@ public class ProfilePageController {
         nFollower.setOnMouseClicked(mouseEvent -> clickOnFollower(mouseEvent));
         editIcon.setOnMouseClicked(mouseEvent -> clickOnEditIcon(mouseEvent));
         addReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnAddReadingListBtn(mouseEvent));
+
     }
 
     public void setProfilePage (User user) {
@@ -71,16 +72,16 @@ public class ProfilePageController {
             followBtn.setText("Unfollow");*/
 
 
-         if (user.getUsername().equals(Session.getInstance().getUser().getUsername())) {
+        if (user.getUsername().equals(Session.getInstance().getUser().getUsername())) {
             followBtn.setVisible(false);
             editIcon.setVisible(true);
             addReadingListBtn.setVisible(true);
-         }
-         else {
-             followBtn.setVisible(true);
-             editIcon.setVisible(false);
-             addReadingListBtn.setVisible(false);
-         }
+        }
+        else {
+            followBtn.setVisible(true);
+            editIcon.setVisible(false);
+            addReadingListBtn.setVisible(false);
+        }
 
         readingListsBox.getChildren().clear();
         if (!user.getReadingLists().isEmpty()) {
@@ -88,9 +89,10 @@ public class ProfilePageController {
 
             while(it.hasNext()) {
                 HBox row = new HBox();
+                row.setAlignment(Pos.CENTER);
                 row.setStyle("-fx-padding: 10px");
                 ReadingList r = it.next();
-                Pane p = loadReadingListCard(r);
+                Pane p = loadReadingListCard(r, user.getUsername());
 
                 row.getChildren().addAll(p);
                 readingListsBox.getChildren().add(row);
@@ -101,14 +103,13 @@ public class ProfilePageController {
         }
     }
 
-    private Pane loadReadingListCard (ReadingList r) {
+    private Pane loadReadingListCard (ReadingList r, String owner) {
         Pane pane = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml"));
             pane = loader.load();
             ReadingListCardCtrl ctrl = loader.getController();
-            ctrl.setReadingListCard(r);
-
+            ctrl.setReadingListCard(r, owner);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -118,7 +119,7 @@ public class ProfilePageController {
 
     private void clickOnBackIcon (MouseEvent mouseEvent) {
         System.out.println("Back");
-        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/homepage.fxml", mouseEvent);
+        //Utils.changeScene(Session.getInstance().getLastPageVisited(), mouseEvent);
     }
 
     private void clickOnFollowBtn (MouseEvent mouseEvent) {

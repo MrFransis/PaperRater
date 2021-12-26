@@ -1,11 +1,7 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
-import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
-import it.unipi.dii.lsmd.paperraterapp.model.Session;
-import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
-import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.persistence.*;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -15,7 +11,8 @@ import javafx.scene.text.Text;
 public class PaperCardCtrl {
     private Paper p;
     private MongoDBManager mongoMan;
-    private Neo4jManagerE neoMan;
+    private Neo4jManagerE neoMan;           // da unire
+    private Neo4jManagerT neoMan1;
 
     @FXML private Label paperId;
     @FXML private Label paperTitle;
@@ -25,7 +22,8 @@ public class PaperCardCtrl {
     @FXML private Text paperNComments;
 
     public void initialize () {
-        //neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+        neoMan1 = new Neo4jManagerT(Neo4jDriverE.getInstance().openConnection());       // da unire
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         paperTitle.setOnMouseClicked(mouseEvent -> clickOnPaperTitle(mouseEvent));
@@ -33,14 +31,18 @@ public class PaperCardCtrl {
 
     public void setPaperCard (Paper p) {
         this.p = p;
-
+        // set the id
+        String validId;
         if (!p.getArxiv_id().isEmpty())
-            paperId.setText("arXiv:" + p.getArxiv_id());
+            validId = p.getArxiv_id();
         else
-            paperId.setText("viXra:" + p.getVixra_id());
+            validId = p.getVixra_id();
+        paperId.setText("arXiv:" + validId);
 
+        // set the title
         paperTitle.setText(p.getTitle());
 
+        // set the authors list
         String tmp = "";
         int k = 0;
         for (String author: p.getAuthors()) {
@@ -52,13 +54,17 @@ public class PaperCardCtrl {
                 tmp +=", " + author;
         }
         paperAuthors.setText(tmp);
-        paperCategory.setText(p.getCategory());
-        paperLikes.setText("N/A Likes");
-        if (p.getComments() != null)
-            paperNComments.setText(String.valueOf(p.getComments().size()) + " Comments");
-        else
-            paperNComments.setText("0 Comments");
 
+        // set category
+        paperCategory.setText(p.getCategory());
+
+        // set num likes
+        String numLikes = Integer.toString(neoMan1.getNumLikes(validId));
+        paperLikes.setText(numLikes);
+
+        // set num comments
+        String numComments = Integer.toString(neoMan1.getNumComments(validId));
+        paperNComments.setText(numComments);
     }
 
     private void clickOnPaperTitle (MouseEvent mouseEvent) {

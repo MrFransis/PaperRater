@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
@@ -9,11 +10,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0" prefWidth="322.0" style="-fx-border-color: lightgrey; -fx-border-width: 1px;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ReadingListCardCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0" prefWidth="280.0" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ReadingListCardCtrl">
    <children>
-      <HBox alignment="TOP_CENTER" prefHeight="49.0" prefWidth="322.0">
+      <HBox alignment="CENTER" prefHeight="40.0" prefWidth="280.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="-0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label fx:id="readingListTitle" alignment="TOP_LEFT" prefHeight="43.0" prefWidth="283.0" text="Title" textAlignment="CENTER">
+            <Label fx:id="readingListTitle" alignment="CENTER" prefHeight="40.0" prefWidth="262.0" styleClass="dynamic-effect" stylesheets="@../style/main.css" text="Title" textAlignment="CENTER" underline="true" HBox.hgrow="ALWAYS">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -26,9 +27,9 @@
             </Label>
          </children>
       </HBox>
-      <HBox layoutY="49.0" prefHeight="91.0" prefWidth="322.0">
+      <HBox layoutY="49.0" prefHeight="100.0" prefWidth="280.0" AnchorPane.leftAnchor="-0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <VBox alignment="TOP_CENTER" prefHeight="98.0" prefWidth="100.0">
+            <VBox alignment="TOP_CENTER" prefHeight="91.0" prefWidth="100.0">
                <children>
                   <Text fx:id="nFollower" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollower" textAlignment="CENTER" wrappingWidth="63.64453125">
                      <font>
@@ -48,17 +49,20 @@
                   <Label text="Papers" textAlignment="CENTER" />
                </children>
                <padding>
-                  <Insets top="5.0" />
+                  <Insets left="5.0" right="5.0" />
                </padding>
+               <HBox.margin>
+                  <Insets top="5.0" />
+               </HBox.margin>
             </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="80.0" prefWidth="223.0">
+            <VBox alignment="TOP_CENTER" prefHeight="91.0" prefWidth="180.0">
                <children>
-                  <Text fx:id="mostCommonCategory" strokeType="OUTSIDE" strokeWidth="0.0" text="Category" textAlignment="CENTER" wrappingWidth="212.97781372070312">
+                  <Text fx:id="mostCommonCategory" strokeType="OUTSIDE" strokeWidth="0.0" text="Category" textAlignment="CENTER" wrappingWidth="177.97781372070312">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Text>
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="187.0" text="Most Common Category" textAlignment="CENTER">
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="150.0" text="Most Common Category" textAlignment="CENTER">
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
@@ -70,11 +74,19 @@
                   </Text>
                   <Label prefHeight="17.0" prefWidth="113.0" text="Most Famous Paper" textAlignment="CENTER" />
                </children>
-               <padding>
+               <HBox.margin>
                   <Insets top="5.0" />
+               </HBox.margin>
+               <padding>
+                  <Insets left="5.0" right="5.0" />
                </padding>
             </VBox>
          </children>
       </HBox>
    </children>
+   <styleClass>
+      <String fx:value="shadow" />
+      <String fx:value="lite" />
+      <String fx:value="card" />
+   </styleClass>
 </AnchorPane>

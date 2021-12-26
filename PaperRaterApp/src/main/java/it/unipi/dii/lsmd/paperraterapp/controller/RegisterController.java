@@ -10,17 +10,11 @@ import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class RegisterController {
     private MongoDBManager mongoMan;
@@ -58,9 +52,7 @@ public class RegisterController {
 
         // add to neo4j
         Session.getInstance().setUser(newUser);
-        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
-                "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
-        ctrl.setProfilePage(Session.getInstance().getUser());
+        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
     }
 
     /**

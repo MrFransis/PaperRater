@@ -2,14 +2,10 @@ package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
-import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
-import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.persistence.*;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
@@ -21,6 +17,7 @@ public class ReadingListCardCtrl {
     ReadingList r;
     private MongoDBManager mongoMan;
     private Neo4jManagerE neoMan;
+    private Neo4jManagerT neoMan1;
 
     @FXML private Label readingListTitle;
     @FXML private Text nFollower;
@@ -29,23 +26,28 @@ public class ReadingListCardCtrl {
     @FXML private Text mostFamousPaperTitle;
 
     public void initialize () {
-        //neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+        neoMan1 = new Neo4jManagerT(Neo4jDriverE.getInstance().openConnection());       // da unire
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         readingListTitle.setOnMouseClicked(mouseEvent -> clickOnReadingListTitle(mouseEvent));
     }
 
-    public void setReadingListCard (ReadingList r) {
+    public void setReadingListCard (ReadingList r, String owner) {
         this.r = r;
 
+        // set title
         readingListTitle.setText(r.getName());
 
-        //nFollower.setText(neoMan.getFollowers());
+        // set num followers
+        String numFollowers = Integer.toString(neoMan1.getNumFollowersReadingList(r.getName(), owner));
+        nFollower.setText(numFollowers);
 
+        // set most common category
         if (!r.getPapers().isEmpty()) {
             mostCommonCategory.setText(mostCommonCategory(r.getPapers()));
             nPapers.setText(String.valueOf(r.getPapers().size()));
-            //mostFamousPaperTitle.setText(getMostFamousPaperInReadingList()
+            //mostFamousPaperTitle.setText(getMostFamousPaperInReadingList());
         }
         else {
             mostCommonCategory.setText("N/A");

@@ -3,10 +3,10 @@ package it.unipi.dii.lsmd.paperraterapp.controller;
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
 import it.unipi.dii.lsmd.paperraterapp.model.Session;
-import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -38,6 +38,7 @@ public class ReadingListPageController {
 
             while(it.hasNext()) {
                 HBox row = new HBox();
+                row.setAlignment(Pos.CENTER);
                 row.setStyle("-fx-padding: 10px");
                 Paper paper = it.next();
                 Pane p = loadPaperCard(paper);

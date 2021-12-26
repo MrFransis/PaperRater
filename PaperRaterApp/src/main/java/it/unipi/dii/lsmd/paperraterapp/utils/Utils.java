@@ -85,7 +85,7 @@ public class Utils {
         Scene scene = null;
         FXMLLoader loader = null;
         try {
-            loader=new FXMLLoader(Utils.class.getResource(fileName));
+            loader = new FXMLLoader(Utils.class.getResource(fileName));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(loader.load());
             stage.setScene(scene);

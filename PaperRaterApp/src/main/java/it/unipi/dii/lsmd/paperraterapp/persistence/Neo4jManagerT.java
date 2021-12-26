@@ -16,6 +16,58 @@ public class Neo4jManagerT {
     }
 
     /**
+     * return the number of follower of a reading list
+     * @param title the title of the reading list
+     * @param owner the username of the owner
+     * @return number of followers
+     */
+    public int getNumFollowersReadingList(final String title, final String owner) {
+        int numFollowers;
+        try (Session session = driver.session()) {
+            numFollowers = session.writeTransaction((TransactionWork<Integer>) tx -> {
+                Result result = tx.run("MATCH (:ReadingList {title: $title, username: $owner})<-[r:FOLLOWS]-() " +
+                        "RETURN count(r) AS numFollowers", parameters("title", title, "owner", owner));
+                return result.next().get("numFollowers").asInt();
+            });
+        }
+        return numFollowers;
+    }
+
+    /**
+     * return the number of likes of a papers
+     * @param id ID of a paper
+     * @return number of likes
+     */
+    public int getNumLikes(final String id) {
+        int numLikes;
+        try (Session session = driver.session()) {
+            numLikes = session.writeTransaction((TransactionWork<Integer>) tx -> {
+                Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-() WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
+                        "RETURN count(r) AS numLikes", parameters("id", id));
+                return result.next().get("numLikes").asInt();
+            });
+        }
+        return numLikes;
+    }
+
+    /**
+     * return the number of comments of a papers
+     * @param id ID of a paper
+     * @return number of comments
+     */
+    public int getNumComments(final String id) {
+        int numComments;
+        try (Session session = driver.session()) {
+            numComments = session.writeTransaction((TransactionWork<Integer>) tx -> {
+                Result result = tx.run("MATCH (p:Paper)<-[r:HAS_COMMENTED]-() WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
+                        "RETURN count(r) AS numComments", parameters("id", id));
+                return result.next().get("numComments").asInt();
+            });
+        }
+        return numComments;
+    }
+
+    /**
      * Add a new reading list if it does not exist and the relationship of FOLLOWS between
      * the owner and  the new relationship
      *
