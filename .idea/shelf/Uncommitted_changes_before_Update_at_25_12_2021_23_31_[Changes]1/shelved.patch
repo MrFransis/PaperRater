@@ -1,0 +1,1309 @@
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListPageController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp.controller;\r\n\r\nimport it.unipi.dii.lsmd.paperraterapp.model.Paper;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.ReadingList;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.Session;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.User;\r\nimport it.unipi.dii.lsmd.paperraterapp.utils.Utils;\r\nimport javafx.fxml.FXML;\r\nimport javafx.fxml.FXMLLoader;\r\nimport javafx.scene.control.Label;\r\nimport javafx.scene.image.ImageView;\r\nimport javafx.scene.input.MouseEvent;\r\nimport javafx.scene.layout.HBox;\r\nimport javafx.scene.layout.Pane;\r\nimport javafx.scene.layout.VBox;\r\n\r\nimport java.util.Iterator;\r\n\r\npublic class ReadingListPageController {\r\n    private ReadingList readingList;\r\n\r\n    @FXML private Label username;\r\n    @FXML private Label readingListTitle;\r\n    @FXML private ImageView backIcon;\r\n    @FXML private VBox papersBox;\r\n\r\n    public void initialize () {\r\n        backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));\r\n    }\r\n\r\n    public void setReadingList (ReadingList readingList) {\r\n        this.readingList = readingList;\r\n        username.setText(Session.getInstance().getPreviousPageUser().getUsername());\r\n        readingListTitle.setText(readingList.getName());\r\n\r\n        if (!readingList.getPapers().isEmpty()) {\r\n            Iterator<Paper> it = readingList.getPapers().iterator();\r\n\r\n            while(it.hasNext()) {\r\n                HBox row = new HBox();\r\n                row.setStyle(\"-fx-padding: 10px\");\r\n                Paper paper = it.next();\r\n                Pane p = loadPaperCard(paper);\r\n\r\n                row.getChildren().addAll(p);\r\n                papersBox.getChildren().add(row);\r\n            }\r\n        }\r\n        else {\r\n            papersBox.getChildren().add(new Label(\"No Reading Lists :(\"));\r\n        }\r\n    }\r\n\r\n    private Pane loadPaperCard (Paper p) {\r\n        Pane pane = null;\r\n        try {\r\n            FXMLLoader loader = new FXMLLoader(getClass().getResource(\"/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml\"));\r\n            pane = loader.load();\r\n            PaperCardCtrl ctrl = loader.getController();\r\n            ctrl.setPaperCard(p);\r\n\r\n        }\r\n        catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n        return pane;\r\n    }\r\n\r\n    private void clickOnBackIcon (MouseEvent mouseEvent) {\r\n        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(\r\n                \"/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml\", mouseEvent);\r\n        ctrl.setProfilePage(Session.getInstance().getPreviousPageUser());\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListPageController.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListPageController.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListPageController.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListPageController.java	(date 1640359573307)
+@@ -3,7 +3,6 @@
+ import it.unipi.dii.lsmd.paperraterapp.model.Paper;
+ import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
+ import it.unipi.dii.lsmd.paperraterapp.model.Session;
+-import it.unipi.dii.lsmd.paperraterapp.model.User;
+ import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
+ import javafx.fxml.FXML;
+ import javafx.fxml.FXMLLoader;
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp.controller;\r\n\r\nimport it.unipi.dii.lsmd.paperraterapp.model.Paper;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.ReadingList;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;\r\nimport it.unipi.dii.lsmd.paperraterapp.utils.Utils;\r\nimport javafx.fxml.FXML;\r\nimport javafx.scene.control.Label;\r\nimport javafx.scene.image.ImageView;\r\nimport javafx.scene.input.MouseEvent;\r\nimport javafx.scene.text.Text;\r\n\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\nimport java.util.Map;\r\n\r\npublic class ReadingListCardCtrl {\r\n    ReadingList r;\r\n    private MongoDBManager mongoMan;\r\n    private Neo4jManagerE neoMan;\r\n\r\n    @FXML private Label readingListTitle;\r\n    @FXML private Text nFollower;\r\n    @FXML private Text nPapers;\r\n    @FXML private Text mostCommonCategory;\r\n    @FXML private Text mostFamousPaperTitle;\r\n\r\n    public void initialize () {\r\n        //neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());\r\n        mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());\r\n\r\n        readingListTitle.setOnMouseClicked(mouseEvent -> clickOnReadingListTitle(mouseEvent));\r\n    }\r\n\r\n    public void setReadingListCard (ReadingList r) {\r\n        this.r = r;\r\n\r\n        readingListTitle.setText(r.getName());\r\n\r\n        //nFollower.setText(neoMan.getFollowers());\r\n\r\n        if (!r.getPapers().isEmpty()) {\r\n            mostCommonCategory.setText(mostCommonCategory(r.getPapers()));\r\n            nPapers.setText(String.valueOf(r.getPapers().size()));\r\n            //mostFamousPaperTitle.setText(getMostFamousPaperInReadingList()\r\n        }\r\n        else {\r\n            mostCommonCategory.setText(\"N/A\");\r\n            nPapers.setText(\"0\");\r\n            mostFamousPaperTitle.setText((\"N/A\"));\r\n        }\r\n    }\r\n\r\n    private String mostCommonCategory(List<Paper> papers) {\r\n        Map<String, Integer> map = new HashMap<>();\r\n\r\n        for (Paper p : papers) {\r\n            Integer val = map.get(p.getCategory());\r\n            map.put(p.getCategory(), val == null ? 1 : val + 1);\r\n        }\r\n\r\n        Map.Entry<String, Integer> max = null;\r\n\r\n        for (Map.Entry<String, Integer> e : map.entrySet()) {\r\n            if (max == null || e.getValue() > max.getValue())\r\n                max = e;\r\n        }\r\n\r\n        return max.getKey();\r\n    }\r\n\r\n    private void clickOnReadingListTitle (MouseEvent mouseEvent) {\r\n        System.out.println(\"Click on Reading List \" + r.getName());\r\n\r\n        // Change scene View Reading List\r\n        ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(\r\n                \"/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml\", mouseEvent);\r\n        ctrl.setReadingList(r);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java	(date 1640361239843)
+@@ -4,12 +4,10 @@
+ import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
+ import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
+ import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
+-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
+ import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+ import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
+ import javafx.fxml.FXML;
+ import javafx.scene.control.Label;
+-import javafx.scene.image.ImageView;
+ import javafx.scene.input.MouseEvent;
+ import javafx.scene.text.Text;
+ 
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp.controller;\r\n\r\nimport it.unipi.dii.lsmd.paperraterapp.model.ReadingList;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.Session;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.User;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;\r\nimport it.unipi.dii.lsmd.paperraterapp.utils.Utils;\r\nimport javafx.application.Platform;\r\nimport javafx.fxml.FXML;\r\nimport javafx.fxml.FXMLLoader;\r\nimport javafx.scene.control.*;\r\nimport javafx.scene.image.Image;\r\nimport javafx.scene.image.ImageView;\r\nimport javafx.scene.input.MouseEvent;\r\nimport javafx.scene.layout.HBox;\r\nimport javafx.scene.layout.Pane;\r\nimport javafx.scene.layout.VBox;\r\nimport javafx.scene.text.Text;\r\n\r\nimport java.util.Iterator;\r\nimport java.util.Optional;\r\n\r\npublic class ProfilePageController {\r\n    private User user;\r\n    private MongoDBManager mongoMan;\r\n    private Neo4jManagerE neoMan;\r\n\r\n    @FXML private ImageView backIcon;\r\n    @FXML private ImageView editIcon;\r\n    @FXML private ImageView profileImg;\r\n    @FXML private Label username;\r\n    @FXML private Text email;\r\n    @FXML private Text firstName;\r\n    @FXML private Text lastName;\r\n    @FXML private Text nFollower;\r\n    @FXML private Text nFollowing;\r\n    @FXML private Button followBtn;\r\n    @FXML private VBox readingListsBox;\r\n    @FXML private Button addReadingListBtn;\r\n\r\n\r\n    public void initialize () {\r\n       // neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());\r\n        mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());\r\n\r\n        backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));\r\n        followBtn.setOnMouseClicked(mouseEvent -> clickOnFollowBtn(mouseEvent));\r\n        nFollowing.setOnMouseClicked(mouseEvent -> clickOnFollowing(mouseEvent));\r\n        nFollower.setOnMouseClicked(mouseEvent -> clickOnFollower(mouseEvent));\r\n        editIcon.setOnMouseClicked(mouseEvent -> clickOnEditIcon(mouseEvent));\r\n        addReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnAddReadingListBtn(mouseEvent));\r\n    }\r\n\r\n    public void setProfilePage (User user) {\r\n        this.user = user;\r\n        Session.getInstance().setPreviousPageUser(user);\r\n\r\n        username.setText(user.getUsername());\r\n        email.setText(user.getEmail());\r\n        firstName.setText(user.getFirstName());\r\n        lastName.setText(user.getLastName());\r\n        nFollower.setText(\"100\"); // neoMan.getNumberOfFollowers(u.getUsername())\r\n        nFollowing.setText(\"2000\"); // neoMan.getNumberOfFollowing(u.getUsername())\r\n\r\n        if (!user.getPicture().isEmpty())\r\n            profileImg.setImage(new Image(user.getPicture()));\r\n\r\n        /*if (man.userAFollowsUserB(Session.user, user))\r\n            followBtn.setText(\"Unfollow\");*/\r\n\r\n\r\n         if (user.getUsername().equals(Session.getInstance().getUser().getUsername())) {\r\n            followBtn.setVisible(false);\r\n            editIcon.setVisible(true);\r\n            addReadingListBtn.setVisible(true);\r\n         }\r\n         else {\r\n             followBtn.setVisible(true);\r\n             editIcon.setVisible(false);\r\n             addReadingListBtn.setVisible(false);\r\n         }\r\n\r\n        readingListsBox.getChildren().clear();\r\n        if (!user.getReadingLists().isEmpty()) {\r\n            Iterator<ReadingList> it = user.getReadingLists().iterator();\r\n\r\n            while(it.hasNext()) {\r\n                HBox row = new HBox();\r\n                row.setStyle(\"-fx-padding: 10px\");\r\n                ReadingList r = it.next();\r\n                Pane p = loadReadingListCard(r);\r\n\r\n                row.getChildren().addAll(p);\r\n                readingListsBox.getChildren().add(row);\r\n            }\r\n        }\r\n        else {\r\n            readingListsBox.getChildren().add(new Label(\"No Reading Lists :(\"));\r\n        }\r\n    }\r\n\r\n    private Pane loadReadingListCard (ReadingList r) {\r\n        Pane pane = null;\r\n        try {\r\n            FXMLLoader loader = new FXMLLoader(getClass().getResource(\"/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml\"));\r\n            pane = loader.load();\r\n            ReadingListCardCtrl ctrl = loader.getController();\r\n            ctrl.setReadingListCard(r);\r\n\r\n        }\r\n        catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n        return pane;\r\n    }\r\n\r\n    private void clickOnBackIcon (MouseEvent mouseEvent) {\r\n        System.out.println(\"Back\");\r\n        Utils.changeScene(\"/it/unipi/dii/lsmd/paperraterapp/layout/homepage.fxml\", mouseEvent);\r\n    }\r\n\r\n    private void clickOnFollowBtn (MouseEvent mouseEvent) {\r\n        String tmp = followBtn.getText();\r\n        if (tmp.equals(\"Follow\")) {\r\n            //neoMan.follow(Session.getInstance().getUser().getUsername(), user.getUsername());\r\n            System.out.println(\"Follow\");\r\n            followBtn.setText(\"Unfollow\");\r\n        }\r\n        else {\r\n            //neoMan.unfollow(Session.getUsername(), user.getUsername());\r\n            System.out.println(\"Unfollow\");\r\n            followBtn.setText(\"Follow\");\r\n        }\r\n    }\r\n\r\n    private void clickOnFollower (MouseEvent mouseEvent) {\r\n        System.out.println(\"Browse Follower\");\r\n    }\r\n\r\n    private void clickOnFollowing (MouseEvent mouseEvent) {\r\n        System.out.println(\"Browse Following\");\r\n    }\r\n\r\n    private void clickOnEditIcon (MouseEvent mouseEvent) {\r\n        /* Edit form */\r\n        Dialog<User> dialog = new Dialog<>();\r\n        dialog.setTitle(\"Edit Profile Information\");\r\n\r\n        dialog.setHeaderText(\"Please specify…\");\r\n        DialogPane dialogPane = dialog.getDialogPane();\r\n        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);\r\n        TextField firstName = new TextField(Session.getInstance().getUser().getFirstName());\r\n        firstName.setPromptText(\"First Name\");\r\n        TextField lastName = new TextField(Session.getInstance().getUser().getLastName());\r\n        lastName.setPromptText(\"Last Name\");\r\n        TextField age = new TextField(String.valueOf(Session.getInstance().getUser().getAge()));\r\n        age.setPromptText(\"Age\");\r\n        PasswordField password = new PasswordField();\r\n        password.setPromptText(\"Password\");\r\n\r\n        dialogPane.setContent(new VBox(8, firstName, lastName, age, password));\r\n        Platform.runLater(firstName::requestFocus);\r\n        dialog.setResultConverter((ButtonType button) -> {\r\n            if (button == ButtonType.OK) {\r\n                return new User(Session.getInstance().getUser().getUsername(),\r\n                        Session.getInstance().getUser().getEmail(),\r\n                        Session.getInstance().getUser().getPassword(),\r\n                        firstName.getText(),\r\n                        lastName.getText(),\r\n                        Session.getInstance().getUser().getPicture(),\r\n                        Integer.parseInt(age.getText()),\r\n                        Session.getInstance().getUser().getReadingLists());\r\n            }\r\n            return null;\r\n        });\r\n        Optional<User> optionalResult = dialog.showAndWait();\r\n        optionalResult.ifPresent((User u) -> {\r\n            mongoMan.updateUser(u);\r\n\r\n            // Refresh Page Content\r\n            Session.getInstance().setUser(u);\r\n            setProfilePage(u);\r\n        });\r\n    }\r\n\r\n    private void clickOnAddReadingListBtn (MouseEvent mouseEvent) {\r\n        // create a text input dialog\r\n        TextInputDialog td = new TextInputDialog(\"r_list\" +\r\n                (Session.getInstance().getUser().getReadingLists().size() + 1));\r\n        td.setHeaderText(\"Insert the title of the Reading List\");\r\n        td.showAndWait();\r\n\r\n        // Add new Reading List to DB\r\n        boolean res = mongoMan.createReadingList(Session.getInstance().getUser().getUsername(), td.getEditor().getText());\r\n        //neoMan.createReadingList\r\n\r\n        if (!res) {\r\n            Alert alert = new Alert(Alert.AlertType.ERROR);\r\n            alert.setHeaderText(\"There is already a Reading List with this Title\");\r\n            alert.show();\r\n            return;\r\n        }\r\n\r\n        // refresh page\r\n        User refreshUser = mongoMan.getUserByUsername(Session.getInstance().getUser().getUsername());\r\n        Session.getInstance().setUser(refreshUser);\r\n        setProfilePage(refreshUser);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java	(date 1640363120822)
+@@ -51,6 +51,7 @@
+         nFollower.setOnMouseClicked(mouseEvent -> clickOnFollower(mouseEvent));
+         editIcon.setOnMouseClicked(mouseEvent -> clickOnEditIcon(mouseEvent));
+         addReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnAddReadingListBtn(mouseEvent));
++
+     }
+ 
+     public void setProfilePage (User user) {
+@@ -71,16 +72,16 @@
+             followBtn.setText("Unfollow");*/
+ 
+ 
+-         if (user.getUsername().equals(Session.getInstance().getUser().getUsername())) {
++        if (user.getUsername().equals(Session.getInstance().getUser().getUsername())) {
+             followBtn.setVisible(false);
+             editIcon.setVisible(true);
+             addReadingListBtn.setVisible(true);
+-         }
+-         else {
+-             followBtn.setVisible(true);
+-             editIcon.setVisible(false);
+-             addReadingListBtn.setVisible(false);
+-         }
++        }
++        else {
++            followBtn.setVisible(true);
++            editIcon.setVisible(false);
++            addReadingListBtn.setVisible(false);
++        }
+ 
+         readingListsBox.getChildren().clear();
+         if (!user.getReadingLists().isEmpty()) {
+@@ -108,7 +109,6 @@
+             pane = loader.load();
+             ReadingListCardCtrl ctrl = loader.getController();
+             ctrl.setReadingListCard(r);
+-
+         }
+         catch (Exception e) {
+             e.printStackTrace();
+@@ -118,7 +118,7 @@
+ 
+     private void clickOnBackIcon (MouseEvent mouseEvent) {
+         System.out.println("Back");
+-        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/homepage.fxml", mouseEvent);
++        Utils.changeScene(Session.getInstance().getLastPageVisited(), mouseEvent);
+     }
+ 
+     private void clickOnFollowBtn (MouseEvent mouseEvent) {
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Session.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp.model;\r\n\r\npublic class Session {\r\n    private static Session instance = null;\r\n    private User user;\r\n    private User previousPageUser;\r\n\r\n    public static Session getInstance() {\r\n        if(instance==null)\r\n            instance = new Session();\r\n        return instance;\r\n    }\r\n\r\n    private Session () {}\r\n\r\n    public void setUser(User u) {\r\n        instance.user = u;\r\n    }\r\n    public User getUser() {\r\n        return user;\r\n    }\r\n    public void setPreviousPageUser(User u) {\r\n        instance.user = u;\r\n    }\r\n    public User getPreviousPageUser() {\r\n        return user;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Session.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Session.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Session.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Session.java	(date 1640364477276)
+@@ -1,9 +1,15 @@
+ package it.unipi.dii.lsmd.paperraterapp.model;
+ 
++import java.util.List;
++
+ public class Session {
++
+     private static Session instance = null;
+-    private User user;
++    private User loggedUser;
+     private User previousPageUser;
++    private ReadingList previousReadingList;
++    private Paper previousPaper;
++    private List<String> pageHistory;
+ 
+     public static Session getInstance() {
+         if(instance==null)
+@@ -14,15 +20,26 @@
+     private Session () {}
+ 
+     public void setUser(User u) {
+-        instance.user = u;
++        instance.loggedUser = u;
+     }
++
+     public User getUser() {
+-        return user;
++        return loggedUser;
+     }
++
+     public void setPreviousPageUser(User u) {
+-        instance.user = u;
++        instance.loggedUser = u;
+     }
++
+     public User getPreviousPageUser() {
+-        return user;
++        return loggedUser;
++    }
++
++    public void setPreviousPageVisited(String lastPageVisited) {
++        this.lastPageVisited = lastPageVisited;
++    }
++
++    public String getLastPageVisited() {
++        return lastPageVisited;
+     }
+ }
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/utils/Utils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp.utils;\r\n\r\nimport it.unipi.dii.lsmd.paperraterapp.config.ConfigurationParameters;\r\nimport javafx.event.Event;\r\nimport javafx.fxml.FXMLLoader;\r\nimport javafx.scene.Node;\r\nimport javafx.scene.Scene;\r\nimport javafx.stage.Stage;\r\nimport org.w3c.dom.Document;\r\nimport org.xml.sax.SAXException;\r\nimport com.thoughtworks.xstream.XStream;\r\nimport javax.xml.XMLConstants;\r\nimport javax.xml.parsers.DocumentBuilder;\r\nimport javax.xml.parsers.DocumentBuilderFactory;\r\nimport javax.xml.transform.dom.DOMSource;\r\nimport javax.xml.transform.stream.StreamSource;\r\nimport javax.xml.validation.Schema;\r\nimport javax.xml.validation.SchemaFactory;\r\nimport java.io.IOException;\r\nimport java.nio.file.Files;\r\nimport java.nio.file.Paths;\r\n\r\npublic class Utils {\r\n    /**\r\n     * This function is used to read the config.xml file\r\n     * @return  ConfigurationParameters instance\r\n     */\r\n    public static ConfigurationParameters readConfigurationParameters ()\r\n    {\r\n        if (validConfigurationParameters())\r\n        {\r\n            XStream xs = new XStream();\r\n\r\n            String text = null;\r\n            try {\r\n                text = new String(Files.readAllBytes(Paths.get(Utils.class.getResource(\"/it/unipi/dii/lsmd/paperraterapp/config/config.xml\").toURI())));\r\n            }\r\n            catch (Exception e) {\r\n                System.err.println(e.getMessage());\r\n            }\r\n\r\n            // Problem\r\n            return (ConfigurationParameters) xs.fromXML(text);\r\n        }\r\n        else\r\n        {\r\n            //showErrorAlert(\"Problem with the configuration file!\");\r\n            //try {\r\n            //    sleep(2000);\r\n            //} catch (InterruptedException e) {\r\n            //    e.printStackTrace();\r\n            //}\r\n            //System.exit(1); //If i can't read the configuration file I can't continue with the program\r\n        }\r\n        return null;\r\n    }\r\n\r\n    /**\r\n     * This function is used to validate the config.xml with the config.xsd\r\n     * @return  true if config.xml is well formatted, otherwise false\r\n     */\r\n    private static boolean validConfigurationParameters()\r\n    {\r\n        try\r\n        {\r\n            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();\r\n            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);\r\n            Document document = documentBuilder.parse(String.valueOf(Utils.class.getResource(\"/it/unipi/dii/lsmd/paperraterapp/config/config.xml\")));\r\n            Schema schema = schemaFactory.newSchema(new StreamSource(String.valueOf(Utils.class.getResource(\"/it/unipi/dii/lsmd/paperraterapp/config/config.xsd\"))));\r\n            schema.newValidator().validate(new DOMSource(document));\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            if (e instanceof SAXException)\r\n                System.out.println(\"Validation Error: \" + e.getMessage());\r\n            else\r\n                System.out.println(e.getMessage());\r\n\r\n            return false;\r\n        }\r\n        return true;\r\n    }\r\n\r\n    public static Object changeScene (String fileName, Event event) {\r\n        Scene scene = null;\r\n        FXMLLoader loader = null;\r\n        try {\r\n            loader=new FXMLLoader(Utils.class.getResource(fileName));\r\n            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();\r\n            scene = new Scene(loader.load());\r\n            stage.setScene(scene);\r\n            stage.show();\r\n            return loader.getController();\r\n        } catch (IOException e) {\r\n            e.printStackTrace();\r\n        }\r\n        return null;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/utils/Utils.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/utils/Utils.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/utils/Utils.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/utils/Utils.java	(date 1640361222624)
+@@ -85,7 +85,7 @@
+         Scene scene = null;
+         FXMLLoader loader = null;
+         try {
+-            loader=new FXMLLoader(Utils.class.getResource(fileName));
++            loader = new FXMLLoader(Utils.class.getResource(fileName));
+             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+             scene = new Scene(loader.load());
+             stage.setScene(scene);
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp.controller;\r\n\r\nimport it.unipi.dii.lsmd.paperraterapp.model.ReadingList;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.Session;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.User;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;\r\nimport it.unipi.dii.lsmd.paperraterapp.utils.Utils;\r\nimport javafx.event.ActionEvent;\r\nimport javafx.fxml.FXML;\r\nimport javafx.fxml.FXMLLoader;\r\nimport javafx.scene.Parent;\r\nimport javafx.scene.Scene;\r\nimport javafx.scene.control.Button;\r\nimport javafx.scene.control.PasswordField;\r\nimport javafx.scene.control.TextField;\r\nimport javafx.stage.Stage;\r\n\r\nimport java.io.IOException;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class RegisterController {\r\n    private MongoDBManager mongoMan;\r\n    private Neo4jManagerE neoMan;\r\n\r\n    @FXML private TextField ageTf;\r\n    @FXML private TextField emailTf;\r\n    @FXML private TextField firstNameTf;\r\n    @FXML private TextField lastNameTf;\r\n    @FXML private Button loginButton;\r\n    @FXML private PasswordField passwordTf;\r\n    @FXML private Button signUPButton;\r\n    @FXML private TextField usernameTf;\r\n\r\n\r\n    public void initialize () {\r\n        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());\r\n        mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());\r\n    }\r\n\r\n    @FXML\r\n    void checkForm(ActionEvent event) {\r\n        System.out.println(\"LOG: test credential\");\r\n        String username = usernameTf.getText();\r\n\r\n        if (mongoMan.getUserByUsername(username) != null) {\r\n            System.out.println(\"Username already registered\");\r\n            return;\r\n        }\r\n\r\n        User newUser = new User(username, emailTf.getText(), passwordTf.getText(), firstNameTf.getText(),\r\n                                lastNameTf.getText(), \"\", Integer.parseInt(ageTf.getText()), new ArrayList<ReadingList>());\r\n\r\n        mongoMan.addUser(newUser);\r\n\r\n        // add to neo4j\r\n        Session.getInstance().setUser(newUser);\r\n        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(\r\n                \"/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml\", event);\r\n        ctrl.setProfilePage(Session.getInstance().getUser());\r\n    }\r\n\r\n    /**\r\n     * If the user click the button register this function\r\n     * will change the app stage and show the register form\r\n     *\r\n     * @param event\r\n     */\r\n    @FXML\r\n    void loadLogin(ActionEvent event) {\r\n        Utils.changeScene(\"/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml\", event);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.java	(date 1640359573140)
+@@ -10,17 +10,11 @@
+ import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
+ import javafx.event.ActionEvent;
+ import javafx.fxml.FXML;
+-import javafx.fxml.FXMLLoader;
+-import javafx.scene.Parent;
+-import javafx.scene.Scene;
+ import javafx.scene.control.Button;
+ import javafx.scene.control.PasswordField;
+ import javafx.scene.control.TextField;
+-import javafx.stage.Stage;
+ 
+-import java.io.IOException;
+ import java.util.ArrayList;
+-import java.util.List;
+ 
+ public class RegisterController {
+     private MongoDBManager mongoMan;
+@@ -58,9 +52,7 @@
+ 
+         // add to neo4j
+         Session.getInstance().setUser(newUser);
+-        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
+-                "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
+-        ctrl.setProfilePage(Session.getInstance().getUser());
++        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
+     }
+ 
+     /**
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp.controller;\r\n\r\nimport it.unipi.dii.lsmd.paperraterapp.model.Session;\r\nimport it.unipi.dii.lsmd.paperraterapp.model.User;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;\r\nimport it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;\r\nimport it.unipi.dii.lsmd.paperraterapp.utils.Utils;\r\nimport javafx.event.ActionEvent;\r\nimport javafx.fxml.FXML;\r\nimport javafx.scene.control.Button;\r\nimport javafx.scene.control.PasswordField;\r\nimport javafx.scene.control.TextField;\r\n\r\npublic class LoginController {\r\n\r\n    private MongoDBManager mongoMan;\r\n    private Neo4jManagerE neoMan;\r\n    @FXML private Button loginButton;\r\n    @FXML private PasswordField passwordTf;\r\n    @FXML private Button registerButton;\r\n    @FXML private TextField usernameTf;\r\n\r\n    public void initialize () {\r\n       // neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());\r\n        mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());\r\n    }\r\n\r\n    @FXML\r\n    void checkCredential(ActionEvent event) {\r\n        String username = usernameTf.getText();\r\n        String password = passwordTf.getText();\r\n\r\n        User u = mongoMan.login(username, password);\r\n\r\n        if (u == null) {\r\n            usernameTf.setText(\"\");\r\n            passwordTf.setText(\"\");\r\n            System.out.println(\"Username or password not valid\");\r\n        }\r\n        else {\r\n            Session.getInstance().setUser(u);\r\n\r\n            ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(\r\n                    \"/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml\", event);\r\n            ctrl.setProfilePage(Session.getInstance().getUser());\r\n        }\r\n    }\r\n\r\n    /**\r\n     * If the user click the button register this function\r\n     * will change the app stage and show the register form\r\n     *\r\n     * @param event\r\n     */\r\n    @FXML\r\n    void loadRegisterForm(ActionEvent event) {\r\n        Utils.changeScene(\"/it/unipi/dii/lsmd/paperraterapp/layout/register.fxml\", event);\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.java	(date 1640359573284)
+@@ -4,7 +4,6 @@
+ import it.unipi.dii.lsmd.paperraterapp.model.User;
+ import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
+ import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
+-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
+ import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+ import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
+ import javafx.event.ActionEvent;
+@@ -41,10 +40,7 @@
+         }
+         else {
+             Session.getInstance().setUser(u);
+-
+-            ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
+-                    "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
+-            ctrl.setProfilePage(Session.getInstance().getUser());
++            Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
+         }
+     }
+ 
+Index: PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.dark {\r\n    -fx-background-color:  #3700B3;\r\n}\r\n\r\n.lite {\r\n    -fx-background-color:  #6200EE;\r\n}\r\n\r\n.login {\r\n    -fx-background-color:  #6200EE;\r\n    -fx-border-color:  transparent transparent white transparent;\r\n    -fx-text-fill: white;\r\n}\r\n\r\n.buttonlog {\r\n    -fx-background-color:  #03DAC5;\r\n    -fx-text-fill: white;\r\n    -fx-font-size: 14px;\r\n    -fx-font-weight: bold;\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css b/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css
+--- a/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css	(date 1640360219622)
+@@ -17,4 +17,30 @@
+     -fx-text-fill: white;
+     -fx-font-size: 14px;
+     -fx-font-weight: bold;
++    -fx-background-radius: 40;
++}
++
++.search-bar {
++    -fx-background-color: #FFFFFF;
++    -fx-background-radius: 100;
++}
++
++.transparent {
++    -fx-background-color: rgba(0, 0, 0, 0);
++    -fx-font-size: 14px;
++}
++
++.search-button {
++    -fx-background-color: #03DAC5;
++    -fx-background-radius: 30;
++    -fx-font-size: 14px;
++}
++
++.shadow{
++    -fx-effect: dropShadow(three-pass-box, rgba(0,0,0,0.1), 10.0, 0.0, 0.0, 10.0);
++}
++
++.dynamic-effect:hover {
++    -fx-text-fill: orange;
++    -fx-cursor: hand;
+ }
+\ No newline at end of file
+Index: .idea/libraries/lib.xml
+===================================================================
+diff --git a/.idea/libraries/lib.xml b/.idea/libraries/lib.xml
+deleted file mode 100644
+--- a/.idea/libraries/lib.xml	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ /dev/null	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
+@@ -1,13 +0,0 @@
+-<component name="libraryTable">
+-  <library name="lib">
+-    <CLASSES>
+-      <root url="file://$USER_HOME$/opt/javafx-sdk-17.0.1/lib" />
+-    </CLASSES>
+-    <JAVADOC />
+-    <NATIVE>
+-      <root url="file://$USER_HOME$/opt/javafx-sdk-17.0.1/lib" />
+-    </NATIVE>
+-    <SOURCES />
+-    <jarDirectory url="file://$USER_HOME$/opt/javafx-sdk-17.0.1/lib" recursive="false" />
+-  </library>
+-</component>
+\ No newline at end of file
+Index: .idea/libraries/Maven__org_openjfx_javafx_base_mac_aarch64_17_0_0_1.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/libraries/Maven__org_openjfx_javafx_base_mac_aarch64_17_0_0_1.xml b/.idea/libraries/Maven__org_openjfx_javafx_base_win_17_0_0_1.xml
+rename from .idea/libraries/Maven__org_openjfx_javafx_base_mac_aarch64_17_0_0_1.xml
+rename to .idea/libraries/Maven__org_openjfx_javafx_base_win_17_0_0_1.xml
+--- a/.idea/libraries/Maven__org_openjfx_javafx_base_mac_aarch64_17_0_0_1.xml	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/.idea/libraries/Maven__org_openjfx_javafx_base_win_17_0_0_1.xml	(date 1640257163121)
+@@ -1,7 +1,7 @@
+ <component name="libraryTable">
+-  <library name="Maven: org.openjfx:javafx-base:mac-aarch64:17.0.0.1">
++  <library name="Maven: org.openjfx:javafx-base:win:17.0.0.1">
+     <CLASSES>
+-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.0.1/javafx-base-17.0.0.1-mac-aarch64.jar!/" />
++      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.0.1/javafx-base-17.0.0.1-win.jar!/" />
+     </CLASSES>
+     <JAVADOC>
+       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.0.1/javafx-base-17.0.0.1-javadoc.jar!/" />
+Index: PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml b/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml
+new file mode 100644
+--- /dev/null	(date 1640360260099)
++++ b/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml	(date 1640360260099)
+@@ -0,0 +1,236 @@
++<?xml version="1.0" encoding="UTF-8"?>
++
++<?import java.lang.String?>
++<?import javafx.geometry.Insets?>
++<?import javafx.scene.control.Button?>
++<?import javafx.scene.control.ComboBox?>
++<?import javafx.scene.control.DatePicker?>
++<?import javafx.scene.control.Label?>
++<?import javafx.scene.control.ScrollPane?>
++<?import javafx.scene.control.TextField?>
++<?import javafx.scene.image.Image?>
++<?import javafx.scene.image.ImageView?>
++<?import javafx.scene.layout.AnchorPane?>
++<?import javafx.scene.layout.BorderPane?>
++<?import javafx.scene.layout.ColumnConstraints?>
++<?import javafx.scene.layout.GridPane?>
++<?import javafx.scene.layout.HBox?>
++<?import javafx.scene.layout.VBox?>
++<?import javafx.scene.text.Font?>
++
++<AnchorPane prefHeight="810.0" prefWidth="1315.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.BrowserController">
++   <children>
++      <BorderPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
++         <left>
++            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="360.0" styleClass="lite" BorderPane.alignment="CENTER">
++               <children>
++                  <HBox alignment="CENTER" prefHeight="137.0" prefWidth="300.0">
++                     <children>
++                        <ImageView fitHeight="150.0" fitWidth="273.0" pickOnBounds="true" preserveRatio="true">
++                           <image>
++                              <Image url="@../img/PRlogo.png" />
++                           </image>
++                           <HBox.margin>
++                              <Insets bottom="50.0" />
++                           </HBox.margin>
++                        </ImageView>
++                     </children>
++                  </HBox>
++                  <HBox alignment="CENTER" prefHeight="65.0" prefWidth="200.0">
++                     <styleClass>
++                        <String fx:value="search-bar" />
++                        <String fx:value="shadow" />
++                     </styleClass>
++                     <children>
++                        <ComboBox fx:id="chooseType" onAction="#activeResearch" prefHeight="25.0" prefWidth="169.0" promptText="Type of research" styleClass="transparent" />
++                     </children>
++                     <VBox.margin>
++                        <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
++                     </VBox.margin>
++                  </HBox>
++                  <HBox fx:id="keywordContainer" alignment="CENTER" prefHeight="65.0" prefWidth="200.0">
++                     <VBox.margin>
++                        <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
++                     </VBox.margin>
++                     <children>
++                        <TextField fx:id="keywordTf" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" promptText="Search by keywords" styleClass="transparent">
++                           <font>
++                              <Font size="14.0" />
++                           </font>
++                        </TextField>
++                     </children>
++                     <styleClass>
++                        <String fx:value="search-bar" />
++                        <String fx:value="shadow" />
++                     </styleClass>
++                  </HBox>
++                  <HBox fx:id="dateContainer" alignment="CENTER" prefHeight="65.0" prefWidth="200.0">
++                     <styleClass>
++                        <String fx:value="search-bar" />
++                        <String fx:value="shadow" />
++                     </styleClass>
++                     <VBox.margin>
++                        <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
++                     </VBox.margin>
++                     <children>
++                        <Label text="From:" />
++                        <DatePicker fx:id="fromDate" prefHeight="30.0" prefWidth="111.0" styleClass="transparent">
++                           <HBox.margin>
++                              <Insets left="5.0" right="5.0" />
++                           </HBox.margin>
++                        </DatePicker>
++                        <Label text="To:" />
++                        <DatePicker fx:id="toDate" prefHeight="30.0" prefWidth="111.0" styleClass="transparent">
++                           <HBox.margin>
++                              <Insets left="5.0" right="5.0" />
++                           </HBox.margin>
++                        </DatePicker>
++                     </children>
++                  </HBox>
++                  <HBox fx:id="categoryContainer" alignment="CENTER" prefHeight="65.0" prefWidth="200.0">
++                     <styleClass>
++                        <String fx:value="search-bar" />
++                        <String fx:value="shadow" />
++                     </styleClass>
++                     <VBox.margin>
++                        <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
++                     </VBox.margin>
++                     <children>
++                        <ComboBox fx:id="chooseCategory" prefHeight="25.0" prefWidth="169.0" promptText="Select category" styleClass="transparent" />
++                     </children>
++                  </HBox>
++                  <HBox fx:id="authorContainer" alignment="CENTER" prefHeight="65.0" prefWidth="200.0">
++                     <children>
++                        <TextField fx:id="authorTf" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" promptText="Search by Author" styleClass="transparent">
++                           <font>
++                              <Font size="14.0" />
++                           </font>
++                        </TextField>
++                     </children>
++                     <styleClass>
++                        <String fx:value="search-bar" />
++                        <String fx:value="shadow" />
++                     </styleClass>
++                     <VBox.margin>
++                        <Insets bottom="50.0" left="30.0" right="30.0" top="10.0" />
++                     </VBox.margin>
++                  </HBox>
++                  <Button fx:id="searchBt" disable="true" mnemonicParsing="false" onAction="#startResearch" prefHeight="30.0" prefWidth="200.0" styleClass="search-button" text="Search" />
++                  <Label fx:id="errorTf" alignment="CENTER" textAlignment="CENTER" textFill="RED">
++                     <font>
++                        <Font size="14.0" />
++                     </font>
++                     <VBox.margin>
++                        <Insets top="20.0" />
++                     </VBox.margin>
++                  </Label>
++               </children>
++            </VBox>
++         </left>
++         <center>
++            <VBox prefHeight="65.0" prefWidth="100.0" BorderPane.alignment="CENTER">
++               <children>
++                  <HBox alignment="CENTER" prefHeight="75.0" prefWidth="930.0" styleClass="dark">
++                     <VBox.margin>
++                        <Insets />
++                     </VBox.margin>
++                     <children>
++                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar">
++                           <children>
++                              <ComboBox fx:id="chooseSuggestion" onAction="#showSuggestion" prefHeight="25.0" prefWidth="169.0" promptText="Suggestion" styleClass="transparent" />
++                           </children>
++                           <HBox.margin>
++                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
++                           </HBox.margin>
++                        </HBox>
++                        <HBox alignment="CENTER" layoutX="368.0" layoutY="20.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar">
++                           <children>
++                              <ComboBox fx:id="chooseAnalytics" onAction="#showAnalytics" prefHeight="25.0" prefWidth="169.0" promptText="Analytics" styleClass="transparent">
++                                 <HBox.margin>
++                                    <Insets />
++                                 </HBox.margin>
++                              </ComboBox>
++                           </children>
++                           <HBox.margin>
++                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
++                           </HBox.margin>
++                        </HBox>
++                        <HBox alignment="CENTER" layoutX="468.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar">
++                           <children>
++                              <ComboBox fx:id="chooseSummary" onAction="#showSummary" prefHeight="25.0" prefWidth="169.0" promptText="Summary" styleClass="transparent">
++                                 <HBox.margin>
++                                    <Insets />
++                                 </HBox.margin>
++                              </ComboBox>
++                           </children>
++                           <HBox.margin>
++                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
++                           </HBox.margin>
++                        </HBox>
++                        <Label fx:id="profileTf" onMouseClicked="#goToProfilePage" styleClass="dynamic-effect" text="My Profile" textAlignment="CENTER" textFill="WHITE" underline="true">
++                           <font>
++                              <Font size="18.0" />
++                           </font>
++                           <HBox.margin>
++                              <Insets left="50.0" />
++                           </HBox.margin>
++                        </Label>
++                     </children>
++                  </HBox>
++                  <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0">
++                     <children>
++                        <Button fx:id="backBt" disable="true" mnemonicParsing="false" onAction="#showBackCards" styleClass="buttonlog">
++                           <graphic>
++                              <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">
++                                 <image>
++                                    <Image url="@../img/back.png" />
++                                 </image>
++                              </ImageView>
++                           </graphic>
++                        </Button>
++                        <HBox alignment="TOP_RIGHT" prefHeight="66.0" prefWidth="750.0" HBox.hgrow="ALWAYS">
++                           <children>
++                              <Button fx:id="forwardBt" disable="true" mnemonicParsing="false" onAction="#showForwardCards" styleClass="buttonlog">
++                                 <graphic>
++                                    <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">
++                                       <image>
++                                          <Image url="@../img/forward.png" />
++                                       </image>
++                                    </ImageView>
++                                 </graphic>
++                              </Button>
++                           </children>
++                        </HBox>
++                     </children>
++                     <opaqueInsets>
++                        <Insets left="30.0" right="30.0" />
++                     </opaqueInsets>
++                     <VBox.margin>
++                        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
++                     </VBox.margin>
++                  </HBox>
++                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="785.0" VBox.vgrow="ALWAYS">
++                     <children>
++                        <ScrollPane prefHeight="570.0" prefWidth="870.0" styleClass="transparent" stylesheets="@../style/main.css">
++                           <padding>
++                              <Insets bottom="15.0" top="15.0" />
++                           </padding>
++                           <content>
++                              <GridPane prefHeight="0.0" prefWidth="0.0">
++                                <columnConstraints>
++                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
++                                </columnConstraints>
++                              </GridPane>
++                           </content>
++                           <HBox.margin>
++                              <Insets />
++                           </HBox.margin>
++                        </ScrollPane>
++                     </children>
++                  </HBox>
++               </children>
++            </VBox>
++         </center>
++      </BorderPane>
++   </children>
++</AnchorPane>
+Index: .idea/libraries/Maven__org_openjfx_javafx_graphics_mac_aarch64_17_0_0_1.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/libraries/Maven__org_openjfx_javafx_graphics_mac_aarch64_17_0_0_1.xml b/.idea/libraries/Maven__org_openjfx_javafx_graphics_win_17_0_0_1.xml
+rename from .idea/libraries/Maven__org_openjfx_javafx_graphics_mac_aarch64_17_0_0_1.xml
+rename to .idea/libraries/Maven__org_openjfx_javafx_graphics_win_17_0_0_1.xml
+--- a/.idea/libraries/Maven__org_openjfx_javafx_graphics_mac_aarch64_17_0_0_1.xml	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/.idea/libraries/Maven__org_openjfx_javafx_graphics_win_17_0_0_1.xml	(date 1640257163398)
+@@ -1,7 +1,7 @@
+ <component name="libraryTable">
+-  <library name="Maven: org.openjfx:javafx-graphics:mac-aarch64:17.0.0.1">
++  <library name="Maven: org.openjfx:javafx-graphics:win:17.0.0.1">
+     <CLASSES>
+-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.0.1/javafx-graphics-17.0.0.1-mac-aarch64.jar!/" />
++      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.0.1/javafx-graphics-17.0.0.1-win.jar!/" />
+     </CLASSES>
+     <JAVADOC>
+       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.0.1/javafx-graphics-17.0.0.1-javadoc.jar!/" />
+Index: .idea/libraries/Maven__org_openjfx_javafx_controls_mac_aarch64_17_0_0_1.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/libraries/Maven__org_openjfx_javafx_controls_mac_aarch64_17_0_0_1.xml b/.idea/libraries/Maven__org_openjfx_javafx_controls_win_17_0_0_1.xml
+rename from .idea/libraries/Maven__org_openjfx_javafx_controls_mac_aarch64_17_0_0_1.xml
+rename to .idea/libraries/Maven__org_openjfx_javafx_controls_win_17_0_0_1.xml
+--- a/.idea/libraries/Maven__org_openjfx_javafx_controls_mac_aarch64_17_0_0_1.xml	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/.idea/libraries/Maven__org_openjfx_javafx_controls_win_17_0_0_1.xml	(date 1640257163187)
+@@ -1,7 +1,7 @@
+ <component name="libraryTable">
+-  <library name="Maven: org.openjfx:javafx-controls:mac-aarch64:17.0.0.1">
++  <library name="Maven: org.openjfx:javafx-controls:win:17.0.0.1">
+     <CLASSES>
+-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.0.1/javafx-controls-17.0.0.1-mac-aarch64.jar!/" />
++      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.0.1/javafx-controls-17.0.0.1-win.jar!/" />
+     </CLASSES>
+     <JAVADOC>
+       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.0.1/javafx-controls-17.0.0.1-javadoc.jar!/" />
+Index: .idea/libraries/Maven__org_openjfx_javafx_fxml_mac_aarch64_17_0_0_1.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/libraries/Maven__org_openjfx_javafx_fxml_mac_aarch64_17_0_0_1.xml b/.idea/libraries/Maven__org_openjfx_javafx_fxml_win_17_0_0_1.xml
+rename from .idea/libraries/Maven__org_openjfx_javafx_fxml_mac_aarch64_17_0_0_1.xml
+rename to .idea/libraries/Maven__org_openjfx_javafx_fxml_win_17_0_0_1.xml
+--- a/.idea/libraries/Maven__org_openjfx_javafx_fxml_mac_aarch64_17_0_0_1.xml	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/.idea/libraries/Maven__org_openjfx_javafx_fxml_win_17_0_0_1.xml	(date 1640257163243)
+@@ -1,7 +1,7 @@
+ <component name="libraryTable">
+-  <library name="Maven: org.openjfx:javafx-fxml:mac-aarch64:17.0.0.1">
++  <library name="Maven: org.openjfx:javafx-fxml:win:17.0.0.1">
+     <CLASSES>
+-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.0.1/javafx-fxml-17.0.0.1-mac-aarch64.jar!/" />
++      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.0.1/javafx-fxml-17.0.0.1-win.jar!/" />
+     </CLASSES>
+     <JAVADOC>
+       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.0.1/javafx-fxml-17.0.0.1-javadoc.jar!/" />
+Index: PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.dark {\r\n    -fx-background-color:  #3700B3;\r\n}\r\n\r\n.lite {\r\n    -fx-background-color:  #6200EE;\r\n}\r\n\r\n.login {\r\n    -fx-background-color:  #6200EE;\r\n    -fx-border-color:  transparent transparent white transparent;\r\n    -fx-text-fill: white;\r\n}\r\n\r\n.buttonlog {\r\n    -fx-background-color:  #03DAC5;\r\n    -fx-text-fill: white;\r\n    -fx-font-size: 14px;\r\n    -fx-font-weight: bold;\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css b/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css
+--- a/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css	(date 1640360219622)
+@@ -17,4 +17,30 @@
+     -fx-text-fill: white;
+     -fx-font-size: 14px;
+     -fx-font-weight: bold;
++    -fx-background-radius: 40;
++}
++
++.search-bar {
++    -fx-background-color: #FFFFFF;
++    -fx-background-radius: 100;
++}
++
++.transparent {
++    -fx-background-color: rgba(0, 0, 0, 0);
++    -fx-font-size: 14px;
++}
++
++.search-button {
++    -fx-background-color: #03DAC5;
++    -fx-background-radius: 30;
++    -fx-font-size: 14px;
++}
++
++.shadow{
++    -fx-effect: dropShadow(three-pass-box, rgba(0,0,0,0.1), 10.0, 0.0, 0.0, 10.0);
++}
++
++.dynamic-effect:hover {
++    -fx-text-fill: orange;
++    -fx-cursor: hand;
+ }
+\ No newline at end of file
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java
+new file mode 100644
+--- /dev/null	(date 1640359573166)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java	(date 1640359573166)
+@@ -0,0 +1,178 @@
++package it.unipi.dii.lsmd.paperraterapp.controller;
++
++import it.unipi.dii.lsmd.paperraterapp.model.Session;
++import it.unipi.dii.lsmd.paperraterapp.model.User;
++import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
++import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
++import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
++import javafx.collections.FXCollections;
++import javafx.collections.ObservableList;
++import javafx.event.ActionEvent;
++import javafx.fxml.FXML;
++import javafx.fxml.Initializable;
++import javafx.scene.control.*;
++import javafx.scene.input.MouseEvent;
++import javafx.scene.layout.HBox;
++
++import java.net.URL;
++import java.util.ArrayList;
++import java.util.List;
++import java.util.ResourceBundle;
++
++public class BrowserController implements Initializable {
++
++    @FXML private TextField authorTf;
++    @FXML private Button backBt;
++    @FXML private ComboBox<String> chooseAnalytics;
++    @FXML private ComboBox<String> chooseCategory;
++    @FXML private ComboBox<String> chooseSuggestion;
++    @FXML private ComboBox<String> chooseSummary;
++    @FXML private ComboBox<String> chooseType;
++    @FXML private Button forwardBt;
++    @FXML private DatePicker fromDate;
++    @FXML private TextField keywordTf;
++    @FXML private Label profileTf;
++    @FXML private Button searchBt;
++    @FXML private DatePicker toDate;
++    @FXML private HBox authorContainer;
++    @FXML private HBox categoryContainer;
++    @FXML private HBox keywordContainer;
++    @FXML private HBox dateContainer;
++    @FXML private Label errorTf;
++
++    private MongoDBManager manager = new MongoDBManager(MongoDriver.getInstance().openConnection());
++    private User user = Session.getInstance().getUser();
++
++    @FXML
++    void goToProfilePage(MouseEvent event) {
++        Session.getInstance().setPreviousPageVisited("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml");
++        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
++                "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
++        ctrl.setProfilePage(user);
++    }
++
++    @FXML
++    void activeResearch(ActionEvent event) {
++        searchBt.setDisable(false);
++        switch (chooseType.getValue()) {
++            case "Papers" -> {
++                authorContainer.setVisible(true);
++                dateContainer.setVisible(true);
++                keywordContainer.setVisible(true);
++                categoryContainer.setVisible(true);
++            }
++            case "Users", "Reading lists" -> {
++                authorContainer.setVisible(false);
++                dateContainer.setVisible(false);
++                keywordContainer.setVisible(true);
++                categoryContainer.setVisible(false);
++            }
++            default -> {
++                authorContainer.setVisible(false);
++                dateContainer.setVisible(false);
++                keywordContainer.setVisible(false);
++                categoryContainer.setVisible(false);
++            }
++        }
++    }
++
++    @FXML
++    void showAnalytics(ActionEvent event) {
++
++    }
++
++    @FXML
++    void showBackCards(ActionEvent event) {
++
++    }
++
++    @FXML
++    void showForwardCards(ActionEvent event) {
++
++    }
++
++    @FXML
++    void showSuggestion(ActionEvent event) {
++
++    }
++
++    @FXML
++    void showSummary(ActionEvent event) {
++
++    }
++
++    @FXML
++    void startResearch(ActionEvent event) {
++
++    }
++
++    @Override
++    public void initialize (URL url, ResourceBundle resourceBundle) {
++        loadSpecialQuery();
++        hideFilterForm();
++    }
++
++    private void loadSpecialQuery () {
++        // load suggestion
++        List<String> suggestionList = new ArrayList<>();
++        suggestionList.add("Suggested paper");
++        suggestionList.add("Suggested reading list");
++        suggestionList.add("Suggested user");
++        ObservableList observableListSuggestion = FXCollections.observableList(suggestionList);
++        chooseSuggestion.getItems().clear();
++        chooseSuggestion.setItems(observableListSuggestion);
++
++        // load analytics
++        List<String> analyticsList = new ArrayList<>();
++        analyticsList.add("Most active users");
++        analyticsList.add("Most followed reading lists");
++        analyticsList.add("Most popular Users");
++        analyticsList.add("Most popular Papers");
++        analyticsList.add("Most popular Categories");
++        ObservableList observableListAnalytics = FXCollections.observableList(analyticsList);
++        chooseAnalytics.getItems().clear();
++        chooseAnalytics.setItems(observableListAnalytics);
++
++        // load summary
++        List<String> summaryList = new ArrayList<>();
++        summaryList.add("Categories with more articles published");
++        summaryList.add("Categories with more likes");
++        summaryList.add("Categories with more comments");
++        summaryList.add("Papers with more likes");
++        summaryList.add("Papers with more comments");
++        ObservableList observableListSummary = FXCollections.observableList(summaryList);
++        chooseSummary.getItems().clear();
++        chooseSummary.setItems(observableListSummary);
++
++        // load type
++        List<String> typeList = new ArrayList<>();
++        typeList.add("Papers");
++        typeList.add("Users");
++        typeList.add("Reading lists");
++        ObservableList observableListType = FXCollections.observableList(typeList);
++        chooseType.getItems().clear();
++        chooseType.setItems(observableListType);
++
++        // load categories
++        List<String> categoriesList = manager.getCategories();
++        ObservableList observableListCategories = FXCollections.observableList(categoriesList);
++        chooseCategory.getItems().clear();
++        chooseCategory.setItems(observableListCategories);
++    }
++
++    private void hideFilterForm() {
++        authorContainer.setVisible(false);
++        dateContainer.setVisible(false);
++        keywordContainer.setVisible(false);
++        categoryContainer.setVisible(false);
++    }
++
++    private void showError(String text) {
++        errorTf.setText(text);
++    }
++
++    private void hideError() {
++        errorTf.setText("");
++    }
++
++}
+Index: .idea/.name
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.name b/.idea/.name
+new file mode 100644
+--- /dev/null	(date 1640258336091)
++++ b/.idea/.name	(date 1640258336091)
+@@ -0,0 +1,1 @@
++server.py
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"cacf9f0b-5afc-48e0-8d83-75ee5f3d7988\" name=\"Changes\" comment=\"neo4j query\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/PaperRaterApp/PaperRaterApp.iml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/PaperRaterApp/PaperRaterApp.iml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"CodeInsightWorkspaceSettings\">\r\n    <option name=\"optimizeImportsOnTheFly\" value=\"true\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"FxmlFile\" />\r\n        <option value=\"CSS File\" />\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\r\n  </component>\r\n  <component name=\"GitSEFilterConfiguration\">\r\n    <file-type-list>\r\n      <filtered-out-file-type name=\"LOCAL_BRANCH\" />\r\n      <filtered-out-file-type name=\"REMOTE_BRANCH\" />\r\n      <filtered-out-file-type name=\"TAG\" />\r\n      <filtered-out-file-type name=\"COMMIT_BY_MESSAGE\" />\r\n    </file-type-list>\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"21pt1bO5oLYuIoKlIPgubWOgyHc\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\r\n    <property name=\"ASKED_SHARE_PROJECT_CONFIGURATION_FILES\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"SHARE_PROJECT_CONFIGURATION_FILES\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"jdk.selected.JAVA_MODULE\" value=\"openjdk-17\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/Server\" />\r\n    <property name=\"list.type.of.created.stylesheet\" value=\"CSS\" />\r\n    <property name=\"node.js.detected.package.eslint\" value=\"true\" />\r\n    <property name=\"node.js.detected.package.tslint\" value=\"true\" />\r\n    <property name=\"node.js.selected.package.eslint\" value=\"(autodetect)\" />\r\n    <property name=\"node.js.selected.package.tslint\" value=\"(autodetect)\" />\r\n    <property name=\"nodejs_package_manager_path\" value=\"npm\" />\r\n    <property name=\"project.structure.last.edited\" value=\"Libraries\" />\r\n    <property name=\"project.structure.proportion\" value=\"0.15\" />\r\n    <property name=\"project.structure.side.proportion\" value=\"0.2\" />\r\n    <property name=\"settings.editor.selected.configurable\" value=\"reference.settings.project.maven.repository.indices\" />\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"D:\\APPUNTI\\Large-Scale\\progetto\\PaperRater\\PaperRaterApp\\src\\main\\resources\\it\\unipi\\pr\\paperraterapp\\layouts\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Application.Main\">\r\n    <configuration name=\"DocumentManagerT\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"it.unipi.dii.lsmd.paperraterapp.persistence.DocumentManagerT\" />\r\n      <module name=\"PaperRaterApp\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"it.unipi.dii.lsmd.paperraterapp.persistence.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"GUIApp\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"it.unipi.pr.paperraterapp.GUIApp\" />\r\n      <module name=\"PaperRaterApp\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"it.unipi.pr.paperraterapp.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"ALTERNATIVE_JRE_PATH\" value=\"17\" />\r\n      <option name=\"ALTERNATIVE_JRE_PATH_ENABLED\" value=\"true\" />\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"it.unipi.dii.lsmd.paperraterapp.Main\" />\r\n      <module name=\"PaperRaterApp\" />\r\n      <option name=\"VM_PARAMETERS\" value=\"--module-path $USER_HOME$/opt/javafx-sdk-17.0.1/lib --add-modules javafx.controls,javafx.fxml\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"it.unipi.dii.paperrater.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"MongoDriver\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver\" />\r\n      <module name=\"PaperRaterApp\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"it.unipi.dii.lsmd.paperraterapp.persistence.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"Neo4jManagerT\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerT\" />\r\n      <module name=\"PaperRaterApp\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"it.unipi.dii.lsmd.paperraterapp.persistence.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <list>\r\n      <item itemvalue=\"Application.DocumentManagerT\" />\r\n      <item itemvalue=\"Application.GUIApp\" />\r\n      <item itemvalue=\"Application.Main\" />\r\n      <item itemvalue=\"Application.MongoDriver\" />\r\n      <item itemvalue=\"Application.Neo4jManagerT\" />\r\n    </list>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.Main\" />\r\n        <item itemvalue=\"Application.Neo4jManagerT\" />\r\n        <item itemvalue=\"Application.DocumentManagerT\" />\r\n        <item itemvalue=\"Application.MongoDriver\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"cacf9f0b-5afc-48e0-8d83-75ee5f3d7988\" name=\"Changes\" comment=\"\" />\r\n      <created>1638649647043</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1638649647043</updated>\r\n      <workItem from=\"1638649648776\" duration=\"1028000\" />\r\n      <workItem from=\"1638728961880\" duration=\"717000\" />\r\n      <workItem from=\"1638777721882\" duration=\"1185000\" />\r\n      <workItem from=\"1638791357928\" duration=\"651000\" />\r\n      <workItem from=\"1638799462618\" duration=\"642000\" />\r\n      <workItem from=\"1638812542457\" duration=\"4781000\" />\r\n      <workItem from=\"1638819062252\" duration=\"6303000\" />\r\n      <workItem from=\"1638876231867\" duration=\"3785000\" />\r\n      <workItem from=\"1638885428662\" duration=\"3423000\" />\r\n      <workItem from=\"1638973259955\" duration=\"1960000\" />\r\n      <workItem from=\"1638975347186\" duration=\"129000\" />\r\n      <workItem from=\"1639055002386\" duration=\"351000\" />\r\n      <workItem from=\"1639213375449\" duration=\"17000\" />\r\n      <workItem from=\"1639322407762\" duration=\"7371000\" />\r\n      <workItem from=\"1639466031517\" duration=\"10985000\" />\r\n      <workItem from=\"1639491067331\" duration=\"5410000\" />\r\n      <workItem from=\"1639504618303\" duration=\"1175000\" />\r\n      <workItem from=\"1639552384638\" duration=\"23168000\" />\r\n      <workItem from=\"1639579957802\" duration=\"591000\" />\r\n      <workItem from=\"1639580556663\" duration=\"193000\" />\r\n      <workItem from=\"1639580754545\" duration=\"99000\" />\r\n      <workItem from=\"1639580862005\" duration=\"614000\" />\r\n      <workItem from=\"1639581484233\" duration=\"469000\" />\r\n      <workItem from=\"1639581958794\" duration=\"75000\" />\r\n      <workItem from=\"1639582293855\" duration=\"1763000\" />\r\n      <workItem from=\"1640003383808\" duration=\"177000\" />\r\n      <workItem from=\"1640107469253\" duration=\"5143000\" />\r\n      <workItem from=\"1640161040917\" duration=\"13585000\" />\r\n      <workItem from=\"1640196076990\" duration=\"4071000\" />\r\n      <workItem from=\"1640253097739\" duration=\"1653000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"create the folder to start the app dev\">\r\n      <created>1638650378848</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638650378849</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"create the folder to start the app dev\">\r\n      <created>1638650462787</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638650462787</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"create the GUI for the login and prepared the contoller\">\r\n      <created>1638817572447</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638817572447</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"create the GUI for the login and prepared the contoller\">\r\n      <created>1638817808775</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638817808776</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"create the GUI for the login and prepared the contoller\">\r\n      <created>1638818513626</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638818513626</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"create the GUI for the login and prepared the contoller\">\r\n      <created>1638819254692</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638819254692</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"Create the register form and the controller to switch from login page to register page and the other way.\">\r\n      <created>1638879065424</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638879065424</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"Create the register form and the controller to switch from login page to register page and the other way.\">\r\n      <created>1638879135474</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638879135474</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"add the logo at the app\">\r\n      <created>1638879593572</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638879593572</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00010\" summary=\"add javadoc and handle IOException\">\r\n      <created>1638886602471</created>\r\n      <option name=\"number\" value=\"00010\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638886602471</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00011\" summary=\"Added Project structure\">\r\n      <created>1638973316639</created>\r\n      <option name=\"number\" value=\"00011\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638973316639</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00012\" summary=\"Renamed Main\">\r\n      <created>1638973624101</created>\r\n      <option name=\"number\" value=\"00012\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638973624101</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00013\" summary=\"PUSH DEFINITIVA\">\r\n      <created>1638973811498</created>\r\n      <option name=\"number\" value=\"00013\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638973811498</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00014\" summary=\"PUSH DEFINITIVA\">\r\n      <created>1638973893359</created>\r\n      <option name=\"number\" value=\"00014\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00014\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638973893359</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00015\" summary=\"adjust path\">\r\n      <created>1638976905217</created>\r\n      <option name=\"number\" value=\"00015\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00015\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638976905217</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00016\" summary=\"Resolve path\">\r\n      <created>1638977507204</created>\r\n      <option name=\"number\" value=\"00016\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00016\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638977507205</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00017\" summary=\"Resolve path 2.0\">\r\n      <created>1638977864284</created>\r\n      <option name=\"number\" value=\"00017\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00017\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1638977864284</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00018\" summary=\"Create driver for MongoDB\">\r\n      <created>1639327313886</created>\r\n      <option name=\"number\" value=\"00018\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00018\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1639327313886</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00019\" summary=\"create user entity\">\r\n      <created>1639331576362</created>\r\n      <option name=\"number\" value=\"00019\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00019\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1639331576362</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00020\" summary=\"start working on my query\">\r\n      <created>1639473181775</created>\r\n      <option name=\"number\" value=\"00020\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00020\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1639473181775</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00021\" summary=\"work in progress tom\">\r\n      <created>1639505772058</created>\r\n      <option name=\"number\" value=\"00021\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00021\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1639505772058</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00022\" summary=\"complete the mongoDB query -Tom\">\r\n      <created>1639577395471</created>\r\n      <option name=\"number\" value=\"00022\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00022\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1639577395471</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00023\" summary=\"complete the mongoDB query -Tom\">\r\n      <created>1639577427117</created>\r\n      <option name=\"number\" value=\"00023\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00023\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1639577427117</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00024\" summary=\"complete the mongoDB query (some fix) -Tom\">\r\n      <created>1639578170477</created>\r\n      <option name=\"number\" value=\"00024\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00024\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1639578170477</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00025\" summary=\"complete the mongoDB query (some fix) -Tom\">\r\n      <created>1640003403864</created>\r\n      <option name=\"number\" value=\"00025\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00025\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1640003403864</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00026\" summary=\"commit\">\r\n      <created>1640169279931</created>\r\n      <option name=\"number\" value=\"00026\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00026\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1640169279931</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00027\" summary=\"neo4j query\">\r\n      <created>1640199549839</created>\r\n      <option name=\"number\" value=\"00027\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00027\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1640199549839</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"28\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n    <MESSAGE value=\"create the folder to start the app dev\" />\r\n    <MESSAGE value=\"create the GUI for the login and prepared the contoller\" />\r\n    <MESSAGE value=\"Create the register form and the controller to switch from login page to register page and the other way.\" />\r\n    <MESSAGE value=\"add the logo at the app\" />\r\n    <MESSAGE value=\"add javadoc and handle IOException\" />\r\n    <MESSAGE value=\"Added Project structure\" />\r\n    <MESSAGE value=\"Renamed Main\" />\r\n    <MESSAGE value=\"PUSH DEFINITIVA\" />\r\n    <MESSAGE value=\"adjust path\" />\r\n    <MESSAGE value=\"Resolve path\" />\r\n    <MESSAGE value=\"Resolve path 2.0\" />\r\n    <MESSAGE value=\"Create driver for MongoDB\" />\r\n    <MESSAGE value=\"create user entity\" />\r\n    <MESSAGE value=\"start working on my query\" />\r\n    <MESSAGE value=\"work in progress tom\" />\r\n    <MESSAGE value=\"complete the mongoDB query -Tom\" />\r\n    <MESSAGE value=\"complete the mongoDB query (some fix) -Tom\" />\r\n    <MESSAGE value=\"commit\" />\r\n    <MESSAGE value=\"neo4j query\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"neo4j query\" />\r\n  </component>\r\n  <component name=\"XSLT-Support.FileAssociations.UIState\">\r\n    <expand />\r\n    <select />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/.idea/workspace.xml	(date 1640471457492)
+@@ -4,9 +4,41 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="neo4j query">
++    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="Resolve path 2.1">
++      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/img/comment.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/img/forward.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/img/like.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/img/search.png" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/.idea/.gitignore" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/.idea/Server.iml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/.idea/misc.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/.idea/modules.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/.idea/vcs.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_mac_aarch64_17_0_0_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_base_win_17_0_0_1.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_mac_aarch64_17_0_0_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_controls_win_17_0_0_1.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_mac_aarch64_17_0_0_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_fxml_win_17_0_0_1.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_mac_aarch64_17_0_0_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_openjfx_javafx_graphics_win_17_0_0_1.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/PaperRaterApp/PaperRaterApp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/PaperRaterApp.iml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListPageController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/Session.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/utils/Utils.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/style/main.css" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/Main.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/LoginController.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/RegisterController.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/style/main.css" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -19,10 +51,21 @@
+   <component name="FileTemplateManagerImpl">
+     <option name="RECENT_TEMPLATES">
+       <list>
+-        <option value="FxmlFile" />
+         <option value="CSS File" />
++        <option value="FxmlFile" />
+         <option value="Class" />
+       </list>
++    </option>
++  </component>
++  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
++    <envs>
++      <env key="FLASK_APP" value="app" />
++    </envs>
++    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
++    <option name="myEnvs">
++      <map>
++        <entry key="FLASK_APP" value="app" />
++      </map>
+     </option>
+   </component>
+   <component name="Git.Settings">
+@@ -66,10 +109,10 @@
+     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+     <property name="nodejs_package_manager_path" value="npm" />
+-    <property name="project.structure.last.edited" value="Libraries" />
++    <property name="project.structure.last.edited" value="Project" />
+     <property name="project.structure.proportion" value="0.15" />
+     <property name="project.structure.side.proportion" value="0.2" />
+-    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
++    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+   </component>
+   <component name="RecentsManager">
+     <key name="MoveFile.RECENT_KEYS">
+@@ -77,19 +120,6 @@
+     </key>
+   </component>
+   <component name="RunManager" selected="Application.Main">
+-    <configuration name="DocumentManagerT" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+-      <option name="MAIN_CLASS_NAME" value="it.unipi.dii.lsmd.paperraterapp.persistence.DocumentManagerT" />
+-      <module name="PaperRaterApp" />
+-      <extension name="coverage">
+-        <pattern>
+-          <option name="PATTERN" value="it.unipi.dii.lsmd.paperraterapp.persistence.*" />
+-          <option name="ENABLED" value="true" />
+-        </pattern>
+-      </extension>
+-      <method v="2">
+-        <option name="Make" enabled="true" />
+-      </method>
+-    </configuration>
+     <configuration name="GUIApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+       <option name="MAIN_CLASS_NAME" value="it.unipi.pr.paperraterapp.GUIApp" />
+       <module name="PaperRaterApp" />
+@@ -108,7 +138,6 @@
+       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+       <option name="MAIN_CLASS_NAME" value="it.unipi.dii.lsmd.paperraterapp.Main" />
+       <module name="PaperRaterApp" />
+-      <option name="VM_PARAMETERS" value="--module-path $USER_HOME$/opt/javafx-sdk-17.0.1/lib --add-modules javafx.controls,javafx.fxml" />
+       <extension name="coverage">
+         <pattern>
+           <option name="PATTERN" value="it.unipi.dii.paperrater.*" />
+@@ -145,8 +174,29 @@
+         <option name="Make" enabled="true" />
+       </method>
+     </configuration>
++    <configuration name="server" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++      <module name="PaperRaterApp" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="C:\Users\Tommaso\anaconda3\envs\pythonProject\python.exe" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Server" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server/server.py" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
+     <list>
+-      <item itemvalue="Application.DocumentManagerT" />
+       <item itemvalue="Application.GUIApp" />
+       <item itemvalue="Application.Main" />
+       <item itemvalue="Application.MongoDriver" />
+@@ -155,9 +205,6 @@
+     <recent_temporary>
+       <list>
+         <item itemvalue="Application.Main" />
+-        <item itemvalue="Application.Neo4jManagerT" />
+-        <item itemvalue="Application.DocumentManagerT" />
+-        <item itemvalue="Application.MongoDriver" />
+       </list>
+     </recent_temporary>
+   </component>
+@@ -199,6 +246,10 @@
+       <workItem from="1640161040917" duration="13585000" />
+       <workItem from="1640196076990" duration="4071000" />
+       <workItem from="1640253097739" duration="1653000" />
++      <workItem from="1640258268195" duration="665000" />
++      <workItem from="1640258970646" duration="602000" />
++      <workItem from="1640334449657" duration="14195000" />
++      <workItem from="1640471068033" duration="383000" />
+     </task>
+     <task id="LOCAL-00001" summary="create the folder to start the app dev">
+       <created>1638650378848</created>
+@@ -405,6 +456,7 @@
+         </entry>
+       </map>
+     </option>
++    <option name="oldMeFiltersMigrated" value="true" />
+   </component>
+   <component name="VcsManagerConfiguration">
+     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+Index: PaperRaterApp/PaperRaterApp.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule=\"true\" type=\"JAVA_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\" LANGUAGE_LEVEL=\"JDK_17\">\r\n    <output url=\"file://$MODULE_DIR$/target/classes\" />\r\n    <output-test url=\"file://$MODULE_DIR$/target/test-classes\" />\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <sourceFolder url=\"file://$MODULE_DIR$/src/main/java\" isTestSource=\"false\" />\r\n      <sourceFolder url=\"file://$MODULE_DIR$/src/main/resources\" type=\"java-resource\" />\r\n      <excludeFolder url=\"file://$MODULE_DIR$/target\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.openjfx:javafx-controls:17.0.0.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.openjfx:javafx-controls:mac-aarch64:17.0.0.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.openjfx:javafx-graphics:17.0.0.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.openjfx:javafx-graphics:mac-aarch64:17.0.0.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.openjfx:javafx-base:17.0.0.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.openjfx:javafx-base:mac-aarch64:17.0.0.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.openjfx:javafx-fxml:17.0.0.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.openjfx:javafx-fxml:mac-aarch64:17.0.0.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.controlsfx:controlsfx:11.1.0\" level=\"project\" />\r\n    <orderEntry type=\"library\" scope=\"TEST\" name=\"Maven: org.junit.jupiter:junit-jupiter-api:5.8.2\" level=\"project\" />\r\n    <orderEntry type=\"library\" scope=\"TEST\" name=\"Maven: org.opentest4j:opentest4j:1.2.0\" level=\"project\" />\r\n    <orderEntry type=\"library\" scope=\"TEST\" name=\"Maven: org.junit.platform:junit-platform-commons:1.8.2\" level=\"project\" />\r\n    <orderEntry type=\"library\" scope=\"TEST\" name=\"Maven: org.apiguardian:apiguardian-api:1.1.2\" level=\"project\" />\r\n    <orderEntry type=\"library\" scope=\"TEST\" name=\"Maven: org.junit.jupiter:junit-jupiter-engine:5.8.2\" level=\"project\" />\r\n    <orderEntry type=\"library\" scope=\"TEST\" name=\"Maven: org.junit.platform:junit-platform-engine:1.8.2\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.mongodb:mongodb-driver-sync:4.4.0\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.mongodb:bson:4.4.0\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.mongodb:mongodb-driver-core:4.4.0\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: com.thoughtworks.xstream:xstream:1.4.18\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: io.github.x-stream:mxparser:1.2.2\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: xmlpull:xmlpull:1.1.3.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: com.google.code.gson:gson:2.8.9\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.neo4j.driver:neo4j-java-driver:4.1.1\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"Maven: org.reactivestreams:reactive-streams:1.0.3\" level=\"project\" />\r\n    <orderEntry type=\"library\" name=\"lib\" level=\"project\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/PaperRaterApp.iml b/PaperRaterApp/PaperRaterApp.iml
+--- a/PaperRaterApp/PaperRaterApp.iml	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/PaperRaterApp.iml	(date 1640334584479)
+@@ -8,16 +8,17 @@
+       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+       <excludeFolder url="file://$MODULE_DIR$/target" />
+     </content>
+-    <orderEntry type="inheritedJdk" />
++    <orderEntry type="jdk" jdkName="temurin-17" jdkType="JavaSDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
++    <orderEntry type="library" name="lib" level="project" />
+     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:17.0.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:mac-aarch64:17.0.0.1" level="project" />
++    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:17.0.0.1" level="project" />
+     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:17.0.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:mac-aarch64:17.0.0.1" level="project" />
++    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:17.0.0.1" level="project" />
+     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:17.0.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:mac-aarch64:17.0.0.1" level="project" />
++    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:win:17.0.0.1" level="project" />
+     <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:17.0.0.1" level="project" />
+-    <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:mac-aarch64:17.0.0.1" level="project" />
++    <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:win:17.0.0.1" level="project" />
+     <orderEntry type="library" name="Maven: org.controlsfx:controlsfx:11.1.0" level="project" />
+     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.2" level="project" />
+     <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
+@@ -34,6 +35,5 @@
+     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.9" level="project" />
+     <orderEntry type="library" name="Maven: org.neo4j.driver:neo4j-java-driver:4.1.1" level="project" />
+     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.3" level="project" />
+-    <orderEntry type="library" name="lib" level="project" />
+   </component>
+ </module>
+\ No newline at end of file
+Index: Server/.idea/Server.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/.idea/Server.iml b/Server/.idea/Server.iml
+new file mode 100644
+--- /dev/null	(date 1640259279519)
++++ b/Server/.idea/Server.iml	(date 1640259279519)
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="PYTHON_MODULE" version="4">
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="jdk" jdkName="Python 3.9 (pythonProject)" jdkType="Python SDK" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++  <component name="PyDocumentationSettings">
++    <option name="format" value="PLAIN" />
++    <option name="myDocStringFormat" value="Plain" />
++  </component>
++</module>
+\ No newline at end of file
+Index: Server/.idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/.idea/.gitignore b/Server/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1640259280307)
++++ b/Server/.idea/.gitignore	(date 1640259280307)
+@@ -0,0 +1,8 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml
++# Editor-based HTTP Client requests
++/httpRequests/
+Index: Server/.idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/.idea/vcs.xml b/Server/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1640259279808)
++++ b/Server/.idea/vcs.xml	(date 1640259279808)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: Server/.idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/.idea/misc.xml b/Server/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1640259279725)
++++ b/Server/.idea/misc.xml	(date 1640259279725)
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (pythonProject)" project-jdk-type="Python SDK" />
++</project>
+\ No newline at end of file
+Index: Server/.idea/inspectionProfiles/profiles_settings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/.idea/inspectionProfiles/profiles_settings.xml b/Server/.idea/inspectionProfiles/profiles_settings.xml
+new file mode 100644
+--- /dev/null	(date 1640259279768)
++++ b/Server/.idea/inspectionProfiles/profiles_settings.xml	(date 1640259279768)
+@@ -0,0 +1,6 @@
++<component name="InspectionProjectProfileManager">
++  <settings>
++    <option name="USE_PROJECT_PROFILE" value="false" />
++    <version value="1.0" />
++  </settings>
++</component>
+\ No newline at end of file
+Index: Server/.idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/.idea/modules.xml b/Server/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1640259279575)
++++ b/Server/.idea/modules.xml	(date 1640259279575)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/Server.iml" filepath="$PROJECT_DIR$/.idea/Server.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp.persistence;\r\n\r\nimport com.google.gson.Gson;\r\nimport com.google.gson.GsonBuilder;\r\nimport com.google.gson.JsonSyntaxException;\r\nimport com.google.gson.reflect.TypeToken;\r\nimport com.mongodb.client.*;\r\nimport com.mongodb.client.model.*;\r\nimport com.mongodb.client.result.*;\r\n\r\nimport org.bson.Document;\r\nimport org.bson.conversions.Bson;\r\n\r\nimport java.text.SimpleDateFormat;\r\nimport java.time.LocalDateTime;\r\nimport java.time.format.DateTimeFormatter;\r\nimport java.util.*;\r\nimport javafx.util.Pair;\r\nimport java.util.function.Consumer;\r\nimport java.util.regex.Pattern;\r\nimport java.lang.reflect.Type;\r\n\r\nimport static com.mongodb.client.model.Filters.*;\r\nimport static com.mongodb.client.model.Indexes.ascending;\r\nimport static com.mongodb.client.model.Aggregates.*;\r\nimport static com.mongodb.client.model.Projections.*;\r\nimport static com.mongodb.client.model.Accumulators.sum;\r\nimport static com.mongodb.client.model.Sorts.descending;\r\n\r\nimport it.unipi.dii.lsmd.paperraterapp.model.*;\r\n\r\n\r\n\r\npublic class MongoDBManager {\r\n    public MongoDatabase db;\r\n    private final MongoCollection usersCollection;\r\n    private final MongoCollection papersCollection;\r\n\r\n\r\n    /**\r\n     *\r\n     * @param client MongoDBClient\r\n     */\r\n    public MongoDBManager(MongoClient client) {\r\n        this.db = client.getDatabase(\"PaperRater\");;\r\n        usersCollection = db.getCollection(\"Users\");\r\n        papersCollection = db.getCollection(\"Papers\");\r\n    }\r\n\r\n    /**\r\n     *\r\n     * @param username\r\n     * @param password\r\n     * @return\r\n     */\r\n    public User login (String username, String password) {\r\n        Document result = (Document) usersCollection.find(Filters.and(eq(\"username\", username),\r\n                                                                eq(\"password\", password))).\r\n                                                                first();\r\n\r\n        Gson gson = new Gson();\r\n        return gson.fromJson(gson.toJson(result), User.class);\r\n    }\r\n\r\n    /**\r\n     * Add a new User to MongoDB\r\n     * @param u The object User which contains all the necessary information\r\n     * @return true if operation is successfully executed, false otherwise\r\n     */\r\n    public boolean addUser (User u) {\r\n        try {\r\n            Document doc = new Document(\"username\", u.getUsername())\r\n                                .append(\"email\", u.getEmail())\r\n                                .append(\"password\", u.getPassword());\r\n\r\n            if (u.getFirstName() != null)\r\n                doc.append(\"firstName\", u.getFirstName());\r\n            if (u.getLastName() != null)\r\n                doc.append(\"lastName\", u.getLastName());\r\n            if (u.getPicture() != null)\r\n                doc.append(\"picture\", u.getPicture());\r\n            if (u.getAge() != -1)\r\n                doc.append(\"age\", u.getAge());\r\n\r\n            doc.append(\"readingLists\", u.getReadingLists());\r\n\r\n            usersCollection.insertOne(doc);\r\n            return true;\r\n\r\n        } catch (Exception e) {\r\n            System.out.println(\"Error in adding a new user\");\r\n            e.printStackTrace();\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Function that deletes the user from the database\r\n     * @param u user to delete\r\n     * @return true if operation is successfully executed, false otherwise\r\n     */\r\n    public boolean deleteUser(User u) {\r\n        try {\r\n            usersCollection.deleteOne(eq(\"username\", u.getUsername()));\r\n            return true;\r\n        }\r\n        catch (Exception ex)\r\n        {\r\n            System.err.println(\"Error in delete user\");\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Edit an already present user\r\n     * @param u the new user information to replace the old one\r\n     * @return  true if operation is successfully executed, false otherwise\r\n     */\r\n    public boolean updateUser (User u){\r\n        try {\r\n            Document doc = new Document().append(\"username\", u.getUsername());\r\n            if (!u.getPassword().isEmpty())\r\n                doc.append(\"password\", u.getPassword());\r\n            if (!u.getFirstName().isEmpty())\r\n                doc.append(\"firstName\", u.getFirstName());\r\n            if (!u.getLastName().isEmpty())\r\n                doc.append(\"lastName\", u.getLastName());\r\n            if (!u.getPicture().isEmpty())\r\n                doc.append(\"picture\", u.getPicture());\r\n            if (u.getAge() != -1)\r\n                doc.append(\"age\", u.getAge());\r\n\r\n            Bson updateOperation = new Document(\"$set\", doc);\r\n            usersCollection.updateOne(new Document(\"username\", u.getUsername()), updateOperation);\r\n            return true;\r\n        }\r\n        catch (Exception ex)\r\n        {\r\n            ex.printStackTrace();\r\n            System.err.println(\"Error in updating user on MongoDB\");\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Search a user by his username\r\n     * @param username username of the user\r\n     * @return User\r\n     */\r\n    public User getUserByUsername (String username) {\r\n        Document result = (Document) usersCollection.find((eq(\"username\", username))).first();\r\n        if (result == null) {\r\n            System.out.println(\"User \" + username + \" do not found.\");\r\n            return null;\r\n        }\r\n\r\n        Gson gson = new Gson();\r\n        return gson.fromJson(gson.toJson(result), User.class);\r\n    }\r\n\r\n    /**\r\n     * Add a new paper in MongoDB\r\n     * @param p The object Paper which contains all the necessary information about it\r\n     * @return  true if operation is successfully executed, false otherwise\r\n     */\r\n    public boolean addPaper (Paper p) {\r\n        try {\r\n            Document doc = new Document();\r\n            //Data conversion to string\r\n            SimpleDateFormat formatter = new SimpleDateFormat(\"yyyy-MM-dd\");\r\n            String format = formatter.format(p.getPublished());\r\n\r\n            //Check paper source\r\n            if(!p.getArxiv_id().isEmpty())\r\n                doc.append(\"arxiv_id\", p.getArxiv_id()).append(\"vixra_id\", Float.NaN);\r\n            else\r\n                doc.append(\"arxiv_id\", Float.NaN).append(\"vixra_id\", p.getVixra_id());\r\n\r\n            doc.append(\"_title\", p.getTitle())\r\n                    .append(\"_abstract\", p.getAbstract())\r\n                    .append(\"category\", p.getCategory())\r\n                    .append(\"authors\", p.getAuthors())\r\n                    .append(\"published\", format)\r\n                    //No comment on insert\r\n                    .append(\"comments\", null);\r\n\r\n            papersCollection.insertOne(doc);\r\n            return true;\r\n        }\r\n        catch (Exception ex)\r\n        {\r\n            System.err.println(\"Error in adding a new paper\");\r\n            ex.printStackTrace();\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Function that deletes the paper from the database\r\n     * @param p Paper to delete\r\n     * @return true if operation is successfully executed, false otherwise\r\n     */\r\n    public boolean deletePaper (Paper p) {\r\n        try {\r\n            if(!p.getArxiv_id().isEmpty())\r\n                papersCollection.deleteOne(eq(\"arxiv_id\", p.getArxiv_id()));\r\n            else\r\n                papersCollection.deleteOne(eq(\"vixra_id\", p.getVixra_id()));\r\n\r\n            return true;\r\n        }\r\n        catch (Exception ex)\r\n        {\r\n            System.err.println(\"Error in delete paper\");\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Function that return the paper that matches the id\r\n     * @param id of the paper to retrieve\r\n     * @return the paper object\r\n     */\r\n    public Paper getPaperById (String id) {\r\n        try {\r\n            Paper p = null;\r\n            Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd hh:mm:ss\").create();\r\n\r\n            Document myDoc = (Document) papersCollection.find(\r\n                    or(eq(\"arxiv_id\", id), eq(\"vixra_id\", id))).first();\r\n            p = gson.fromJson(gson.toJson(myDoc), Paper.class);\r\n            return p;\r\n        }\r\n        catch (JsonSyntaxException e) {\r\n            e.printStackTrace();\r\n            return null;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Function that return the list of papers that partially match a title\r\n     * @param title title of the papers\r\n     * @return The list of papers\r\n     */\r\n    public List<Paper> searchPapersByTitle(String title) {\r\n        List<Paper> papers = new ArrayList<>();\r\n        Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd hh:mm:ss\").create();\r\n        Pattern pattern = Pattern.compile(\"^.*\" + title + \".*$\", Pattern.CASE_INSENSITIVE);\r\n        Bson match = Aggregates.match(Filters.regex(\"title\", pattern));\r\n        Bson sort = sort(descending(\"published\"));\r\n\r\n        /*\r\n        Bson limit = limit(10);\r\n        Bson skip = skip();\r\n         */\r\n\r\n        List<Document> results = (List<Document>) papersCollection.aggregate(Arrays.asList(match, sort))\r\n                .into(new ArrayList<>());\r\n        Type papersListType = new TypeToken<ArrayList<Paper>>(){}.getType();\r\n        papers = gson.fromJson(gson.toJson(results), papersListType);\r\n        return papers;\r\n    }\r\n\r\n    /**\r\n     * Function that retrieves all the papers published by an author\r\n     * @param author name of the author\r\n     * @return list of Papers\r\n     */\r\n    public List<Paper> searchPaperByAuthor(String author) {\r\n        Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd\").serializeSpecialFloatingPointValues().create();\r\n        List<Paper> results = new ArrayList<>();\r\n        Consumer<Document> transformDocument = doc -> {\r\n            Paper paper = gson.fromJson(gson.toJson(doc), Paper.class);\r\n            results.add(paper);\r\n        };\r\n        papersCollection.find(eq(\"authors\", author)).forEach(transformDocument);\r\n        return results;\r\n    }\r\n\r\n    /**\r\n     * Return all the papers between a given time interval\r\n     * @param start_date start date\r\n     * @param end_date end date\r\n     * @return the list of Papers\r\n     */\r\n    public List<Paper> searchPapersByPublicationDate (String start_date, String end_date) {\r\n        List<Paper> papers = new ArrayList<>();\r\n        Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd hh:mm:ss\").create();\r\n\r\n        Bson match = match(and(\r\n                Filters.gte(\"published\", start_date),\r\n                Filters.lte(\"published\", end_date)));\r\n        Bson sort = sort(descending(\"published\"));\r\n\r\n        /*\r\n        Bson limit = limit(10);\r\n        Bson skip = skip();\r\n         */\r\n\r\n        List<Document> results = (List<Document>) papersCollection.aggregate(Arrays.asList(match, sort))\r\n                .into(new ArrayList<>());\r\n        Type papersListType = new TypeToken<ArrayList<Paper>>(){}.getType();\r\n        papers = gson.fromJson(gson.toJson(results), papersListType);\r\n        return papers;\r\n    }\r\n\r\n    /**\r\n     * Function that return the list of papers related to a category\r\n     * @param category Category of the papers\r\n     * @return The list of papers\r\n     */\r\n    public List<Paper> searchPapersByCategory(String category){\r\n\r\n        List<Paper> papers = new ArrayList<>();\r\n        Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd hh:mm:ss\").create();\r\n        List<Document> results = (List<Document>) papersCollection.find(eq(\"category\", category))\r\n                .into(new ArrayList<>());\r\n        Type paperListType = new TypeToken<ArrayList<Paper>>(){}.getType();\r\n        papers = gson.fromJson(gson.toJson(results), paperListType);\r\n        return papers;\r\n    }\r\n\r\n    /**\r\n     * Add a new empty reading list called \"title\" list at the user identify by username\r\n     * @param username username of the user\r\n     * @param title title of the new reading list\r\n     * @return true if it adds the reading list, otherwise it returns false\r\n     */\r\n    public boolean createReadingList(String username, String title) {\r\n        // check if there are other list with the same name\r\n        Document document = (Document) usersCollection.find(and(eq(\"username\", username),\r\n                eq(\"readingLists.title\", title))).first();\r\n        if (document != null) {\r\n            System.err.println(\"ERROR: name already in use.\");\r\n            return false;\r\n        }\r\n        // create the new reading_list\r\n        Document readingList = new Document(\"title\", title)\r\n                .append(\"papers\", Arrays.asList());\r\n        // insert the new reading_list\r\n        usersCollection.updateOne(\r\n                eq(\"username\", username),\r\n                new Document().append(\r\n                        \"$push\",\r\n                        new Document(\"readingLists\", readingList)\r\n                )\r\n        );\r\n        System.out.println(\"Reading list \" + title + \" has been added\");\r\n        return true;\r\n    }\r\n\r\n    /**\r\n     * Delete the reading list of user by specifying the title\r\n     * @param username username of the user\r\n     * @param title title of the reading list which i want remove\r\n     * @return true if it removes the reading list, otherwise it returns false\r\n     */\r\n    public boolean deleteReadingList(String username, String title){\r\n        Bson filter = new Document().append(\"username\", username);\r\n        Bson fields = new Document().append(\"reading_lists\", new Document(\"title\", title));\r\n        Bson update = new Document(\"$pull\", fields);\r\n        UpdateResult updateResult = usersCollection.updateOne(filter, update);\r\n        if (updateResult.getModifiedCount() == 0){\r\n            System.err.println(\"ERROR: can not delete the reading list \" + title);\r\n            return false;\r\n        } else {\r\n            System.out.println(\"Reading list \" + title + \" has been deleted\");\r\n            return true;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Method that adds a Paper to a ReadingList\r\n     * @param r ReadingList\r\n     * @param p Paper\r\n     * @return true if the operation is successfully executed, false otherwise\r\n     */\r\n    public boolean addPaperToReadingList(ReadingList r, Paper p) {\r\n        try {\r\n            Document paperReduced = new Document(\"arxiv_id\", p.getArxiv_id())\r\n                    .append(\"vixra_id\", p.getVixra_id())\r\n                    .append(\"title\", p.getTitle())\r\n                    .append(\"auhtors\", p.getAuthors())\r\n                    .append(\"category\", p.getCategory());\r\n\r\n            Bson find = and(eq(\"username\", r.getUsername()),\r\n                    eq(\"reading_lists.title\", r.getName()));\r\n            Bson update = Updates.addToSet(\"reading_lists.$.papers\", paperReduced);\r\n            usersCollection.updateOne(find, update);\r\n            return true;\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            System.out.println(\"Error in adding a paper to a Reading List\");\r\n            e.printStackTrace();\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Method that remove a Paper from a ReadingList\r\n     * @param r ReadingList\r\n     * @param p Paper\r\n     * @return true if the operation is successfully executed, false otherwise\r\n     */\r\n    public boolean removePaperFromReadingList(ReadingList r, Paper p) {\r\n        try {\r\n            Document paperReduced = new Document(\"arxiv_id\", p.getArxiv_id())\r\n                    .append(\"vixra_id\", p.getVixra_id())\r\n                    .append(\"title\", p.getTitle())\r\n                    .append(\"auhtors\", p.getAuthors());\r\n\r\n            Bson find = and(eq(\"username\", r.getUsername()),\r\n                    eq(\"reading_lists.title\", r.getName()));\r\n            Bson delete = Updates.pull(\"reading_lists.$.papers\", paperReduced);\r\n            usersCollection.updateOne(find, delete);\r\n            return true;\r\n        }\r\n        catch (Exception e)\r\n        {\r\n            System.out.println(\"Error in removing a paper from a Reading List\");\r\n            e.printStackTrace();\r\n            return false;\r\n        }\r\n    }\r\n\r\n    /**\r\n     * Returns all the Reading Lists in the database MongoDB\r\n     * @return The list of the Reading List\r\n     */\r\n    public List<ReadingList> showReadingList() {\r\n        List<ReadingList> readingLists = new ArrayList<>();\r\n        Gson gson = new GsonBuilder().serializeNulls().create();\r\n        Bson unwind = unwind(\"$reading_lists\");\r\n        Bson project = project(fields(excludeId(), computed(\"ReadingList\", \"$reading_lists\")));\r\n\r\n        MongoCursor<Document> iterator = (MongoCursor<Document>)\r\n                usersCollection.aggregate(Arrays.asList(unwind, project)).iterator();\r\n\r\n        Type readingListType = new TypeToken<ArrayList<ReadingList>>(){}.getType();\r\n        while (iterator.hasNext())\r\n        {\r\n            Document document = iterator.next();\r\n            System.out.println(document);\r\n            Document ReadingListDocument = (Document) document.get(\"ReadingList\");\r\n            ReadingList readingList = gson.fromJson(gson.toJson(ReadingListDocument), ReadingList.class);\r\n            readingLists.add(readingList);\r\n        }\r\n\r\n        return readingLists;\r\n    }\r\n\r\n    /**\r\n     * Function that return the ReadingLists given the user\r\n     * @param username Username of the user\r\n     * @return  The list of reading lists\r\n     */\r\n    public List<ReadingList> getReadingListByUser (String username){\r\n        List<ReadingList> readingLists = new ArrayList<>();\r\n        Gson gson = new GsonBuilder().serializeNulls().create();\r\n\r\n        Bson match = match(eq(\"username\", username));\r\n        Bson unwind = unwind(\"$reading_lists\");\r\n        Bson project = project(fields(excludeId(), computed(\"ReadingList\", \"$reading_lists\")));\r\n        MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(match, unwind, project)).iterator();\r\n        while (iterator.hasNext())\r\n        {\r\n            Document document = iterator.next();\r\n            Document ReadingListDocument = (Document) document.get(\"ReadingList\");\r\n            ReadingList readingList = gson.fromJson(gson.toJson(ReadingListDocument), ReadingList.class);\r\n            readingLists.add(readingList);\r\n        }\r\n\r\n        return readingLists;\r\n    }\r\n\r\n    /**\r\n     * Function that return the ReadingLists given the user and the name\r\n     * @param username Username of the user\r\n     * @param title Name of the reading list\r\n     * @return  The list of reading lists\r\n     */\r\n    public ReadingList getReadingList (String username, String title) {\r\n        ReadingList readingList = null;\r\n        Gson gson = new GsonBuilder().serializeNulls().create();\r\n\r\n        Bson match = match(eq(\"username\", username));\r\n        Bson unwind = unwind(\"$reading_lists\");\r\n        Bson match2 = match(eq(\"reading_lists.title\", title));\r\n        Bson project = project(fields(excludeId(), computed(\"ReadingList\", \"$reading_lists\")));\r\n        MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(match, unwind, match2, project)).iterator();\r\n        if(iterator.hasNext()){\r\n            Document document = iterator.next();\r\n            Document ReadingListDocument = (Document) document.get(\"ReadingList\");\r\n            readingList = gson.fromJson(gson.toJson(ReadingListDocument), ReadingList.class);\r\n        }\r\n        return readingList;\r\n    }\r\n\r\n    /**\r\n     * Function that returns the most common category in a Reading List\r\n     * @param r Reading List to process\r\n     * @return the name of the category\r\n     */\r\n    public String getMostCommonCategoryInReadingList(ReadingList r) {\r\n\r\n        Bson match1 = match(Filters.eq(\"username\", r.getUsername()));\r\n        Bson unwind1 = unwind(\"$reading_lists\");\r\n        Bson match2 = match(Filters.eq(\"reading_lists.title\", r.getName()));\r\n        Bson unwind2 = unwind(\"$reading_lists.papers\");\r\n        Bson group = group(\"$reading_lists.papers.category\",\r\n                sum(\"nPapers\", 1));\r\n        Bson sort = sort(descending(\"nPapers\"));\r\n        Bson project = project(fields(computed(\"category\", \"$_id\"),\r\n                excludeId(), include(\"nPapers\")));\r\n\r\n        Document doc = (Document) usersCollection.aggregate(\r\n                Arrays.asList(match1, unwind1, match2, unwind2, group, sort, project)).first();\r\n\r\n        String mostCommonCategory = doc.getString(\"category\");\r\n\r\n        return mostCommonCategory;\r\n    }\r\n\r\n\r\n    /**\r\n     *\r\n     * @return\r\n     */\r\n    public List<Pair<String, Integer>> getCategoriesSummaryByLikes(/*String option*/) {\r\n\r\n        List<Pair<String, Integer>> topCategories = new ArrayList<>();\r\n\r\n        Bson group = group(\"$category\", sum(\"nPapers\", 1));\r\n        Bson sort = sort(descending(\"nPapers\"));\r\n        Bson project = project(fields(computed(\"category\", \"$_id\"),\r\n                excludeId(), include(\"nPapers\")));\r\n\r\n        try(MongoCursor<Document> cursor = papersCollection.aggregate(Arrays.asList(group, sort, project))\r\n                                    .iterator()) {\r\n            while(cursor.hasNext()) {\r\n                Document doc = cursor.next();\r\n                String category = doc.getString(\"category\");\r\n                int nPapers = doc.getInteger(\"nPapers\");\r\n                topCategories.add(new Pair<>(category, nPapers));\r\n            }\r\n        }\r\n        catch (Exception e) {\r\n            System.out.println(\"Error in getting number of papers by category\");\r\n            e.printStackTrace();\r\n        }\r\n\r\n        return topCategories;\r\n    }\r\n\r\n    /*Weekly/Monthly/All time summary of the categories by number of papers Published */\r\n    /**\r\n     * Function that return the top categories by the number of papaer published\r\n     * @param start initial date\r\n     * @param finish final date\r\n     * @param number number of results to show\r\n     * @return The list of the most common categories\r\n     */\r\n    public List<String> summaryOfCategory (String start, String finish, int number){\r\n        List<String> mostCommonCategories = new ArrayList<>();\r\n\r\n        Bson match = match(and(gte(\"published\", start), lte(\"published\", finish)));\r\n        Bson group = group(\"$category\", sum(\"totalPaper\", 1));\r\n        Bson project = project(fields(excludeId(), computed(\"category\", \"$_id\"), include(\"totalPaper\")));\r\n        Bson sort = sort(descending(\"totalPaper\"));\r\n        Bson limit = limit(number);\r\n\r\n        List<Document> results = (List<Document>) papersCollection.aggregate(Arrays.asList(match, group, project, sort, limit)).into(new ArrayList<>());\r\n\r\n        for (Document document: results)\r\n        {\r\n            mostCommonCategories.add(document.getString(\"category\"));\r\n        }\r\n        return mostCommonCategories;\r\n    }\r\n\r\n    /*Users with the highest number of categories in their reading lists  */\r\n    /**\r\n     * Function that return a list of User with the highest number of reading lists\r\n     * @param number First \"number\" users\r\n     * @return  The list of users\r\n     */\r\n    public List<String> searchUsersWithHighestNumberOfCategories (int number)\r\n    {\r\n        List<String> mostCommonCategories = new ArrayList<>();\r\n\r\n        Bson unwind1 = unwind(\"$reading_lists\");\r\n        Bson unwind2 = unwind(\"$reading_lists.papers\");\r\n        Bson groupMultiple = new Document(\"$group\",\r\n                new Document(\"_id\", new Document(\"username\", \"$username\").append(\"category\", \"$reading_lists.papers.category\")));\r\n        Bson group = group(\"$_id.username\", sum(\"totalCategory\", 1));\r\n        Bson project = project(fields(excludeId(), computed(\"username\", \"$_id\"), include(\"totalCategory\")));\r\n        Bson sort = sort(descending(\"totalCategory\"));\r\n        Bson limit = limit(number);\r\n\r\n        List<Document> results = (List<Document>) usersCollection.aggregate(Arrays.asList(unwind1, unwind2, groupMultiple, group, project, sort, limit)).into(new ArrayList<>());\r\n        for (Document document: results)\r\n        {\r\n            mostCommonCategories.add(document.getString(\"username\"));\r\n        }\r\n        return mostCommonCategories;\r\n    }\r\n\r\n\r\n\r\n    /**\r\n     * Braws all comments that has been written \"numDays\" ago\r\n     * @param numDays how may day i want to scan\r\n     * @return list of comments\r\n     */\r\n    public List<Comment> searchLastComments(int numDays) {\r\n        // create the date\r\n        LocalDateTime localDateTime = LocalDateTime.now().minusDays(numDays);\r\n        LocalDateTime startOfDay = localDateTime.toLocalDate().atStartOfDay();\r\n        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\"));\r\n\r\n        Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd HH:mm:ss\").serializeSpecialFloatingPointValues().create();\r\n        List<Comment> results = new ArrayList<>();\r\n        Consumer<Document> takeComments = doc -> {\r\n            Document docComments = (Document) doc.get(\"comments\");\r\n            Comment comment = gson.fromJson(gson.toJson(docComments), Comment.class);\r\n            results.add(comment);\r\n        };\r\n\r\n        Bson unwind = unwind(\"$comments\");\r\n        Bson filter = match(gte(\"comments.timestamp\", filterDate));\r\n        Bson sort = sort(ascending(\"comments.timestamp\"));\r\n        papersCollection.aggregate(Arrays.asList(unwind, filter, sort)).forEach(takeComments);\r\n\r\n        return results;\r\n    }\r\n\r\n    /**\r\n     * Browse the top categories with more comments\r\n     * @param period (all, month, week)\r\n     * @param top (positive integer)\r\n     * @return HashMap with the category and the number of comments\r\n     */\r\n    public HashMap<String, Integer> summaryCategoriesByComments(String period, int top) {\r\n        LocalDateTime localDateTime = LocalDateTime.now();\r\n        LocalDateTime startOfDay;\r\n        switch (period) {\r\n            case \"all\" -> startOfDay = LocalDateTime.MIN;\r\n            case \"month\" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);\r\n            case \"week\" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);\r\n            default -> {\r\n                System.err.println(\"ERROR: Wrong period.\");\r\n                return null;\r\n            }\r\n        }\r\n        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\"));\r\n\r\n        HashMap<String, Integer> results = new HashMap<>();\r\n        Consumer<Document> rankCategories = doc ->\r\n                results.put((String) doc.get(\"_id\"), (Integer) doc.get(\"tots\"));\r\n\r\n        Bson unwind = unwind(\"$comments\");\r\n        Bson filter = match(gte(\"comments.timestamp\", filterDate));\r\n        Bson group = group(\"$category\", sum(\"tots\", 1));\r\n        Bson sort = sort(Indexes.descending(\"tots\"));\r\n        Bson limit = limit(top);\r\n        papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort, limit)).forEach(rankCategories);\r\n\r\n        return results;\r\n    }\r\n\r\n    /**\r\n     * Browse the top papers with more comments\r\n     * @param period (all, month, week)\r\n     * @param top (positive integer)\r\n     * @return HashMap with the title and the number of comments\r\n     */\r\n    public HashMap<String, Integer> summaryPapersByComments(String period, int top) {\r\n        LocalDateTime localDateTime = LocalDateTime.now();\r\n        LocalDateTime startOfDay;\r\n        switch (period) {\r\n            case \"all\" -> startOfDay = LocalDateTime.MIN;\r\n            case \"month\" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);\r\n            case \"week\" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);\r\n            default -> {\r\n                System.err.println(\"ERROR: Wrong period.\");\r\n                return null;\r\n            }\r\n        }\r\n        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\"));\r\n\r\n        HashMap<String, Integer> results = new HashMap<>();\r\n        Consumer<Document> rankPapers = doc ->\r\n                results.put((String) doc.get(\"_id\"), (Integer) doc.get(\"tots\"));\r\n\r\n        Bson unwind = unwind(\"$comments\");\r\n        Bson filter = match(gte(\"comments.timestamp\", filterDate));\r\n        Bson group = group(\"$title\", sum(\"tots\", 1));\r\n        Bson sort = sort(Indexes.descending(\"tots\"));\r\n        Bson limit = limit(top);\r\n        papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort, limit)).forEach(rankPapers);\r\n\r\n        return results;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java	(date 1640344791443)
+@@ -4,34 +4,44 @@
+ import com.google.gson.GsonBuilder;
+ import com.google.gson.JsonSyntaxException;
+ import com.google.gson.reflect.TypeToken;
+-import com.mongodb.client.*;
+-import com.mongodb.client.model.*;
+-import com.mongodb.client.result.*;
+-
++import com.mongodb.client.MongoClient;
++import com.mongodb.client.MongoCollection;
++import com.mongodb.client.MongoCursor;
++import com.mongodb.client.MongoDatabase;
++import com.mongodb.client.model.Aggregates;
++import com.mongodb.client.model.Filters;
++import com.mongodb.client.model.Indexes;
++import com.mongodb.client.model.Updates;
++import com.mongodb.client.result.UpdateResult;
++import it.unipi.dii.lsmd.paperraterapp.model.Comment;
++import it.unipi.dii.lsmd.paperraterapp.model.Paper;
++import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
++import it.unipi.dii.lsmd.paperraterapp.model.User;
++import javafx.util.Pair;
+ import org.bson.Document;
+ import org.bson.conversions.Bson;
+ 
++import java.lang.reflect.Type;
+ import java.text.SimpleDateFormat;
+ import java.time.LocalDateTime;
+ import java.time.format.DateTimeFormatter;
+-import java.util.*;
+-import javafx.util.Pair;
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.HashMap;
++import java.util.List;
+ import java.util.function.Consumer;
+ import java.util.regex.Pattern;
+-import java.lang.reflect.Type;
+ 
++import static com.mongodb.client.model.Accumulators.sum;
++import static com.mongodb.client.model.Aggregates.*;
+ import static com.mongodb.client.model.Filters.*;
+ import static com.mongodb.client.model.Indexes.ascending;
+-import static com.mongodb.client.model.Aggregates.*;
+ import static com.mongodb.client.model.Projections.*;
+-import static com.mongodb.client.model.Accumulators.sum;
+ import static com.mongodb.client.model.Sorts.descending;
+ 
+-import it.unipi.dii.lsmd.paperraterapp.model.*;
+-
+-
+ 
+ public class MongoDBManager {
++
+     public MongoDatabase db;
+     private final MongoCollection usersCollection;
+     private final MongoCollection papersCollection;
+@@ -702,4 +712,10 @@
+ 
+         return results;
+     }
++
++    public List<String> getCategories() {
++        List<String> categoriesList = new ArrayList<>();
++        papersCollection.distinct("category", String.class).into(categoriesList);
++        return categoriesList;
++    }
+ }
+Index: PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.lsmd.paperraterapp;\r\n\r\nimport javafx.application.Application;\r\nimport javafx.fxml.FXML;\r\nimport javafx.fxml.FXMLLoader;\r\nimport javafx.scene.Parent;\r\nimport javafx.scene.Scene;\r\nimport javafx.scene.image.Image;\r\nimport javafx.stage.Stage;\r\n\r\npublic class Main extends Application {\r\n\r\n    @Override\r\n    public void start(Stage stage) {\r\n        try {\r\n            Parent root = FXMLLoader.load(getClass().getResource(\"/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml\"));\r\n            Scene scene = new Scene(root);\r\n            stage.setScene(scene);\r\n            stage.setTitle(\"    PaperRater\");\r\n            stage.getIcons().add(new Image(getClass().getResourceAsStream( \"img/PRlogo.png\")));\r\n            stage.show();\r\n        } catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n\r\n    public static void main(String[] args) {\r\n        launch();\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java
+--- a/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java	(revision 76fcc87c7ff07ce56c9507fe0d6a433d7d3d70b1)
++++ b/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java	(date 1640358427002)
+@@ -1,7 +1,6 @@
+ package it.unipi.dii.lsmd.paperraterapp;
+ 
+ import javafx.application.Application;
+-import javafx.fxml.FXML;
+ import javafx.fxml.FXMLLoader;
+ import javafx.scene.Parent;
+ import javafx.scene.Scene;
+@@ -13,7 +12,7 @@
+     @Override
+     public void start(Stage stage) {
+         try {
+-            Parent root = FXMLLoader.load(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml"));
++            Parent root = FXMLLoader.load(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml")); //login
+             Scene scene = new Scene(root);
+             stage.setScene(scene);
+             stage.setTitle("    PaperRater");
