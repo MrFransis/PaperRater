@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -235,17 +236,17 @@ public class BrowserController implements Initializable {
         // clean old settings
         cardsGrid.getChildren().clear();
         cardsGrid.getColumnConstraints().clear();
-        // set new layout
-        cardsGrid.setHgap(20);
-        cardsGrid.setVgap(20);
-        cardsGrid.setPadding(new Insets(30,40,30,40));
+        cardsGrid.setAlignment(Pos.CENTER);
+        cardsGrid.setVgap(40);
+        cardsGrid.setPadding(new Insets(30,40,30,100));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
         // load papers
         List<Paper> papersList = manager.searchPapersByParameters(title, author, start_date, end_date, category,
                 3*page, 3);
-        System.out.println("Loading papers...");
+        if (papersList.size() != 3)
+            forwardBt.setDisable(true);
         int row = 0;
         for (Paper p : papersList) {
             Pane card = loadPapersCard(p);
@@ -253,6 +254,8 @@ public class BrowserController implements Initializable {
             row++;
         }
     }
+
+    //private void fillReadingLists
 
     private void handleResearch() {
         switch (chooseType.getValue()) {
@@ -280,7 +283,6 @@ public class BrowserController implements Initializable {
                     startDate = fromDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 // handle cards display
                 fillPapers(keywordTf.getText(), authorTf.getText(), startDate, endDate, category);
-
             }
             case "Users" -> {
                 // form control
@@ -292,7 +294,13 @@ public class BrowserController implements Initializable {
                 fillUsers(keywordTf.getText());
             }
             case "Reading lists" -> {
-                System.out.println("show reading lists");
+                // form control
+                errorTf.setText("");
+                if (keywordTf.getText().equals("")) {
+                    errorTf.setText("You have to insert a keyword.");
+                    return;
+                }
+                fillReadingLists(keywordTf.getText());
             }
         }
     }
