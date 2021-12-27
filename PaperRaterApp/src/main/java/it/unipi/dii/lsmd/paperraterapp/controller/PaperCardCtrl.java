@@ -1,5 +1,6 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
+import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.persistence.*;
@@ -81,12 +82,12 @@ public class PaperCardCtrl {
     }
 
     private void clickOnRemoveFromReadingListBtn(MouseEvent mouseEvent) {
-        mongoMan.removePaperFromReadingList(Session.getInstance().getLoggedUser().getUsername(),
+        UpdateResult res = mongoMan.removePaperFromReadingList(Session.getInstance().getLoggedUser().getUsername(),
                 Session.getInstance().getPreviousPageReadingList().get(
                         Session.getInstance().getPreviousPageUser().size() - 1
                 ).getName(),
                 p);
-
+        System.out.println(res);
         Session.getInstance().getPreviousPageReadingList().get(
                 Session.getInstance().getPreviousPageReadingList().size() - 1).getPapers().remove(p);
 

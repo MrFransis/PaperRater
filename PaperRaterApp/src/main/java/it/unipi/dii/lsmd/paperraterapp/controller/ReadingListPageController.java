@@ -12,7 +12,9 @@ import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -91,12 +93,17 @@ public class ReadingListPageController {
     }
 
     private void clickOnDeleteBtn (MouseEvent mouseEvent) {
-        mongoMan.deleteReadingList(username.getText(), readingList.getName());
-        neoMan.deleteReadingList(readingList.getName(), username.getText());
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete Reading List?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+        alert.showAndWait();
 
-        User owner = Session.getInstance().getPreviousPageUser().get(Session.getInstance().getPreviousPageUser().size()-1);
-        owner.getReadingLists().remove(readingList);
-        clickOnBackIcon(mouseEvent);
+        if (alert.getResult() == ButtonType.YES) {
+            mongoMan.deleteReadingList(username.getText(), readingList.getName());
+            neoMan.deleteReadingList(readingList.getName(), username.getText());
+
+            User owner = Session.getInstance().getPreviousPageUser().get(Session.getInstance().getPreviousPageUser().size()-1);
+            owner.getReadingLists().remove(readingList);
+            clickOnBackIcon(mouseEvent);
+        }
     }
 
     private void clickOnBackIcon (MouseEvent mouseEvent) {

@@ -556,7 +556,7 @@ public class MongoDBManager {
         Document paperReduced = new Document("arxiv_id", p.getArxivId())
                 .append("vixra_id", p.getVixraId())
                 .append("title", p.getTitle())
-                .append("auhtors", p.getAuthors())
+                .append("authors", p.getAuthors())
                 .append("category", p.getCategory());
         Bson find = and(eq("username", user),
                 eq("readingLists.title", title));
@@ -571,24 +571,25 @@ public class MongoDBManager {
      * @param p Paper
      * @return true if the operation is successfully executed, false otherwise
      */
-    public boolean removePaperFromReadingList(String user, String title, Paper p) {
+    public UpdateResult removePaperFromReadingList(String user, String title, Paper p) {
         try {
             Document paperReduced = new Document("arxiv_id", p.getArxivId())
                     .append("vixra_id", p.getVixraId())
                     .append("title", p.getTitle())
-                    .append("auhtors", p.getAuthors());
+                    .append("authors", p.getAuthors())
+                    .append("category", p.getCategory());
 
             Bson find = and(eq("username", user),
                     eq("readingLists.title", title));
             Bson delete = Updates.pull("readingLists.$.papers", paperReduced);
-            usersCollection.updateOne(find, delete);
-            return true;
+            UpdateResult result = usersCollection.updateOne(find, delete);
+            return result;
         }
         catch (Exception e)
         {
             System.out.println("Error in removing a paper from a Reading List");
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
