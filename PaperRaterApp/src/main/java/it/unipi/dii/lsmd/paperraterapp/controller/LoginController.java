@@ -9,6 +9,7 @@ import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -20,6 +21,7 @@ public class LoginController {
     @FXML private PasswordField passwordTf;
     @FXML private Button registerButton;
     @FXML private TextField usernameTf;
+    @FXML private Label errorTf;
 
     public void initialize () {
        // neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
@@ -36,6 +38,7 @@ public class LoginController {
         if (u == null) {
             usernameTf.setText("");
             passwordTf.setText("");
+            errorTf.setText("Username or password not valid.");
             System.out.println("Username or password not valid");
         }
         else {
