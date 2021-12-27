@@ -674,7 +674,6 @@ public class MongoDBManager {
     public List<Pair<String, ReadingList>> getReadingListByKeywords (String keyword, int skipDoc, int limitDoc) {
         List<Pair<String, ReadingList>> readingLists = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeNulls().create();
-
         Bson unwind = unwind("$readingLists");
         Pattern pattern= Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
         Bson filter = Aggregates.match(Filters.regex("readingLists.title", pattern));
