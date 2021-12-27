@@ -130,7 +130,6 @@ class App(cmd.Cmd):
                 session.write_transaction(lambda tx: tx.run(query, username=user['username'], title=reading_list['title']))
 
                 n_follows = int(random.random() * 4)
-                reading_list['numFollowers'] = n_follows
                 for i in range(0, n_follows):
 
                     while True:
@@ -169,7 +168,6 @@ class App(cmd.Cmd):
                     if rand_user != row['username']:
                         break
                 session.write_transaction(lambda tx: tx.run(query, username1=row['username'], username2=rand_user))
-                db.Users.update_one({'username': rand_user}, {'$inc': {'numFollower': 1}})
 
             query = (
                     "MATCH (a:User), (b:Paper) "
