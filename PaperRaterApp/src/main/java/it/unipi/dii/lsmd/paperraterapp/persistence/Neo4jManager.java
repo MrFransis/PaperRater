@@ -95,6 +95,42 @@ public class Neo4jManager {
         return numFollowers;
     }
 
+    /**
+     * return the number of follower of the user
+     * @param username username of the user
+     * @return number of followers
+     */
+    public int getNumFollowingUser(final String username) {
+        int numFollowers;
+        try (Session session = driver.session()) {
+            numFollowers = session.writeTransaction((TransactionWork<Integer>) tx -> {
+                Result result = tx.run("MATCH (:User {name: $username})-[r:FOLLOWS]->() " +
+                        "RETURN count(r) AS numFollowers", parameters("username", username));
+                return result.next().get("numFollowers").asInt();
+            });
+        }
+        return numFollowers;
+    }
+
+    public boolean userAFollowsUserB (String userA, String userB) {
+        boolean res = false;
+        try(Session session = driver.session()) {
+            res = session.readTransaction((TransactionWork<Boolean>) tx -> {
+                Result r = tx.run("MATCH (a:User{username:$userA})-[r:FOLLOWS]->(b:User{username:$userB}) " +
+                        "RETURN COUNT(*)", parameters("userA", userA, "userB", userB));
+                Record record = r.next();
+                if (record.get(0).asInt() == 0)
+                    return false;
+                else
+                    return true;
+            });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 
     /**
      * Function that adds a Like relationship between a User and a Paper
