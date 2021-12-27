@@ -8,6 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
 public class PaperCardCtrl {
     private Paper p;
     private MongoDBManager mongoMan;
@@ -17,7 +20,6 @@ public class PaperCardCtrl {
     @FXML private Label paperTitle;
     @FXML private Label paperAuthors;
     @FXML private Text paperCategory;
-    @FXML private Text paperDate;
     @FXML private Text paperLikes;
 
     public void initialize () {
@@ -54,9 +56,7 @@ public class PaperCardCtrl {
                 tmp +=", " + author;
         }
         paperAuthors.setText(tmp);
-        paperDate.setText(String.valueOf(p.getPublished()));
         paperCategory.setText(p.getCategory());
-
         paperLikes.setText(String.valueOf(neoMan.getNumLikes(validId)));
     }
 
