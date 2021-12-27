@@ -197,28 +197,6 @@
                         </Button>
                         <HBox alignment="TOP_RIGHT" prefHeight="66.0" prefWidth="750.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <HBox fx:id="pageContainer" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label fx:id="currentPage" text="currpage">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
-                                    <Label text="/">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                       <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
-                                       </HBox.margin>
-                                    </Label>
-                                    <Label fx:id="totalPage" text="totPage">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </HBox>
                               <Button fx:id="forwardBt" disable="true" mnemonicParsing="false">
                                  <graphic>
                                     <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">

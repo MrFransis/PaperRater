@@ -4,8 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="add error flag to login">
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java" afterDir="false" />
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="remove hashmap">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +48,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -456,7 +468,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640603178443</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="remove hashmap">
+      <created>1640603921178</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1640603921178</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -476,7 +495,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="create the folder to start the app dev" />
     <MESSAGE value="create the GUI for the login and prepared the contoller" />
     <MESSAGE value="Create the register form and the controller to switch from login page to register page and the other way." />
     <MESSAGE value="add the logo at the app" />
@@ -501,7 +519,8 @@
     <MESSAGE value="users browse complete 2.0" />
     <MESSAGE value="working on papers browse" />
     <MESSAGE value="add error flag to login" />
-    <option name="LAST_COMMIT_MESSAGE" value="add error flag to login" />
+    <MESSAGE value="remove hashmap" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove hashmap" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
