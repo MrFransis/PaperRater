@@ -115,6 +115,7 @@ class App(cmd.Cmd):
                     paper_to_add = {'arxiv_id': random_paper['arxiv_id'].values[0],
                                     'vixra_id': random_paper['vixra_id'].values[0],
                                     'title': random_paper['title'].values[0],
+                                    'published': random_paper['published'].values[0],
                                     'authors': random_paper['authors'].values[0],
                                     'category': random_paper['category'].values[0]
                                     }
