@@ -18,7 +18,6 @@ public class PaperCardCtrl {
     @FXML private Label paperAuthors;
     @FXML private Text paperCategory;
     @FXML private Text paperLikes;
-    @FXML private Text paperNComments;
 
     public void initialize () {
         neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
@@ -58,9 +57,6 @@ public class PaperCardCtrl {
         paperCategory.setText(p.getCategory());
 
         paperLikes.setText(String.valueOf(neoMan.getNumLikes(validId)));
-
-        String numComments = Integer.toString(neoMan.getNumComments(validId));
-        paperNComments.setText(numComments);
     }
 
     private void clickOnPaperTitle (MouseEvent mouseEvent) {
@@ -68,5 +64,4 @@ public class PaperCardCtrl {
                 "/it/unipi/dii/lsmd/paperraterapp/layout/paperpage.fxml", mouseEvent);
         ctrl.setPaperPage(p);
     }
-
 }

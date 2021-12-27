@@ -35,7 +35,6 @@ public class ReadingListCardCtrl {
     public void setReadingListCard (ReadingList r, String owner) {
         this.r = r;
 
-
         readingListTitle.setText(r.getName());
         nFollower.setText(String.valueOf(neoMan.getNumFollowersReadingList(r.getName(), owner)));
 
@@ -74,8 +73,9 @@ public class ReadingListCardCtrl {
         String title = "N/A";
 
         for (Paper p : papers) {
-            if (p.getNumLikes() > 0) {
-                max = p.getNumLikes();
+            int numLikes = neoMan.getNumLikes(p.getId());
+            if (numLikes > max) {
+                max = numLikes;
                 title = p.getTitle();
             }
         }

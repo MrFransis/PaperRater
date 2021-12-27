@@ -560,7 +560,7 @@ public class Neo4jManager {
                 while(result.hasNext()){
                     Record r = result.next();
                     Paper snap = new Paper(r.get("arxiv_id").asString(), r.get("vixra_id").asString(),
-                                        r.get("title").asString(), null, null, null, null, null, 0);
+                                        r.get("title").asString(), null, null, null, null, null);
                     papersSnap.add(snap);
                 }
 

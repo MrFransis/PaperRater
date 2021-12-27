@@ -11,10 +11,9 @@ public class Paper {
     private List<String> authors;
     private Date published;
     private List<Comment> comments;
-    private int numLikes;
 
     public Paper(String arxiv_id, String vixra_id, String title, String _abstract, String category,
-                 List<String> authors, Date published, List<Comment> comments, int numLikes)
+                 List<String> authors, Date published, List<Comment> comments)
     {
         this.arxiv_id = arxiv_id;
         this.vixra_id = vixra_id;
@@ -24,7 +23,6 @@ public class Paper {
         this.authors = authors;
         this.published = published;
         this.comments = comments;
-        this.numLikes = numLikes;
     }
 
     public String getArxivId() {
@@ -64,8 +62,6 @@ public class Paper {
         return comments;
     }
 
-    public int getNumLikes() { return numLikes; }
-
     public void setArxivId(String arxiv_id) { this.arxiv_id = arxiv_id; }
 
     public void setVixraId(String vixra_id) { this.vixra_id = vixra_id; }
@@ -81,8 +77,6 @@ public class Paper {
     public void setPublished(Date published) { this.published = published; }
 
     public void setComments(List<Comment> comments) { this.comments = comments; }
-
-    public void setNumLikes(int numLikes) { this.numLikes = numLikes; }
 
     @Override
     public String toString() {
