@@ -55,6 +55,7 @@ public class ReadingListPageController {
         Session.getInstance().getPreviousPageReadingList().add(readingList);
 
         if (!readingList.getPapers().isEmpty()) {
+            papersBox.getChildren().clear();
             Iterator<Paper> it = readingList.getPapers().iterator();
 
             while(it.hasNext()) {
@@ -69,7 +70,7 @@ public class ReadingListPageController {
             }
         }
         else {
-            papersBox.getChildren().add(new Label("No Reading Lists :("));
+            papersBox.getChildren().add(new Label("No Papers :("));
         }
     }
 
@@ -80,7 +81,7 @@ public class ReadingListPageController {
             pane = loader.load();
             PaperCardCtrl ctrl = loader.getController();
             boolean showDeleteBtn = Session.getInstance().getLoggedUser().getUsername().equals(username.getText());
-            ctrl.setPaperCard(p, showDeleteBtn);
+            ctrl.setPaperCard(p, showDeleteBtn, this);
 
         }
         catch (Exception e) {

@@ -17,6 +17,7 @@ public class PaperCardCtrl {
     private Paper p;
     private MongoDBManager mongoMan;
     private Neo4jManager neoMan;
+    private ReadingListPageController readingListPageCtrl;
 
     @FXML private Label paperId;
     @FXML private Label paperTitle;
@@ -33,7 +34,7 @@ public class PaperCardCtrl {
         removeFromReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnRemoveFromReadingListBtn(mouseEvent));
     }
 
-    public void setPaperCard (Paper p, boolean showDeleteBtn) {
+    public void setPaperCard (Paper p, boolean showDeleteBtn, ReadingListPageController readingListPageCtrl) {
         this.p = p;
 
         String validId;
@@ -65,9 +66,12 @@ public class PaperCardCtrl {
 
         if (showDeleteBtn) {
             removeFromReadingListBtn.setVisible(true);
+            this.readingListPageCtrl = readingListPageCtrl;
         }
-        else
+        else {
             removeFromReadingListBtn.setVisible(false);
+            this.readingListPageCtrl = null;
+        }
     }
 
     private void clickOnPaperTitle (MouseEvent mouseEvent) {
@@ -83,6 +87,13 @@ public class PaperCardCtrl {
                 ).getName(),
                 p);
 
-        Session.getInstance().getPreviousPageReadingList().remove(p);
+        Session.getInstance().getPreviousPageReadingList().get(
+                Session.getInstance().getPreviousPageReadingList().size() - 1).getPapers().remove(p);
+
+        // Refresh ReadingListPage
+        readingListPageCtrl.setReadingList(Session.getInstance().getPreviousPageReadingList().get(
+                Session.getInstance().getPreviousPageReadingList().size() - 1
+                ),
+                Session.getInstance().getLoggedUser().getUsername());
     }
 }

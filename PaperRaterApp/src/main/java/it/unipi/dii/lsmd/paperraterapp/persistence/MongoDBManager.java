@@ -579,8 +579,8 @@ public class MongoDBManager {
                     .append("auhtors", p.getAuthors());
 
             Bson find = and(eq("username", user),
-                    eq("reading_lists.title", title));
-            Bson delete = Updates.pull("reading_lists.$.papers", paperReduced);
+                    eq("readingLists.title", title));
+            Bson delete = Updates.pull("readingLists.$.papers", paperReduced);
             usersCollection.updateOne(find, delete);
             return true;
         }
