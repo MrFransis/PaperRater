@@ -77,6 +77,12 @@ public class PaperCardCtrl {
     }
 
     private void clickOnRemoveFromReadingListBtn(MouseEvent mouseEvent) {
-        System.out.print("REMOVE");
+        mongoMan.removePaperFromReadingList(Session.getInstance().getLoggedUser().getUsername(),
+                Session.getInstance().getPreviousPageReadingList().get(
+                        Session.getInstance().getPreviousPageUser().size() - 1
+                ).getName(),
+                p);
+
+        Session.getInstance().getPreviousPageReadingList().remove(p);
     }
 }
