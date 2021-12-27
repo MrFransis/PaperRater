@@ -222,7 +222,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="785.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <GridPane fx:id="cardsGrid" alignment="CENTER" gridLinesVisible="true" prefHeight="627.0" prefWidth="930.0">
+                        <GridPane fx:id="cardsGrid" alignment="CENTER" prefHeight="627.0" prefWidth="930.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>

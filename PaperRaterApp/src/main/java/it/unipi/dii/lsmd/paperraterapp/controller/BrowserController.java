@@ -151,7 +151,7 @@ public class BrowserController implements Initializable {
         return pane;
     }
 
-    private Pane loadReadingList (ReadingList readingList, String owner) {
+    private Pane loadReadingListsCard (ReadingList readingList, String owner) {
         Pane pane = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml"));
@@ -268,21 +268,22 @@ public class BrowserController implements Initializable {
     private void fillReadingLists(String keyword) {
         // clean old settings
         cardsGrid.setAlignment(Pos.CENTER);
-        cardsGrid.setVgap(40);
-        cardsGrid.setPadding(new Insets(30,40,30,100));
+        cardsGrid.setVgap(20);
+        cardsGrid.setPadding(new Insets(30,40,30,160));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
         // load papers
-        List<Pair<String, ReadingList>> readingLists = manager.getReadingListByKeywords(keyword);
+        List<Pair<String, ReadingList>> readingLists = manager.getReadingListByKeywords(keyword, 3, 3*page);
         if (readingLists.size() != 3)
             forwardBt.setDisable(true);
         int row = 0;
-        //for (cardInfo : readingLists) {
-        //    Pane card = loa();
-        //    cardsGrid.add(card, 0, row);
-        //    row++;
-        //}
+
+        for (Pair<String, ReadingList> cardInfo : readingLists) {
+            Pane card = loadReadingListsCard(cardInfo.getValue(), cardInfo.getKey());
+            cardsGrid.add(card, 0, row);
+            row++;
+        }
     }
 
     private void handleResearch() {
