@@ -2,6 +2,7 @@ package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
+import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.persistence.*;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
@@ -78,6 +79,6 @@ public class ReadingListCardCtrl {
         // Change scene View Reading List
         ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
-        ctrl.setReadingList(r);
+        ctrl.setReadingList(r, Session.getInstance().getPreviousPageUser().getUsername());
     }
 }
