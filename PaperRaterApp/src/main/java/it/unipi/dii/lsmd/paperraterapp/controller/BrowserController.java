@@ -19,7 +19,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -49,14 +48,10 @@ public class BrowserController implements Initializable {
     @FXML private HBox dateContainer;
     @FXML private Label errorTf;
     @FXML private GridPane cardsGrid;
-    @FXML private Label currentPage;
-    @FXML private Label totalPage;
-    @FXML private HBox pageContainer;
 
-    private final MongoDBManager manager = new MongoDBManager(MongoDriver.getInstance().openConnection());
-    private final User user = Session.getInstance().getLoggedUser();
-    private int page = 0;
-    private int totPage;
+    private MongoDBManager manager;
+    private User user;
+    private int page;
 
     @FXML
     void goToProfilePage(MouseEvent event) {
@@ -70,7 +65,6 @@ public class BrowserController implements Initializable {
     void activeResearch() {
         searchBt.setDisable(false);
         backBt.setDisable(true);
-        page = 0;
         switch (chooseType.getValue()) {
             case "Papers" -> {
                 authorContainer.setVisible(true);
@@ -110,14 +104,16 @@ public class BrowserController implements Initializable {
 
     @FXML
     void startResearch() {
-        page = 0;
         forwardBt.setDisable(false);
         backBt.setDisable(true);
+        page = 0;
         handleResearch();
     }
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
+        manager = new MongoDBManager(MongoDriver.getInstance().openConnection());
+        user = Session.getInstance().getLoggedUser();
         loadSpecialQuery();
         hideFilterForm();
         forwardBt.setOnMouseClicked(mouseEvent -> goForward());
@@ -205,7 +201,6 @@ public class BrowserController implements Initializable {
         dateContainer.setVisible(false);
         keywordContainer.setVisible(false);
         categoryContainer.setVisible(false);
-        pageContainer.setVisible(false);
     }
 
     private void fillUsers(String keyword) {
@@ -221,7 +216,8 @@ public class BrowserController implements Initializable {
         cardsGrid.getColumnConstraints().add(constraints);
         // load users
         List<User> usersList = manager.getUsersByKeyword(keyword, page);
-        System.out.println("Loading users...");
+        if (usersList.size() != 8)
+            forwardBt.setDisable(true);
         int row = 0;
         int col = 0;
         for (User u : usersList) {
@@ -282,8 +278,6 @@ public class BrowserController implements Initializable {
                     endDate = toDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 if (fromDate.getValue() != null)
                     startDate = fromDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                //show page
-
                 // handle cards display
                 fillPapers(keywordTf.getText(), authorTf.getText(), startDate, endDate, category);
 
@@ -295,21 +289,7 @@ public class BrowserController implements Initializable {
                     errorTf.setText("You have to insert a keyword.");
                     return;
                 }
-                // show page
-                int totCards = manager.getNumUsers(keywordTf.getText());
-                if (totCards % 8 == 0)
-                    totPage = totCards / 8;
-                else
-                    totPage = (totCards / 8) + 1;
-                currentPage.setText(Integer.toString(page+1));
-                totalPage.setText(Integer.toString(totPage));
-                pageContainer.setVisible(true);
-                // handle cards display
                 fillUsers(keywordTf.getText());
-                if (page == totPage-1)
-                    forwardBt.setDisable(true);
-                if (page == 0)
-                    backBt.setDisable(true);
             }
             case "Reading lists" -> {
                 System.out.println("show reading lists");
@@ -319,14 +299,14 @@ public class BrowserController implements Initializable {
 
     private void goForward () {
         page++;
-        currentPage.setText(Integer.toString(page+1));
         backBt.setDisable(false);
         handleResearch();
     }
 
     private void goBack () {
         page--;
-        currentPage.setText(Integer.toString(page+1));
+        if (page == 0)
+            backBt.setDisable(true);
         forwardBt.setDisable(false);
         handleResearch();
     }
