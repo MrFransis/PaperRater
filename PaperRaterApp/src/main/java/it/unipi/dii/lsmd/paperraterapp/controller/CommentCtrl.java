@@ -4,6 +4,8 @@ import it.unipi.dii.lsmd.paperraterapp.model.Comment;
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -23,6 +25,7 @@ public class CommentCtrl {
     private Comment c;
     private Paper paper;
     private MongoDBManager mongoMan;
+    private Neo4jManager neoMan;
 
     @FXML private Label username;
     @FXML private Text timestamp;
@@ -44,6 +47,7 @@ public class CommentCtrl {
         this.paper = paper;
         if(Objects.equals(user, c.getUsername())) {
             mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
+            neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
             bin.setVisible(true);
             modify.setVisible(true);
         } else {
@@ -58,6 +62,7 @@ public class CommentCtrl {
 
     private void clickOnBin (MouseEvent mouseEvent) {
         mongoMan.deleteComment(paper, c);
+        neoMan.deleteHasCommented(c.getUsername(), paper.getId());
         ((VBox) commentBox.getParent()).getChildren().remove(commentBox);
     }
 

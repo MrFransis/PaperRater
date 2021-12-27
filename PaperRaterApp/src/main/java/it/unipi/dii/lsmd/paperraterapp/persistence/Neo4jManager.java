@@ -131,6 +131,29 @@ public class Neo4jManager {
         return res;
     }
 
+    /**
+     * Function that return true if exist a relation user-like->paper
+     * @param user Username
+     * @param id Paper_id
+     */
+    public boolean userLikePaper (String user, String id){
+        boolean res = false;
+        try(Session session = driver.session()){
+            res = session.readTransaction((TransactionWork<Boolean>) tx -> {
+                Result r = tx.run("MATCH (:User{name:$user})-[r:LIKES]->(p:Paper)  where (p.arxiv_id = $id OR p.vixra_id =$id) " +
+                        "RETURN COUNT(*)", parameters("user", user, "id", id));
+                Record record = r.next();
+                if (record.get(0).asInt() == 0)
+                    return false;
+                else
+                    return true;
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return res;
+    }
 
     /**
      * Function that adds a Like relationship between a User and a Paper
@@ -142,7 +165,7 @@ public class Neo4jManager {
             session.writeTransaction((TransactionWork<Void>) tx -> {
                 tx.run("MATCH (a:User), (b:Paper) " +
                                 "WHERE a.name = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) " +
-                                "CREATE (a)-[r:LIKES]->(b)",
+                                "MERGE (a)-[r:LIKES]->(b)",
                         parameters("username", u.getUsername(),
                                 "arxiv_id", p.getArxivId(),
                                 "vixra_id", p.getVixraId()));
@@ -157,7 +180,7 @@ public class Neo4jManager {
     public boolean unlike(User u, Paper p) {
         try (Session session = driver.session()) {
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User{username:$username}-[r:LIKES]->" +
+                tx.run("MATCH (u:User{name:$username})-[r:LIKES]->" +
                                 "(p:Paper{arxiv_id:$arxiv_id,vixra_id:$vixra_id}) " +
                                 " DELETE r",
                         parameters("username", u.getUsername(),
