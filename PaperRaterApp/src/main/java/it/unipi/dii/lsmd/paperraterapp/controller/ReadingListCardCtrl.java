@@ -16,8 +16,7 @@ import java.util.Map;
 public class ReadingListCardCtrl {
     ReadingList r;
     private MongoDBManager mongoMan;
-    private Neo4jManagerE neoMan;
-    private Neo4jManagerT neoMan1;
+    private Neo4jManager neoMan;
 
     @FXML private Label readingListTitle;
     @FXML private Text nFollower;
@@ -26,8 +25,7 @@ public class ReadingListCardCtrl {
     @FXML private Text mostFamousPaperTitle;
 
     public void initialize () {
-        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
-        neoMan1 = new Neo4jManagerT(Neo4jDriverE.getInstance().openConnection());       // da unire
+        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         readingListTitle.setOnMouseClicked(mouseEvent -> clickOnReadingListTitle(mouseEvent));
@@ -40,7 +38,7 @@ public class ReadingListCardCtrl {
         readingListTitle.setText(r.getName());
 
         // set num followers
-        String numFollowers = Integer.toString(neoMan1.getNumFollowersReadingList(r.getName(), owner));
+        String numFollowers = Integer.toString(neoMan.getNumFollowersReadingList(r.getName(), owner));
         nFollower.setText(numFollowers);
 
         // set most common category

@@ -11,8 +11,7 @@ import javafx.scene.text.Text;
 public class PaperCardCtrl {
     private Paper p;
     private MongoDBManager mongoMan;
-    private Neo4jManagerE neoMan;           // da unire
-    private Neo4jManagerT neoMan1;
+    private Neo4jManager neoMan;           // da unire
 
     @FXML private Label paperId;
     @FXML private Label paperTitle;
@@ -22,8 +21,7 @@ public class PaperCardCtrl {
     @FXML private Text paperNComments;
 
     public void initialize () {
-        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
-        neoMan1 = new Neo4jManagerT(Neo4jDriverE.getInstance().openConnection());       // da unire
+        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         paperTitle.setOnMouseClicked(mouseEvent -> clickOnPaperTitle(mouseEvent));
@@ -59,11 +57,11 @@ public class PaperCardCtrl {
         paperCategory.setText(p.getCategory());
 
         // set num likes
-        String numLikes = Integer.toString(neoMan1.getNumLikes(validId));
+        String numLikes = Integer.toString(neoMan.getNumLikes(validId));
         paperLikes.setText(numLikes);
 
         // set num comments
-        String numComments = Integer.toString(neoMan1.getNumComments(validId));
+        String numComments = Integer.toString(neoMan.getNumComments(validId));
         paperNComments.setText(numComments);
     }
 

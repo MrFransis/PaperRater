@@ -5,8 +5,8 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriverE;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class RegisterController {
     private MongoDBManager mongoMan;
-    private Neo4jManagerE neoMan;
+    private Neo4jManager neoMan;
 
     @FXML private TextField ageTf;
     @FXML private TextField emailTf;
@@ -31,7 +31,7 @@ public class RegisterController {
 
 
     public void initialize () {
-        neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
     }
 

@@ -4,7 +4,7 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +15,7 @@ import javafx.scene.control.TextField;
 public class LoginController {
 
     private MongoDBManager mongoMan;
-    private Neo4jManagerE neoMan;
+    private Neo4jManager neoMan;
     @FXML private Button loginButton;
     @FXML private PasswordField passwordTf;
     @FXML private Button registerButton;

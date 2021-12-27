@@ -4,7 +4,7 @@ import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.lsmd.paperraterapp.model.*;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,7 +24,7 @@ public class PaperPageController implements Initializable {
     private Paper paper;
     private User user;
     private MongoDBManager mongoMan;
-    private Neo4jManagerE neoMan;
+    private Neo4jManager neoMan;
 
     @FXML private ImageView backIcon;
     @FXML private Text title;

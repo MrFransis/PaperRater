@@ -5,7 +5,7 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManagerE;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +25,7 @@ import java.util.Optional;
 public class ProfilePageController {
     private User user;
     private MongoDBManager mongoMan;
-    private Neo4jManagerE neoMan;
+    private Neo4jManager neoMan;
 
     @FXML private ImageView backIcon;
     @FXML private ImageView editIcon;
