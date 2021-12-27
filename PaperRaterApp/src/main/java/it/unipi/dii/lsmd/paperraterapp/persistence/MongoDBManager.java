@@ -810,7 +810,7 @@ public class MongoDBManager {
      * @param top (positive integer)
      * @return HashMap with the category and the number of comments
      */
-    public HashMap<String, Integer> summaryCategoriesByComments(String period, int top) {
+    public List<Pair<String, Integer>> summaryCategoriesByComments(String period, int top) {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
@@ -824,9 +824,9 @@ public class MongoDBManager {
         }
         String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        HashMap<String, Integer> results = new HashMap<>();
+        List<Pair<String, Integer>> results = new ArrayList<>();
         Consumer<Document> rankCategories = doc ->
-                results.put((String) doc.get("_id"), (Integer) doc.get("tots"));
+                results.add(new Pair<>((String) doc.get("_id"), (Integer) doc.get("tots")));
 
         Bson unwind = unwind("$comments");
         Bson filter = match(gte("comments.timestamp", filterDate));
@@ -844,7 +844,7 @@ public class MongoDBManager {
      * @param top (positive integer)
      * @return HashMap with the title and the number of comments
      */
-    public HashMap<String, Integer> summaryPapersByComments(String period, int top) {
+    public List<Pair<String, Integer>> summaryPapersByComments(String period, int top) {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
@@ -858,9 +858,9 @@ public class MongoDBManager {
         }
         String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        HashMap<String, Integer> results = new HashMap<>();
+        List<Pair<String, Integer>> results = new ArrayList<>();
         Consumer<Document> rankPapers = doc ->
-                results.put((String) doc.get("_id"), (Integer) doc.get("tots"));
+                results.add(new Pair<>((String) doc.get("_id"), (Integer) doc.get("tots")));
 
         Bson unwind = unwind("$comments");
         Bson filter = match(gte("comments.timestamp", filterDate));
