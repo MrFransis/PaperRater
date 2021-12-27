@@ -4,6 +4,7 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
@@ -24,7 +25,7 @@ public class LoginController {
     @FXML private Label errorTf;
 
     public void initialize () {
-       // neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
     }
 

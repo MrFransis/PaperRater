@@ -51,6 +51,7 @@ public class BrowserController implements Initializable {
     @FXML private HBox dateContainer;
     @FXML private Label errorTf;
     @FXML private GridPane cardsGrid;
+    @FXML private Label logoutLabel;
 
     private MongoDBManager manager;
     private User user;
@@ -121,6 +122,7 @@ public class BrowserController implements Initializable {
         hideFilterForm();
         forwardBt.setOnMouseClicked(mouseEvent -> goForward());
         backBt.setOnMouseClicked(mouseEvent -> goBack());
+        logoutLabel.setOnMouseClicked(mouseEvent -> logout(mouseEvent));
     }
 
     private Pane loadUsersCard (User user) {
@@ -348,5 +350,10 @@ public class BrowserController implements Initializable {
             backBt.setDisable(true);
         forwardBt.setDisable(false);
         handleResearch();
+    }
+
+    private void logout(MouseEvent event) {
+        Session.resetInstance();
+        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml", event);
     }
 }
