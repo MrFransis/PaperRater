@@ -238,8 +238,7 @@ public class BrowserController implements Initializable {
         cardsGrid.getColumnConstraints().clear();
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(40);
-
-        cardsGrid.setPadding(new Insets(30,40,30,160));
+        cardsGrid.setPadding(new Insets(30,40,30,100));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
@@ -255,6 +254,8 @@ public class BrowserController implements Initializable {
             row++;
         }
     }
+
+    //private void fillReadingLists
 
     private void handleResearch() {
         switch (chooseType.getValue()) {
@@ -282,7 +283,6 @@ public class BrowserController implements Initializable {
                     startDate = fromDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 // handle cards display
                 fillPapers(keywordTf.getText(), authorTf.getText(), startDate, endDate, category);
-
             }
             case "Users" -> {
                 // form control
@@ -294,7 +294,13 @@ public class BrowserController implements Initializable {
                 fillUsers(keywordTf.getText());
             }
             case "Reading lists" -> {
-                System.out.println("show reading lists");
+                // form control
+                errorTf.setText("");
+                if (keywordTf.getText().equals("")) {
+                    errorTf.setText("You have to insert a keyword.");
+                    return;
+                }
+                fillReadingLists(keywordTf.getText());
             }
         }
     }
