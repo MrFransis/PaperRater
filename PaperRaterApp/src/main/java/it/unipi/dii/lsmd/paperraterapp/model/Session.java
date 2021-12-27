@@ -28,11 +28,11 @@ public class Session {
     }
 
     public void setPreviousPageUser(User u) {
-        instance.loggedUser = u;
+        instance.previousPageUser = u;
     }
 
     public User getPreviousPageUser() {
-        return loggedUser;
+        return previousPageUser;
     }
 
     /*
