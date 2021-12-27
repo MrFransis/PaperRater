@@ -299,7 +299,7 @@ public class Neo4jManager {
      * @param title name of the reading list
      * @param username owner of the reading list
      */
-    public void createReadingList (final String title, final String username) {
+    public boolean createReadingList (final String title, final String username) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
                 tx.run("MATCH (owner:User {name: $username}) " +
@@ -310,6 +310,11 @@ public class Neo4jManager {
                 return null;
             });
         }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**
