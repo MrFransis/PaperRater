@@ -36,7 +36,7 @@
                   <Font size="36.0" />
                </font>
             </Label>
-            <Label fx:id="errorTf" alignment="CENTER" layoutX="14.0" layoutY="366.0" prefHeight="20.0" prefWidth="279.0" textFill="RED">
+            <Label fx:id="errorTf" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="359.0" prefHeight="27.0" prefWidth="287.0" textFill="RED">
                <font>
                   <Font size="14.0" />
                </font>
