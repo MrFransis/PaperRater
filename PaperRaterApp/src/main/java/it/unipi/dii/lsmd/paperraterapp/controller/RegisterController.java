@@ -51,7 +51,7 @@ public class RegisterController {
         mongoMan.addUser(newUser);
 
         // add to neo4j
-        Session.getInstance().setUser(newUser);
+        Session.getInstance().setLoggedUser(newUser);
         Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
     }
 

@@ -42,7 +42,7 @@ public class LoginController {
             System.out.println("Username or password not valid");
         }
         else {
-            Session.getInstance().setUser(u);
+            Session.getInstance().setLoggedUser(u);
             Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
         }
     }

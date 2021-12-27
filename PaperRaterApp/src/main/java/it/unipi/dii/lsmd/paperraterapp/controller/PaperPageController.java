@@ -5,6 +5,7 @@ import it.unipi.dii.lsmd.paperraterapp.model.*;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
+import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -54,7 +55,11 @@ public class PaperPageController implements Initializable {
 
     public void setPaperPage (Paper p) {
         this.paper = mongoMan.getPaperById(p.getId());
-        this.user = Session.getInstance().getUser();
+        this.user = Session.getInstance().getLoggedUser();
+
+        // Push
+        Session.getInstance().getPreviousPagePaper().add(p);
+
         title.setText(paper.getTitle());
         id.setText(paper.getId());
         category.setText(paper.getCategory());
@@ -98,11 +103,27 @@ public class PaperPageController implements Initializable {
 
     private void clickOnBackIcon (MouseEvent mouseEvent) {
         System.out.println("Back");
+        // Pop
+        Session.getInstance().getPreviousPagePaper().remove(
+                Session.getInstance().getPreviousPagePaper().size() - 1);
+
+        if (Session.getInstance().getPreviousPageReadingList().isEmpty())
+            Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
+        else {
+            ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(
+                    "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
+            String previousUser = Session.getInstance().getPreviousPageUser().get(
+                    Session.getInstance().getPreviousPageUser().size()-1).getUsername();
+
+            ctrl.setReadingList(Session.getInstance().getPreviousPageReadingList().remove(
+                    Session.getInstance().getPreviousPageReadingList().size() - 1),
+                    previousUser);
+        }
     }
 
     private void clickOnAddToReadingListBtn (MouseEvent mouseEvent) {
-        if (!Session.getInstance().getUser().getReadingLists().isEmpty()) {
-            Iterator<ReadingList> it = Session.getInstance().getUser().getReadingLists().iterator();
+        if (!Session.getInstance().getLoggedUser().getReadingLists().isEmpty()) {
+            Iterator<ReadingList> it = Session.getInstance().getLoggedUser().getReadingLists().iterator();
             List<String> choices = new ArrayList<>();
             while(it.hasNext()) {
                 choices.add(it.next().getName());
@@ -114,7 +135,7 @@ public class PaperPageController implements Initializable {
 
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()){
-                UpdateResult res = mongoMan.addPaperToReadingList(Session.getInstance().getUser().getUsername(), result.get(), paper);
+                UpdateResult res = mongoMan.addPaperToReadingList(Session.getInstance().getLoggedUser().getUsername(), result.get(), paper);
                 if(res.getModifiedCount() == 0){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information Dialog");

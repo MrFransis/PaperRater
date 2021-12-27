@@ -19,12 +19,14 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
 
 public class BrowserController implements Initializable {
 
@@ -52,7 +54,7 @@ public class BrowserController implements Initializable {
     @FXML private HBox pageContainer;
 
     private final MongoDBManager manager = new MongoDBManager(MongoDriver.getInstance().openConnection());
-    private final User user = Session.getInstance().getUser();
+    private final User user = Session.getInstance().getLoggedUser();
     private int page = 0;
     private int totPage;
 

@@ -74,11 +74,10 @@ public class ReadingListCardCtrl {
     }
 
     private void clickOnReadingListTitle (MouseEvent mouseEvent) {
-        System.out.println("Click on Reading List " + r.getName());
-
-        // Change scene View Reading List
         ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
-        ctrl.setReadingList(r, Session.getInstance().getPreviousPageUser().getUsername());
+        String previousUser = Session.getInstance().getPreviousPageUser().get(
+                Session.getInstance().getPreviousPageUser().size()-1).getUsername();
+        ctrl.setReadingList(r, previousUser);
     }
 }

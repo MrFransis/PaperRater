@@ -33,6 +33,9 @@ public class ReadingListPageController {
         this.username.setText(username);
         readingListTitle.setText(readingList.getName());
 
+        // Push
+        Session.getInstance().getPreviousPageReadingList().add(readingList);
+
         if (!readingList.getPapers().isEmpty()) {
             Iterator<Paper> it = readingList.getPapers().iterator();
 
@@ -68,8 +71,17 @@ public class ReadingListPageController {
     }
 
     private void clickOnBackIcon (MouseEvent mouseEvent) {
-        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
-                "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", mouseEvent);
-        ctrl.setProfilePage(Session.getInstance().getPreviousPageUser());
+        // Pop
+        Session.getInstance().getPreviousPageReadingList().remove(
+                Session.getInstance().getPreviousPageReadingList().size() - 1);
+
+        if (Session.getInstance().getPreviousPageUser().isEmpty())
+            Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
+        else {
+            ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
+                        "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", mouseEvent);
+            ctrl.setProfilePage(Session.getInstance().getPreviousPageUser().remove(
+                    Session.getInstance().getPreviousPagePaper().size()));
+        }
     }
 }
