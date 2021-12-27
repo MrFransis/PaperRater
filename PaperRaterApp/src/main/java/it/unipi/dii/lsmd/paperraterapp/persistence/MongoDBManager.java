@@ -534,7 +534,7 @@ public class MongoDBManager {
      */
     public boolean deleteReadingList(String username, String title){
         Bson filter = new Document().append("username", username);
-        Bson fields = new Document().append("reading_lists", new Document("title", title));
+        Bson fields = new Document().append("readingLists", new Document("title", title));
         Bson update = new Document("$pull", fields);
         UpdateResult updateResult = usersCollection.updateOne(filter, update);
         if (updateResult.getModifiedCount() == 0){
