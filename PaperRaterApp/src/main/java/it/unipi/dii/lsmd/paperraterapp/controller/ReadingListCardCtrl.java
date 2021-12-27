@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ReadingListCardCtrl {
-    ReadingList r;
+    private ReadingList r;
+    private String owner;
     private MongoDBManager mongoMan;
     private Neo4jManager neoMan;
 
@@ -35,6 +36,7 @@ public class ReadingListCardCtrl {
 
     public void setReadingListCard (ReadingList r, String owner) {
         this.r = r;
+        this.owner = owner;
         readingListTitle.setText(r.getName());
         nFollower.setText(String.valueOf(neoMan.getNumFollowersReadingList(r.getName(), owner)));
         ownerText.setText(owner);
@@ -87,8 +89,7 @@ public class ReadingListCardCtrl {
     private void clickOnReadingListTitle (MouseEvent mouseEvent) {
         ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
-        String previousUser = Session.getInstance().getPreviousPageUser().get(
-                Session.getInstance().getPreviousPageUser().size()-1).getUsername();
-        ctrl.setReadingList(r, previousUser);
+
+        ctrl.setReadingList(r, owner);
     }
 }

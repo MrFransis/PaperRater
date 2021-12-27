@@ -274,7 +274,7 @@ public class BrowserController implements Initializable {
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
         // load papers
-        List<Pair<String, ReadingList>> readingLists = manager.getReadingListByKeywords(keyword, 3, 3*page);
+        List<Pair<String, ReadingList>> readingLists = manager.getReadingListByKeywords(keyword, 3*page, 3);
         if (readingLists.size() != 3)
             forwardBt.setDisable(true);
         int row = 0;
