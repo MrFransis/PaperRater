@@ -4,6 +4,7 @@ import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.lsmd.paperraterapp.model.*;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
@@ -44,11 +45,11 @@ public class PaperPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //neoMan = new Neo4jManagerE(Neo4jDriverE.getInstance().openConnection());
+        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
         backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));
         addToReadingList.setOnMouseClicked(mouseEvent -> clickOnAddToReadingListBtn(mouseEvent));
-        likebtn.setOnMouseClicked(mouseEvent -> clickOnLike(mouseEvent));
+        likebtn.setOnMouseClicked(mouseEvent -> clickLike(mouseEvent));
         comment.setOnMouseClicked(mouseEvent -> clickOnAddCommentBtn(mouseEvent));
         scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
@@ -67,6 +68,11 @@ public class PaperPageController implements Initializable {
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         published.setText(formatter.format(paper.getPublished()));
         abstractPaper.setText(paper.getAbstract());
+        if(neoMan.userLikePaper(user.getUsername(), paper.getId()))
+            likebtn.setText("Unlike");
+        else
+            likebtn.setText("Like");
+        likes.setText(Integer.toString(neoMan.getNumLikes(paper.getId())));
         setCommentBox();
     }
 
@@ -170,7 +176,15 @@ public class PaperPageController implements Initializable {
         }
     }
 
-    private void clickOnLike (MouseEvent mouseEvent){
-        System.out.println("Like");
+    private void clickLike (MouseEvent mouseEvent){
+        if(Objects.equals(likebtn.getText(), "Like")){
+            neoMan.like(user, paper);
+            likes.setText(Integer.toString(neoMan.getNumLikes(paper.getId())));
+            likebtn.setText("UnLike");
+        }else{
+            neoMan.unlike(user, paper);
+            likes.setText(Integer.toString(neoMan.getNumLikes(paper.getId())));
+            likebtn.setText("Like");
+        }
     }
 }
