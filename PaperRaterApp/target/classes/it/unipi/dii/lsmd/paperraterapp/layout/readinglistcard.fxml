@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="400.0" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ReadingListCardCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="180.0" prefWidth="550.0" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ReadingListCardCtrl">
    <children>
       <HBox alignment="CENTER" prefHeight="36.0" prefWidth="400.0" AnchorPane.bottomAnchor="144.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -31,24 +31,21 @@
             </Label>
          </children>
       </HBox>
-      <HBox alignment="CENTER_LEFT" layoutX="12.0" layoutY="36.0" prefHeight="36.0" prefWidth="376.0">
+      <HBox alignment="CENTER_LEFT" layoutX="12.0" layoutY="36.0" prefHeight="25.0" prefWidth="376.0">
          <children>
-            <Label alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="36.0" prefWidth="60.0" stylesheets="@../style/main.css" text="by:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-               <padding>
-                  <Insets left="10.0" top="10.0" />
-               </padding>
+            <Label text="By:" textAlignment="CENTER">
+               <HBox.margin>
+                  <Insets left="30.0" right="10.0" />
+               </HBox.margin>
             </Label>
-            <Text fx:id="ownerText" strokeType="OUTSIDE" strokeWidth="0.0" text="Owner" wrappingWidth="281.783203125">
+            <Text fx:id="ownerText" strokeType="OUTSIDE" strokeWidth="0.0" text="Owner" wrappingWidth="312.783203125" HBox.hgrow="ALWAYS">
                <font>
                   <Font size="14.0" />
                </font>
             </Text>
          </children>
       </HBox>
-      <HBox alignment="CENTER" layoutY="80.0" prefHeight="100.0" prefWidth="280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <HBox alignment="CENTER" layoutY="59.0" prefHeight="121.0" prefWidth="550.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="95.0" prefWidth="148.0">
                <children>
@@ -76,7 +73,7 @@
                   <Insets top="5.0" />
                </HBox.margin>
             </VBox>
-            <VBox alignment="TOP_CENTER" prefHeight="95.0" prefWidth="233.0">
+            <VBox alignment="TOP_CENTER" prefHeight="95.0" prefWidth="335.0">
                <children>
                   <Text fx:id="mostCommonCategory" strokeType="OUTSIDE" strokeWidth="0.0" text="Category" textAlignment="CENTER" wrappingWidth="177.97781372070312">
                      <font>
@@ -88,7 +85,7 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </Label>
-                  <Text fx:id="mostFamousPaperTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Paper title" textAlignment="CENTER" wrappingWidth="230.0">
+                  <Text fx:id="mostFamousPaperTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Paper title" textAlignment="CENTER" wrappingWidth="322.0">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
