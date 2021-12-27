@@ -1,6 +1,7 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
+import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
 import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
@@ -20,6 +21,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.util.Pair;
 
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -141,7 +143,21 @@ public class BrowserController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml"));
             pane = loader.load();
             PaperCardCtrl ctrl = loader.getController();
-            ctrl.setPaperCard(paper);
+            ctrl.setPaperCard(paper, false);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pane;
+    }
+
+    private Pane loadReadingList (ReadingList readingList, String owner) {
+        Pane pane = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml"));
+            pane = loader.load();
+            ReadingListCardCtrl ctrl = loader.getController();
+            ctrl.setReadingListCard(readingList, owner);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -205,9 +221,6 @@ public class BrowserController implements Initializable {
     }
 
     private void fillUsers(String keyword) {
-        // clean old settings
-        cardsGrid.getChildren().clear();
-        cardsGrid.getColumnConstraints().clear();
         // set new layout
         cardsGrid.setHgap(20);
         cardsGrid.setVgap(20);
@@ -233,9 +246,6 @@ public class BrowserController implements Initializable {
     }
 
     private void fillPapers(String title, String author, String start_date, String end_date, String category) {
-        // clean old settings
-        cardsGrid.getChildren().clear();
-        cardsGrid.getColumnConstraints().clear();
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(40);
         cardsGrid.setPadding(new Insets(30,40,30,100));
@@ -255,10 +265,8 @@ public class BrowserController implements Initializable {
         }
     }
 
-    private void fillReadingLists() {
+    private void fillReadingLists(String keyword) {
         // clean old settings
-        cardsGrid.getChildren().clear();
-        cardsGrid.getColumnConstraints().clear();
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(40);
         cardsGrid.setPadding(new Insets(30,40,30,100));
@@ -266,19 +274,20 @@ public class BrowserController implements Initializable {
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
         // load papers
-        List<Paper> papersList = manager.searchPapersByParameters(title, author, start_date, end_date, category,
-                3*page, 3);
-        if (papersList.size() != 3)
+        List<Pair<String, ReadingList>> readingLists = manager.getReadingListByKeywords(keyword);
+        if (readingLists.size() != 3)
             forwardBt.setDisable(true);
         int row = 0;
-        for (Paper p : papersList) {
-            Pane card = loadPapersCard(p);
-            cardsGrid.add(card, 0, row);
-            row++;
-        }
+        //for (cardInfo : readingLists) {
+        //    Pane card = loa();
+        //    cardsGrid.add(card, 0, row);
+        //    row++;
+        //}
     }
 
     private void handleResearch() {
+        cardsGrid.getChildren().clear();
+        cardsGrid.getColumnConstraints().clear();
         switch (chooseType.getValue()) {
             case "Papers" -> {
                 // check the form values
