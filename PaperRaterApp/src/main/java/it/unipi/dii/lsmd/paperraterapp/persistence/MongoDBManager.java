@@ -667,7 +667,7 @@ public class MongoDBManager {
 
     /**
      * Function that return the ReadingLists given the name
-     * @param title Name of the reading list
+     * @param keyword part of the title
      * @return  The list of reading lists and its owner
      */
     public List<Pair<String, ReadingList>> getReadingListByKeywords (String keyword) {

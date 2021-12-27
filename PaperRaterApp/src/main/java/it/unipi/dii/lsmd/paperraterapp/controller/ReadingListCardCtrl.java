@@ -24,6 +24,7 @@ public class ReadingListCardCtrl {
     @FXML private Text nPapers;
     @FXML private Text mostCommonCategory;
     @FXML private Text mostFamousPaperTitle;
+    @FXML private Text ownerText;
 
     public void initialize () {
         neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
@@ -34,9 +35,9 @@ public class ReadingListCardCtrl {
 
     public void setReadingListCard (ReadingList r, String owner) {
         this.r = r;
-
         readingListTitle.setText(r.getName());
         nFollower.setText(String.valueOf(neoMan.getNumFollowersReadingList(r.getName(), owner)));
+        ownerText.setText(owner);
 
         if (!r.getPapers().isEmpty()) {
             mostCommonCategory.setText(mostCommonCategory(r.getPapers()));

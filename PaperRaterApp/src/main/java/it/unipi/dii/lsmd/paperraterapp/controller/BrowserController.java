@@ -255,7 +255,28 @@ public class BrowserController implements Initializable {
         }
     }
 
-    //private void fillReadingLists
+    private void fillReadingLists() {
+        // clean old settings
+        cardsGrid.getChildren().clear();
+        cardsGrid.getColumnConstraints().clear();
+        cardsGrid.setAlignment(Pos.CENTER);
+        cardsGrid.setVgap(40);
+        cardsGrid.setPadding(new Insets(30,40,30,100));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(100);
+        cardsGrid.getColumnConstraints().add(constraints);
+        // load papers
+        List<Paper> papersList = manager.searchPapersByParameters(title, author, start_date, end_date, category,
+                3*page, 3);
+        if (papersList.size() != 3)
+            forwardBt.setDisable(true);
+        int row = 0;
+        for (Paper p : papersList) {
+            Pane card = loadPapersCard(p);
+            cardsGrid.add(card, 0, row);
+            row++;
+        }
+    }
 
     private void handleResearch() {
         switch (chooseType.getValue()) {
