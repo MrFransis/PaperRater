@@ -37,7 +37,6 @@ import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Sorts.descending;
 
 
-
 public class MongoDBManager {
     public MongoDatabase db;
     private MongoCollection usersCollection;
@@ -654,9 +653,9 @@ public class MongoDBManager {
         Gson gson = new GsonBuilder().serializeNulls().create();
 
         Bson match = match(eq("username", username));
-        Bson unwind = unwind("$reading_lists");
-        Bson match2 = match(eq("reading_lists.title", title));
-        Bson project = project(fields(excludeId(), computed("ReadingList", "$reading_lists")));
+        Bson unwind = unwind("$readingLists");
+        Bson match2 = match(eq("readingLists.title", title));
+        Bson project = project(fields(excludeId(), computed("ReadingList", "$readingLists")));
         MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(match, unwind, match2, project)).iterator();
         if(iterator.hasNext()){
             Document document = iterator.next();
