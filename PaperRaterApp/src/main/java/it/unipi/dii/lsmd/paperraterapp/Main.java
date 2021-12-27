@@ -12,7 +12,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml")); //login
+            Parent root = FXMLLoader.load(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml")); //login
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("    PaperRater");

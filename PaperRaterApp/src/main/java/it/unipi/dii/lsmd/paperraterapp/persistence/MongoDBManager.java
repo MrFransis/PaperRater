@@ -671,14 +671,16 @@ public class MongoDBManager {
      * @param keyword part of the title
      * @return  The list of reading lists and its owner
      */
-    public List<Pair<String, ReadingList>> getReadingListByKeywords (String keyword) {
+    public List<Pair<String, ReadingList>> getReadingListByKeywords (String keyword, int skipDoc, int limitDoc) {
         List<Pair<String, ReadingList>> readingLists = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeNulls().create();
 
         Bson unwind = unwind("$readingLists");
         Pattern pattern= Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
         Bson filter = Aggregates.match(Filters.regex("readingLists.title", pattern));
-        MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(unwind, filter)).iterator();
+        Bson skip = skip(skipDoc);
+        Bson limit = limit(limitDoc);
+        MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(unwind, filter, skip, limit)).iterator();
         while(iterator.hasNext()){
             Document document = iterator.next();
             String username = document.getString("username");

@@ -143,7 +143,7 @@ public class BrowserController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml"));
             pane = loader.load();
             PaperCardCtrl ctrl = loader.getController();
-            ctrl.setPaperCard(paper, false);
+            ctrl.setPaperCard(paper, false, null);
         }
         catch (Exception e) {
             e.printStackTrace();
