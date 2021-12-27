@@ -1,0 +1,34 @@
+<changelist name="Uncommitted_changes_before_Update_at_12_27_2021_11_48_AM_[Changes]" date="1640602111946" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_27_2021_11_48_AM_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 12/27/2021 11:48 AM [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" />
+    <option name="AFTER_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_27_2021_11_48_AM_[Changes]/BrowserController.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.class" />
+    <option name="AFTER_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_27_2021_11_48_AM_[Changes]/ProfilePageController.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$5.class" />
+    <option name="AFTER_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$5.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_27_2021_11_48_AM_[Changes]/MongoDBManager$5.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" />
+    <option name="AFTER_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_27_2021_11_48_AM_[Changes]/MongoDBManager.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/utils/Utils.class" />
+    <option name="AFTER_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/utils/Utils.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_27_2021_11_48_AM_[Changes]/Utils.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperPageController.class" />
+    <option name="AFTER_PATH" value="PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperPageController.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_12_27_2021_11_48_AM_[Changes]/PaperPageController.class" />
+  </binary>
+</changelist>
