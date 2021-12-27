@@ -122,7 +122,6 @@ class App(cmd.Cmd):
                     papers.append(paper_to_add)
 
                 reading_list['papers'] = papers
-                reading_lists.append(reading_list)
 
                 query = ("MATCH (a:User) "
                          "WHERE a.name = $username "
@@ -131,6 +130,7 @@ class App(cmd.Cmd):
                 session.write_transaction(lambda tx: tx.run(query, username=user['username'], title=reading_list['title']))
 
                 n_follows = int(random.random() * 4)
+                reading_list['numFollowers'] = n_follows
                 for i in range(0, n_follows):
 
                     while True:
@@ -144,6 +144,7 @@ class App(cmd.Cmd):
                             "WHERE a.name = $username1 AND (b.username = $username2 AND b.title = $title) "
                             "CREATE (a)-[r:FOLLOWS]->(b)"
                     )
+                    reading_lists.append(reading_list)
                     session.write_transaction(lambda tx: tx.run(query, username1=rand_follower,
                                                                 username2=user['username'], title=reading_list['title']))
 
@@ -168,6 +169,7 @@ class App(cmd.Cmd):
                     if rand_user != row['username']:
                         break
                 session.write_transaction(lambda tx: tx.run(query, username1=row['username'], username2=rand_user))
+                db.Users.update_one({'username': rand_user}, {'$inc': {'numFollower': 1}})
 
             query = (
                     "MATCH (a:User), (b:Paper) "
@@ -181,6 +183,8 @@ class App(cmd.Cmd):
                 session.write_transaction(lambda tx: tx.run(query, username=row['username'],
                                                             arxiv_id=rand_paper['arxiv_id'].values[0],
                                                             vixra_id=rand_paper['vixra_id'].values[0]))
+                db.Papers.update_one({'arxiv_id': rand_paper['arxiv_id'].values[0], 'vixra_id': rand_paper['vixra_id'].values[0]},
+                                    {'$inc': {'numLikes': 1}})
 
         print("Added User Follows and Likes")
 
