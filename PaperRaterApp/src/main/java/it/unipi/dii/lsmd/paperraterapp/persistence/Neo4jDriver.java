@@ -19,6 +19,8 @@ public class Neo4jDriver {
     }
 
     public Driver openConnection() {
+        if (driver != null)
+            return driver;
         try {
             driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic( "neo4j", "root"));
             driver.verifyConnectivity();
