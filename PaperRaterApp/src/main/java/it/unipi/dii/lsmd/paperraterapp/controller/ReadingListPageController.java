@@ -28,9 +28,9 @@ public class ReadingListPageController {
         backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));
     }
 
-    public void setReadingList (ReadingList readingList) {
+    public void setReadingList (ReadingList readingList, String username) {
         this.readingList = readingList;
-        username.setText(Session.getInstance().getPreviousPageUser().getUsername());
+        this.username.setText(username);
         readingListTitle.setText(readingList.getName());
 
         if (!readingList.getPapers().isEmpty()) {
