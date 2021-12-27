@@ -16,7 +16,7 @@
    <children>
       <VBox prefHeight="140.0" prefWidth="805.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="31.0" prefWidth="660.0">
                <children>
                   <Label fx:id="paperId" alignment="CENTER" contentDisplay="CENTER" text="id:" textAlignment="CENTER">
                      <padding>

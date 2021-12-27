@@ -4,8 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="fix user browse">
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="fix papers card">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -235,17 +236,18 @@ public class BrowserController implements Initializable {
         // clean old settings
         cardsGrid.getChildren().clear();
         cardsGrid.getColumnConstraints().clear();
-        // set new layout
-        cardsGrid.setHgap(20);
-        cardsGrid.setVgap(20);
-        cardsGrid.setPadding(new Insets(30,40,30,40));
+        cardsGrid.setAlignment(Pos.CENTER);
+        cardsGrid.setVgap(40);
+
+        cardsGrid.setPadding(new Insets(30,40,30,160));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
         // load papers
         List<Paper> papersList = manager.searchPapersByParameters(title, author, start_date, end_date, category,
                 3*page, 3);
-        System.out.println("Loading papers...");
+        if (papersList.size() != 3)
+            forwardBt.setDisable(true);
         int row = 0;
         for (Paper p : papersList) {
             Pane card = loadPapersCard(p);
