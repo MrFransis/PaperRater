@@ -108,7 +108,6 @@ public class PaperPageController implements Initializable {
     }
 
     private void clickOnBackIcon (MouseEvent mouseEvent) {
-        System.out.println("Back");
         // Pop
         Session.getInstance().getPreviousPagePaper().remove(
                 Session.getInstance().getPreviousPagePaper().size() - 1);
@@ -118,12 +117,11 @@ public class PaperPageController implements Initializable {
         else {
             ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(
                     "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
-            String previousUser = Session.getInstance().getPreviousPageUser().get(
-                    Session.getInstance().getPreviousPageUser().size()-1).getUsername();
 
             ctrl.setReadingList(Session.getInstance().getPreviousPageReadingList().remove(
                     Session.getInstance().getPreviousPageReadingList().size() - 1),
-                    previousUser);
+                    Session.getInstance().getPreviousPageUser().remove(
+                            Session.getInstance().getPreviousPageUser().size() - 1).getUsername());
         }
     }
 

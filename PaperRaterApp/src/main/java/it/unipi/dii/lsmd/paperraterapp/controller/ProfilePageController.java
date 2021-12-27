@@ -185,8 +185,7 @@ public class ProfilePageController {
                         lastName.getText(),
                         Session.getInstance().getLoggedUser().getPicture(),
                         Integer.parseInt(age.getText()),
-                        Session.getInstance().getLoggedUser().getReadingLists(),
-                        Session.getInstance().getLoggedUser().getNumFollower());
+                        Session.getInstance().getLoggedUser().getReadingLists());
             }
             return null;
         });

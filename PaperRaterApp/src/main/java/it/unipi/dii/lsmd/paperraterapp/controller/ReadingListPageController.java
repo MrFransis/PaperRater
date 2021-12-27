@@ -55,6 +55,7 @@ public class ReadingListPageController {
 
         // Push
         Session.getInstance().getPreviousPageReadingList().add(readingList);
+        Session.getInstance().getPreviousPageUser().add(new User(username, null,null,null,null,null,0,null));
 
         if (!readingList.getPapers().isEmpty()) {
             papersBox.getChildren().clear();
@@ -110,6 +111,8 @@ public class ReadingListPageController {
         // Pop
         Session.getInstance().getPreviousPageReadingList().remove(
                 Session.getInstance().getPreviousPageReadingList().size() - 1);
+        Session.getInstance().getPreviousPageUser().remove(
+                Session.getInstance().getPreviousPageUser().size() - 1);
 
         if (Session.getInstance().getPreviousPageUser().isEmpty())
             Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
@@ -117,7 +120,7 @@ public class ReadingListPageController {
             ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
                         "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", mouseEvent);
             ctrl.setProfilePage(Session.getInstance().getPreviousPageUser().remove(
-                    Session.getInstance().getPreviousPagePaper().size()));
+                    Session.getInstance().getPreviousPageUser().size()-1));
         }
     }
 }

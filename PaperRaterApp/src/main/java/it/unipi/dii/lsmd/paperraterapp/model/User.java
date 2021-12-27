@@ -14,7 +14,7 @@ public class User {
     private int numFollower;
 
     public User(String username, String email, String password, String firstName, String lastName,
-                String picture, int age, List<ReadingList> readingLists, int numFollower) {
+                String picture, int age, List<ReadingList> readingLists) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -23,7 +23,6 @@ public class User {
         this.picture = picture;
         this.age = age;
         this.readingLists = readingLists;
-        this.numFollower = numFollower;
     }
 
     public String getUsername() {
