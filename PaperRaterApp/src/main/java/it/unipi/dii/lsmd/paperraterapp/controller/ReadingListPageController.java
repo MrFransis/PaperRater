@@ -79,7 +79,8 @@ public class ReadingListPageController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml"));
             pane = loader.load();
             PaperCardCtrl ctrl = loader.getController();
-            ctrl.setPaperCard(p);
+            boolean showDeleteBtn = Session.getInstance().getLoggedUser().getUsername().equals(username.getText());
+            ctrl.setPaperCard(p, showDeleteBtn);
 
         }
         catch (Exception e) {

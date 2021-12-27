@@ -1,9 +1,11 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
+import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.persistence.*;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -21,15 +23,17 @@ public class PaperCardCtrl {
     @FXML private Label paperAuthors;
     @FXML private Text paperCategory;
     @FXML private Text paperLikes;
+    @FXML private Button removeFromReadingListBtn;
 
     public void initialize () {
         neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         paperTitle.setOnMouseClicked(mouseEvent -> clickOnPaperTitle(mouseEvent));
+        removeFromReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnRemoveFromReadingListBtn(mouseEvent));
     }
 
-    public void setPaperCard (Paper p) {
+    public void setPaperCard (Paper p, boolean showDeleteBtn) {
         this.p = p;
 
         String validId;
@@ -58,11 +62,21 @@ public class PaperCardCtrl {
         paperAuthors.setText(tmp);
         paperCategory.setText(p.getCategory());
         paperLikes.setText(String.valueOf(neoMan.getNumLikes(validId)));
+
+        if (showDeleteBtn) {
+            removeFromReadingListBtn.setVisible(true);
+        }
+        else
+            removeFromReadingListBtn.setVisible(false);
     }
 
     private void clickOnPaperTitle (MouseEvent mouseEvent) {
         PaperPageController ctrl = (PaperPageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/paperpage.fxml", mouseEvent);
         ctrl.setPaperPage(p);
+    }
+
+    private void clickOnRemoveFromReadingListBtn(MouseEvent mouseEvent) {
+        System.out.print("REMOVE");
     }
 }
