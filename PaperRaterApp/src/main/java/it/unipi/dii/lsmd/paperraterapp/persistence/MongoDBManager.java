@@ -211,10 +211,10 @@ public class MongoDBManager {
             String format = formatter.format(p.getPublished());
 
             //Check paper source
-            if(!p.getArxiv_id().isEmpty())
-                doc.append("arxiv_id", p.getArxiv_id()).append("vixra_id", Float.NaN);
+            if(!p.getArxivId().isEmpty())
+                doc.append("arxiv_id", p.getArxivId()).append("vixra_id", Float.NaN);
             else
-                doc.append("arxiv_id", Float.NaN).append("vixra_id", p.getVixra_id());
+                doc.append("arxiv_id", Float.NaN).append("vixra_id", p.getVixraId());
 
             doc.append("_title", p.getTitle())
                     .append("_abstract", p.getAbstract())
@@ -270,10 +270,10 @@ public class MongoDBManager {
         try{
             Bson update = new Document("comments", comments);
             Bson updateOperation = new Document("$set", update);
-            if(!p.getArxiv_id().isEmpty())
-                papersCollection.updateOne(new Document("arxiv_id", p.getArxiv_id()), updateOperation);
+            if(!p.getArxivId().isEmpty())
+                papersCollection.updateOne(new Document("arxiv_id", p.getArxivId()), updateOperation);
             else
-                papersCollection.updateOne(new Document("vixra_id", p.getVixra_id()), updateOperation);
+                papersCollection.updateOne(new Document("vixra_id", p.getVixraId()), updateOperation);
             return true;
         }
         catch (Exception ex)
@@ -330,10 +330,10 @@ public class MongoDBManager {
      */
     public boolean deletePaper (Paper p) {
         try {
-            if(!p.getArxiv_id().isEmpty())
-                papersCollection.deleteOne(eq("arxiv_id", p.getArxiv_id()));
+            if(!p.getArxivId().isEmpty())
+                papersCollection.deleteOne(eq("arxiv_id", p.getArxivId()));
             else
-                papersCollection.deleteOne(eq("vixra_id", p.getVixra_id()));
+                papersCollection.deleteOne(eq("vixra_id", p.getVixraId()));
 
             return true;
         }
@@ -553,8 +553,8 @@ public class MongoDBManager {
      * @return true if the operation is successfully executed, false otherwise
      */
     public UpdateResult addPaperToReadingList(String user, String title, Paper p) {
-        Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
-                .append("vixra_id", p.getVixra_id())
+        Document paperReduced = new Document("arxiv_id", p.getArxivId())
+                .append("vixra_id", p.getVixraId())
                 .append("title", p.getTitle())
                 .append("auhtors", p.getAuthors())
                 .append("category", p.getCategory());
@@ -573,8 +573,8 @@ public class MongoDBManager {
      */
     public boolean removePaperFromReadingList(String user, String title, Paper p) {
         try {
-            Document paperReduced = new Document("arxiv_id", p.getArxiv_id())
-                    .append("vixra_id", p.getVixra_id())
+            Document paperReduced = new Document("arxiv_id", p.getArxivId())
+                    .append("vixra_id", p.getVixraId())
                     .append("title", p.getTitle())
                     .append("auhtors", p.getAuthors());
 

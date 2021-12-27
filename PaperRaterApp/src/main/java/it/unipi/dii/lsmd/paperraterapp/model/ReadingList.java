@@ -25,10 +25,6 @@ public class ReadingList {
 
     public void setPaper(List<Paper> papers) { this.papers = papers; }
 
-    public void addPapers(Paper paper) {this.papers.add(paper);}
-
-    public void deletePaper(Paper paper) {this.papers.remove(paper);}
-
     @Override
     public String toString() {
         return "ReadingList{" + "papers='" + papers + '\'' + '}';

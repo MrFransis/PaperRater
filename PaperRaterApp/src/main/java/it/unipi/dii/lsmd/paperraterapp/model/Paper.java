@@ -11,8 +11,10 @@ public class Paper {
     private List<String> authors;
     private Date published;
     private List<Comment> comments;
+    private int numLikes;
 
-    public Paper(String arxiv_id, String vixra_id, String title, String _abstract, String category, List<String> authors, Date published, List<Comment> comments)
+    public Paper(String arxiv_id, String vixra_id, String title, String _abstract, String category,
+                 List<String> authors, Date published, List<Comment> comments, int numLikes)
     {
         this.arxiv_id = arxiv_id;
         this.vixra_id = vixra_id;
@@ -22,18 +24,19 @@ public class Paper {
         this.authors = authors;
         this.published = published;
         this.comments = comments;
+        this.numLikes = numLikes;
     }
 
-    public String getArxiv_id() {
+    public String getArxivId() {
         return arxiv_id;
     }
 
-    public String getVixra_id() {
+    public String getVixraId() {
         return vixra_id;
     }
 
     public String getId() {
-        if(!getArxiv_id().isEmpty())
+        if(!getArxivId().isEmpty())
             return  arxiv_id;
         else
             return vixra_id;
@@ -61,9 +64,11 @@ public class Paper {
         return comments;
     }
 
-    public void setArxiv_id(String arxiv_id) { this.arxiv_id = arxiv_id; }
+    public int getNumLikes() { return numLikes; }
 
-    public void setVixra_id(String vixra_id) { this.vixra_id = vixra_id; }
+    public void setArxivId(String arxiv_id) { this.arxiv_id = arxiv_id; }
+
+    public void setVixraId(String vixra_id) { this.vixra_id = vixra_id; }
 
     public void setTitle(String title) { this.title = title; }
 
@@ -77,9 +82,7 @@ public class Paper {
 
     public void setComments(List<Comment> comments) { this.comments = comments; }
 
-    public void addComments(Comment comment) {this.comments.add(comment);}
-
-    public void deleteComment(Comment comment) {this.comments.remove(comment);}
+    public void setNumLikes(int numLikes) { this.numLikes = numLikes; }
 
     @Override
     public String toString() {

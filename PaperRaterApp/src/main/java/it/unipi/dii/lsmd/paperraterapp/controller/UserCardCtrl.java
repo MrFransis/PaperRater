@@ -37,21 +37,15 @@ public class UserCardCtrl implements Initializable {
     public void setParameters (User user) {
         this.user = user;
 
-        // set the username
         usernameLb.setText(user.getUsername());
 
         // set image
-        Image image = new Image(user.getPicture(),false);
+      /*  Image image = new Image(user.getPicture(),false);
         imageProfile.setFill(new ImagePattern(image));
-        imageProfile.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));
+        imageProfile.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));*/
 
-        // set number of followers
-        String numFollowers = Integer.toString(neoMan.getNumFollowersUser(user.getUsername()));
-        numFollowerTf.setText(numFollowers);
-
-        // set number of reading list
-        String numReadingList = Integer.toString(neoMan.getNumReadingList(user.getUsername()));
-        numReadingListTf.setText(numReadingList);
+        numFollowerTf.setText(String.valueOf(neoMan.getNumFollowersUser(user.getUsername())));
+        numReadingListTf.setText(String.valueOf(user.getReadingLists().size()));
     }
 
     @FXML
@@ -60,5 +54,4 @@ public class UserCardCtrl implements Initializable {
                 "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
         ctrl.setProfilePage(user);
     }
-
 }

@@ -144,8 +144,8 @@ public class Neo4jManager {
                                 "WHERE a.name = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) " +
                                 "CREATE (a)-[r:LIKES]->(b)",
                         parameters("username", u.getUsername(),
-                                "arxiv_id", p.getArxiv_id(),
-                                "vixra_id", p.getVixra_id()));
+                                "arxiv_id", p.getArxivId(),
+                                "vixra_id", p.getVixraId()));
                 return null;
             });
         }
@@ -161,8 +161,8 @@ public class Neo4jManager {
                                 "(p:Paper{arxiv_id:$arxiv_id,vixra_id:$vixra_id}) " +
                                 " DELETE r",
                         parameters("username", u.getUsername(),
-                                "arxiv_id", p.getArxiv_id(),
-                                "vixra_id", p.getVixra_id()));
+                                "arxiv_id", p.getArxivId(),
+                                "vixra_id", p.getVixraId()));
                 return null;
             });
             return true;
@@ -214,7 +214,7 @@ public class Neo4jManager {
     public boolean addPaper(Paper p){
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MERGE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id})", parameters("arxiv_id", p.getArxiv_id(), "vixra_id", p.getVixra_id()));
+                tx.run("MERGE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id})", parameters("arxiv_id", p.getArxivId(), "vixra_id", p.getVixraId()));
                 return null; });
             return true;
         }catch (Exception ex) {
@@ -231,7 +231,7 @@ public class Neo4jManager {
     public boolean deletePaper(Paper p){
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id}) DELETE p", parameters("arxiv_id", p.getArxiv_id(), "vixra_id", p.getVixra_id()));
+                tx.run("MATCH (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id}) DELETE p", parameters("arxiv_id", p.getArxivId(), "vixra_id", p.getVixraId()));
                 return null; });
             return true;
         }catch (Exception ex) {
@@ -560,7 +560,7 @@ public class Neo4jManager {
                 while(result.hasNext()){
                     Record r = result.next();
                     Paper snap = new Paper(r.get("arxiv_id").asString(), r.get("vixra_id").asString(),
-                                        r.get("title").asString(), null, null, null, null, null);
+                                        r.get("title").asString(), null, null, null, null, null, 0);
                     papersSnap.add(snap);
                 }
 

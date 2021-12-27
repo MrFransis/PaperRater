@@ -35,18 +35,14 @@ public class ReadingListCardCtrl {
     public void setReadingListCard (ReadingList r, String owner) {
         this.r = r;
 
-        // set title
+
         readingListTitle.setText(r.getName());
+        nFollower.setText(String.valueOf(neoMan.getNumFollowersReadingList(r.getName(), owner)));
 
-        // set num followers
-        String numFollowers = Integer.toString(neoMan.getNumFollowersReadingList(r.getName(), owner));
-        nFollower.setText(numFollowers);
-
-        // set most common category
         if (!r.getPapers().isEmpty()) {
             mostCommonCategory.setText(mostCommonCategory(r.getPapers()));
             nPapers.setText(String.valueOf(r.getPapers().size()));
-            //mostFamousPaperTitle.setText(getMostFamousPaperInReadingList());
+            mostFamousPaperTitle.setText(mostFamousPaperTitle(r.getPapers()));
         }
         else {
             mostCommonCategory.setText("N/A");
@@ -71,6 +67,20 @@ public class ReadingListCardCtrl {
         }
 
         return max.getKey();
+    }
+
+    private String mostFamousPaperTitle(List<Paper> papers) {
+        int max = 0;
+        String title = "N/A";
+
+        for (Paper p : papers) {
+            if (p.getNumLikes() > 0) {
+                max = p.getNumLikes();
+                title = p.getTitle();
+            }
+        }
+
+        return title;
     }
 
     private void clickOnReadingListTitle (MouseEvent mouseEvent) {

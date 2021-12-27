@@ -11,7 +11,7 @@ import javafx.scene.text.Text;
 public class PaperCardCtrl {
     private Paper p;
     private MongoDBManager mongoMan;
-    private Neo4jManager neoMan;           // da unire
+    private Neo4jManager neoMan;
 
     @FXML private Label paperId;
     @FXML private Label paperTitle;
@@ -29,15 +29,17 @@ public class PaperCardCtrl {
 
     public void setPaperCard (Paper p) {
         this.p = p;
-        // set the id
-        String validId;
-        if (!p.getArxiv_id().isEmpty())
-            validId = p.getArxiv_id();
-        else
-            validId = p.getVixra_id();
-        paperId.setText("arXiv:" + validId);
 
-        // set the title
+        String validId;
+        if (!p.getArxivId().isEmpty()) {
+            validId = p.getArxivId();
+            paperId.setText("arXiv:" + validId);
+        }
+        else {
+            validId = p.getVixraId();
+            paperId.setText("viXra:" + validId);
+        }
+
         paperTitle.setText(p.getTitle());
 
         // set the authors list
@@ -53,14 +55,10 @@ public class PaperCardCtrl {
         }
         paperAuthors.setText(tmp);
 
-        // set category
         paperCategory.setText(p.getCategory());
 
-        // set num likes
-        String numLikes = Integer.toString(neoMan.getNumLikes(validId));
-        paperLikes.setText(numLikes);
+        paperLikes.setText(String.valueOf(neoMan.getNumLikes(validId)));
 
-        // set num comments
         String numComments = Integer.toString(neoMan.getNumComments(validId));
         paperNComments.setText(numComments);
     }
