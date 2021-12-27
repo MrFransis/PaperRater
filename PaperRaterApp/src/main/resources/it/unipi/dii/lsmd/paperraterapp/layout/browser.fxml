@@ -175,8 +175,13 @@
                               <Font size="18.0" />
                            </font>
                            <HBox.margin>
-                              <Insets left="50.0" />
+                              <Insets left="50.0" right="20.0" />
                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="logoutLabel" onMouseClicked="#goToProfilePage" styleClass="dynamic-effect" text="Logout" textAlignment="CENTER" textFill="WHITE" underline="true">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
                         </Label>
                      </children>
                   </HBox>

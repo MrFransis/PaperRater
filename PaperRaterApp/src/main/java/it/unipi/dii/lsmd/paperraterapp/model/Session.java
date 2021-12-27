@@ -18,6 +18,10 @@ public class Session {
         return instance;
     }
 
+    public static void resetInstance() {
+        instance = null;
+    }
+
     private Session () {
         previousPageUser = new ArrayList<>();
         previousPageReadingList = new ArrayList<>();
