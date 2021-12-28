@@ -103,7 +103,7 @@ public class PaperPageController implements Initializable {
             pane = loader.load();
             CommentCtrl ctrl = loader.getController();
             ctrl.textProperty().bindBidirectional(comNum.textProperty());
-            ctrl.setCommentCard(c, user.getUsername(), p);
+            ctrl.setCommentCard(c, user, p);
 
         }
         catch (Exception e) {

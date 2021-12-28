@@ -2,6 +2,7 @@ package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.Comment;
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
+import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
@@ -26,7 +27,7 @@ import java.util.Optional;
 public class CommentCtrl {
     private Comment c;
     private Paper paper;
-    private String user;
+    private User user;
     private MongoDBManager mongoMan;
     private Neo4jManager neoMan;
     private StringProperty text = new SimpleStringProperty();
@@ -40,22 +41,25 @@ public class CommentCtrl {
     @FXML private ScrollPane scrollpane;
 
     public void initialize () {
+        mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
+        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         bin.setOnMouseClicked(mouseEvent -> clickOnBin(mouseEvent));
         modify.setOnMouseClicked(mouseEvent -> clickOnModify(mouseEvent));
         scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 
-    public void setCommentCard (Comment c, String user, Paper paper) {
+    public void setCommentCard (Comment c, User user, Paper paper) {
         this.c = c;
         this.paper = paper;
         this.user = user;
-        if(Objects.equals(user, c.getUsername())) {
-            mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
-            neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
+        if(Objects.equals(user.getUsername(), c.getUsername())) {
             bin.setVisible(true);
             modify.setVisible(true);
         } else {
-            bin.setVisible(false);
+            if(user.getType() > 0) //If the user is a moderator/admin can delete other comments
+                bin.setVisible(true);
+            else
+                bin.setVisible(false);
             modify.setVisible(false);
         }
         username.setText(c.getUsername());
@@ -78,7 +82,7 @@ public class CommentCtrl {
 
     private void clickOnBin (MouseEvent mouseEvent) {
         mongoMan.deleteComment(paper, c);
-        if(mongoMan.numUserComments(paper.getId(), user) == 0)
+        if(mongoMan.numUserComments(paper.getId(), c.getUsername()) == 0)
             neoMan.deleteHasCommented(c.getUsername(), paper.getId());
         ((VBox) commentBox.getParent()).getChildren().remove(commentBox);
         int numComm = Integer.parseInt(getText());
