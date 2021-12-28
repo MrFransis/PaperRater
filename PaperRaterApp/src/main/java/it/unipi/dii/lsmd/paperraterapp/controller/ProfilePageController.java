@@ -158,18 +158,29 @@ public class ProfilePageController {
     }
 
     private void clickOnFollower (MouseEvent mouseEvent) {
+        // Pop
+        Session.getInstance().getPreviousPageUsers().remove(Session.getInstance().getPreviousPageUsers().size()-1 );
 
-        System.out.println("Browse Follower");
 
+        BrowserController ctrl = (BrowserController) Utils.changeScene(
+                    "/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
+
+        ctrl.chooseSuggestion.setValue("Browse Follower");
+
+        //ctrl.startResearch();
     }
 
     private void clickOnFollowing (MouseEvent mouseEvent) {
+        // Pop
+        Session.getInstance().getPreviousPageUsers().remove(Session.getInstance().getPreviousPageUsers().size()-1 );
 
-        System.out.println("Browse Following");
 
-        boxLabel.setText("Followed Reading Lists");
-        List<ReadingList> readingListsSnaps = neoMan.getSnapsOfFollowedReadingLists(user);
+        BrowserController ctrl = (BrowserController) Utils.changeScene(
+                "/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
 
+        ctrl.chooseSuggestion.setValue("Browse Following");
+
+        //ctrl.startResearch();
     }
 
     private void clickOnEditIcon (MouseEvent mouseEvent) {

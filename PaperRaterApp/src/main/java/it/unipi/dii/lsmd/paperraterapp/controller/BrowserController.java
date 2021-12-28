@@ -36,7 +36,7 @@ public class BrowserController implements Initializable {
     @FXML private Button backBt;
     @FXML private ComboBox<String> chooseAnalytics;
     @FXML private ComboBox<String> chooseCategory;
-    @FXML private ComboBox<String> chooseSuggestion;
+    @FXML public ComboBox<String> chooseSuggestion;
     @FXML private ComboBox<String> chooseSummary;
     @FXML private ComboBox<String> chooseType;
     @FXML private Button forwardBt;
@@ -173,6 +173,9 @@ public class BrowserController implements Initializable {
         suggestionList.add("Suggested paper");
         suggestionList.add("Suggested reading list");
         suggestionList.add("Suggested user");
+        suggestionList.add("Browse Follower");
+        suggestionList.add("Browse Following User");
+        suggestionList.add("Browse Following Reading Lists");
         ObservableList<String> observableListSuggestion = FXCollections.observableList(suggestionList);
         chooseSuggestion.getItems().clear();
         chooseSuggestion.setItems(observableListSuggestion);
