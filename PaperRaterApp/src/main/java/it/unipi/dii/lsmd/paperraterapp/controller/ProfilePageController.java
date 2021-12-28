@@ -44,6 +44,7 @@ public class ProfilePageController {
     @FXML private Label boxLabel;
     @FXML private VBox box;
     @FXML private Button addReadingListBtn;
+    @FXML private Button deleteUserBtn;
 
 
     public void initialize () {
@@ -56,7 +57,7 @@ public class ProfilePageController {
         nFollower.setOnMouseClicked(mouseEvent -> clickOnFollower(mouseEvent));
         editIcon.setOnMouseClicked(mouseEvent -> clickOnEditIcon(mouseEvent));
         addReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnAddReadingListBtn(mouseEvent));
-
+        deleteUserBtn.setOnMouseClicked(mouseEvent -> clickOnDeleteUserBtn(mouseEvent));
     }
 
     public void setProfilePage (User user) {
@@ -89,6 +90,13 @@ public class ProfilePageController {
             editIcon.setVisible(false);
             addReadingListBtn.setVisible(false);
         }
+
+        if (Session.getInstance().getLoggedUser().getType() == 2 &&
+                !user.getUsername().equals(Session.getInstance().getLoggedUser().getUsername()))
+            deleteUserBtn.setVisible(true);
+        else
+            deleteUserBtn.setVisible(false);
+
 
         box.getChildren().clear();
         loadMyReadingList();
@@ -257,5 +265,9 @@ public class ProfilePageController {
         refreshUser.getReadingLists().add(new ReadingList(td.getEditor().getText(), new ArrayList<>()));
         Session.getInstance().setLoggedUser(refreshUser);
         setProfilePage(refreshUser);
+    }
+
+    private void clickOnDeleteUserBtn(MouseEvent mouseEvent) {
+        mongoMan.deleteUser(user);
     }
 }
