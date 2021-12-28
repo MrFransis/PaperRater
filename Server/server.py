@@ -195,10 +195,21 @@ class App(cmd.Cmd):
             "username": "admin",
             "email": "admin@gmail.com",
             "password": "admin",
-            "type": 1
+            "type": 2
         }
         users_col.insert_one(admin)
         print("Added Administrator")
+
+        for i in range(0,5):
+            username = "moderator" + str(i)
+            moderator = {
+                "username": username,
+                "email": username + "@gmail.com",
+                "password": username,
+                "type": 1
+            }
+            users_col.insert_one(moderator)
+        print("Added Moderators")
 
         session.close()
 
