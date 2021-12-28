@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 import java.net.URL;
 import java.text.Format;
@@ -116,18 +117,18 @@ public class PaperPageController implements Initializable {
         Session.getInstance().getPreviousPagePaper().remove(
                 Session.getInstance().getPreviousPagePaper().size() - 1);
 
+        // Check if previous page is Reading List Page
         if (Session.getInstance().getPreviousPageReadingList().isEmpty())
             Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
         else {
             ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(
                     "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
-            String previousUser = Session.getInstance().getPreviousPageUser().get(
-                    Session.getInstance().getPreviousPageUser().size()-1).getUsername();
 
-            ctrl.setReadingList(Session.getInstance().getPreviousPageReadingList().remove(
-                    Session.getInstance().getPreviousPageReadingList().size() - 1),
-                    Session.getInstance().getPreviousPageUser().remove(
-                            Session.getInstance().getPreviousPageUser().size() - 1).getUsername());
+            // Get Previous Page Reading List info
+            Pair<String, ReadingList> p = Session.getInstance().getPreviousPageReadingList().get(
+                    Session.getInstance().getPreviousPageReadingList().size() - 1);
+
+            ctrl.setReadingList(p.getValue(), p.getKey());
         }
     }
 

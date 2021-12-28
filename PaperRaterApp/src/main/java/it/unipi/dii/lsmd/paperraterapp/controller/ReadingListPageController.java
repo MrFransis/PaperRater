@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 import java.util.Iterator;
 
@@ -48,17 +49,16 @@ public class ReadingListPageController {
         deleteReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnDeleteBtn(mouseEvent));
     }
 
-    public void setReadingList (ReadingList readingList, String username) {
+    public void setReadingList (ReadingList readingList, String owner) {
         this.readingList = readingList;
-        this.owner = username;
+        this.owner = owner;
 
         // Push
-        Session.getInstance().getPreviousPageReadingList().add(readingList);
-        Session.getInstance().getPreviousPageUser().add(new User(username, null,null,null,null,null,0,null));
+        Session.getInstance().getPreviousPageReadingList().add(new Pair(owner,readingList));
 
-        this.username.setText(username);
+        username.setText(owner);
         readingListTitle.setText(readingList.getTitle());
-        numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getTitle(), username)));
+        numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getTitle(), owner)));
         numPapers.setText(String.valueOf(readingList.getPapers().size()));
 
         if (!readingList.getPapers().isEmpty()) {
@@ -132,7 +132,7 @@ public class ReadingListPageController {
             mongoMan.deleteReadingList(username.getText(), readingList.getTitle());
             neoMan.deleteReadingList(readingList.getTitle(), username.getText());
 
-            User owner = Session.getInstance().getPreviousPageUser().get(Session.getInstance().getPreviousPageUser().size()-1);
+            User owner = Session.getInstance().getPreviousPageUsers().get(Session.getInstance().getPreviousPageUsers().size()-1);
             owner.getReadingLists().remove(readingList);
             clickOnBackIcon(mouseEvent);
         }
@@ -142,17 +142,15 @@ public class ReadingListPageController {
         // Pop
         Session.getInstance().getPreviousPageReadingList().remove(
                 Session.getInstance().getPreviousPageReadingList().size() - 1);
-        Session.getInstance().getPreviousPageUser().remove(
-                Session.getInstance().getPreviousPageUser().size() - 1);
 
         // Check if previous page was a Profile Page
-        if (Session.getInstance().getPreviousPageUser().isEmpty())
+        if (Session.getInstance().getPreviousPageUsers().isEmpty())
             Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
         else {
             ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
                         "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", mouseEvent);
-            ctrl.setProfilePage(Session.getInstance().getPreviousPageUser().remove(
-                    Session.getInstance().getPreviousPageUser().size()-1));
+            ctrl.setProfilePage(Session.getInstance().getPreviousPageUsers().remove(
+                    Session.getInstance().getPreviousPageUsers().size()-1));
         }
     }
 }

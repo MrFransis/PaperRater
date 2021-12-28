@@ -2,6 +2,7 @@ package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
+import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
 import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.persistence.*;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
@@ -10,9 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-
-import java.text.Format;
-import java.text.SimpleDateFormat;
+import javafx.util.Pair;
 
 public class PaperCardCtrl {
     private Paper p;
@@ -82,19 +81,19 @@ public class PaperCardCtrl {
     }
 
     private void clickOnRemoveFromReadingListBtn(MouseEvent mouseEvent) {
-        UpdateResult res = mongoMan.removePaperFromReadingList(Session.getInstance().getLoggedUser().getUsername(),
-                Session.getInstance().getPreviousPageReadingList().get(
-                        Session.getInstance().getPreviousPageUser().size() - 1
-                ).getTitle(),
+        // Get the reading list
+        ReadingList r = Session.getInstance().getPreviousPageReadingList().get(
+                Session.getInstance().getPreviousPageReadingList().size() - 1).getValue();
+
+        mongoMan.removePaperFromReadingList(Session.getInstance().getLoggedUser().getUsername(),
+                r.getTitle(),
                 p);
 
-        Session.getInstance().getPreviousPageReadingList().get(
-                Session.getInstance().getPreviousPageReadingList().size() - 1).getPapers().remove(p);
+        // Remove the paper from the local copy of the reading list
+        r.getPapers().remove(p);
 
         // Refresh ReadingListPage
-        readingListPageCtrl.setReadingList(Session.getInstance().getPreviousPageReadingList().get(
-                Session.getInstance().getPreviousPageReadingList().size() - 1
-                ),
+        readingListPageCtrl.setReadingList(r,
                 Session.getInstance().getLoggedUser().getUsername());
     }
 }

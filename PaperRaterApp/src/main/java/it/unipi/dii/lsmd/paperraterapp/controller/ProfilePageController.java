@@ -61,7 +61,7 @@ public class ProfilePageController {
         this.user = user;
 
         // Push
-        Session.getInstance().getPreviousPageUser().add(user);
+        Session.getInstance().getPreviousPageUsers().add(user);
 
         username.setText(user.getUsername());
         email.setText(user.getEmail());
@@ -125,8 +125,9 @@ public class ProfilePageController {
 
     private void clickOnBackIcon (MouseEvent mouseEvent) {
         // Pop
-        Session.getInstance().getPreviousPageUser().remove(Session.getInstance().getPreviousPageUser().size()-1 );
+        Session.getInstance().getPreviousPageUsers().remove(Session.getInstance().getPreviousPageUsers().size()-1 );
 
+        // Check if previous page is a Paper Page
         if (Session.getInstance().getPreviousPagePaper().isEmpty())
             Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
         else {

@@ -37,6 +37,7 @@ public class ReadingListCardCtrl {
     public void setReadingListCard (ReadingList r, String owner) {
         this.r = r;
         this.owner = owner;
+
         readingListTitle.setText(r.getTitle());
         nFollower.setText(String.valueOf(neoMan.getNumFollowersReadingList(r.getTitle(), owner)));
         ownerText.setText(owner);

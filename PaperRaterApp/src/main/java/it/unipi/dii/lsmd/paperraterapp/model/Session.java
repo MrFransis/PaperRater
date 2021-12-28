@@ -1,5 +1,7 @@
 package it.unipi.dii.lsmd.paperraterapp.model;
 
+import javafx.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +9,10 @@ public class Session {
 
     private static Session instance = null;
     private User loggedUser;
-    private List<User> previousPageUser;
-    private List<ReadingList> previousPageReadingList;
-    private List<Paper> previousPagePaper;
+    private List<User> previousPageUsers;
+    private List<Pair<String, ReadingList>> previousPageReadingLists;
+    private List<Paper> previousPagePapers;
+
 
 
     public static Session getInstance() {
@@ -23,9 +26,9 @@ public class Session {
     }
 
     private Session () {
-        previousPageUser = new ArrayList<>();
-        previousPageReadingList = new ArrayList<>();
-        previousPagePaper = new ArrayList<>();
+        previousPageUsers = new ArrayList<>();
+        previousPageReadingLists = new ArrayList<>();
+        previousPagePapers = new ArrayList<>();
     }
 
     public void setLoggedUser(User u) {
@@ -37,16 +40,16 @@ public class Session {
     }
 
 
-    public List<User> getPreviousPageUser() {
-        return previousPageUser;
+    public List<User> getPreviousPageUsers() {
+        return previousPageUsers;
     }
 
-    public List<ReadingList> getPreviousPageReadingList() {
-        return previousPageReadingList;
+    public List<Pair<String, ReadingList>> getPreviousPageReadingList() {
+        return previousPageReadingLists;
     }
 
     public List<Paper> getPreviousPagePaper() {
-        return previousPagePaper;
+        return previousPagePapers;
     }
 
 }
