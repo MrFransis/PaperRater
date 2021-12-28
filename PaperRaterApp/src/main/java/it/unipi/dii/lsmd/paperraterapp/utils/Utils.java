@@ -17,7 +17,7 @@ public class Utils {
      */
     public static Properties readConfigurationParameters(){
         try{
-            FileInputStream fis = new FileInputStream("PaperRaterApp/resources/config.properties");
+            FileInputStream fis = new FileInputStream(Utils.class.getResource("/it/unipi/dii/lsmd/paperraterapp/config/config.properties").toURI().getPath());
             Properties prop = new Properties();
             prop.load(fis);
             return prop;
