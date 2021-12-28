@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<it.unipi.dii.lsmd.paperraterapp.config.ConfigurationParameters>
-	<mongoFirstIp>localhost</mongoFirstIp>
-	<mongoFirstPort>27017</mongoFirstPort>
-	<mongoDbName>PaperRater</mongoDbName>
-</it.unipi.dii.lsmd.paperraterapp.config.ConfigurationParameters>

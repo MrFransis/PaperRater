@@ -70,7 +70,7 @@ public class Neo4jManager {
         int numReadingList;
         try (Session session = driver.session()) {
             numReadingList = session.writeTransaction((TransactionWork<Integer>) tx -> {
-                Result result = tx.run("MATCH (:User {name: $username})-[r:OWNS]->() " +
+                Result result = tx.run("MATCH (:User {username: $username})-[r:OWNS]->() " +
                         "RETURN count(r) AS numReadingList", parameters("username", username));
                 return result.next().get("numReadingList").asInt();
             });
@@ -87,8 +87,8 @@ public class Neo4jManager {
         int numFollowers;
         try (Session session = driver.session()) {
             numFollowers = session.writeTransaction((TransactionWork<Integer>) tx -> {
-                Result result = tx.run("MATCH (:User {name: $username})<-[r:FOLLOWS]-() " +
-                        "RETURN count(r) AS numFollowers", parameters("username", username));
+                Result result = tx.run("MATCH (:User {username: $username})<-[r:FOLLOWS]-() " +
+                        "RETURN COUNT(r) AS numFollowers", parameters("username", username));
                 return result.next().get("numFollowers").asInt();
             });
         }
@@ -104,8 +104,8 @@ public class Neo4jManager {
         int numFollowers;
         try (Session session = driver.session()) {
             numFollowers = session.writeTransaction((TransactionWork<Integer>) tx -> {
-                Result result = tx.run("MATCH (:User {name: $username})-[r:FOLLOWS]->() " +
-                        "RETURN count(r) AS numFollowers", parameters("username", username));
+                Result result = tx.run("MATCH (:User {username: $username})-[r:FOLLOWS]->() " +
+                        "RETURN COUNT(r) AS numFollowers", parameters("username", username));
                 return result.next().get("numFollowers").asInt();
             });
         }
@@ -116,7 +116,7 @@ public class Neo4jManager {
         boolean res = false;
         try(Session session = driver.session()) {
             res = session.readTransaction((TransactionWork<Boolean>) tx -> {
-                Result r = tx.run("MATCH (a:User{name:$userA})-[r:FOLLOWS]->(b:User{name:$userB}) " +
+                Result r = tx.run("MATCH (a:User{username:$userA})-[r:FOLLOWS]->(b:User{username:$userB}) " +
                         "RETURN COUNT(*)", parameters("userA", userA, "userB", userB));
                 Record record = r.next();
                 if (record.get(0).asInt() == 0)
@@ -135,7 +135,7 @@ public class Neo4jManager {
         boolean res = false;
         try(Session session = driver.session()) {
             res = session.readTransaction((TransactionWork<Boolean>) tx -> {
-                Result r = tx.run("MATCH (a:User{name:$user})-[r:FOLLOWS]->(b:ReadingList{title:$title, username:$owner }) " +
+                Result r = tx.run("MATCH (a:User{username:$user})-[r:FOLLOWS]->(b:ReadingList{title:$title, username:$owner }) " +
                         "RETURN COUNT(*)", parameters("user", user, "title", readingList.getTitle(), "owner", owner));
                 Record record = r.next();
                 if (record.get(0).asInt() == 0)
@@ -159,7 +159,7 @@ public class Neo4jManager {
         boolean res = false;
         try(Session session = driver.session()){
             res = session.readTransaction((TransactionWork<Boolean>) tx -> {
-                Result r = tx.run("MATCH (:User{name:$user})-[r:LIKES]->(p:Paper)  where (p.arxiv_id = $id OR p.vixra_id =$id) " +
+                Result r = tx.run("MATCH (:User{username:$user})-[r:LIKES]->(p:Paper) WHERE (p.arxiv_id = $id OR p.vixra_id =$id) " +
                         "RETURN COUNT(*)", parameters("user", user, "id", id));
                 Record record = r.next();
                 if (record.get(0).asInt() == 0)
@@ -183,7 +183,7 @@ public class Neo4jManager {
         try(Session session = driver.session()) {
             session.writeTransaction((TransactionWork<Void>) tx -> {
                 tx.run("MATCH (a:User), (b:Paper) " +
-                                "WHERE a.name = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) " +
+                                "WHERE a.username = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) " +
                                 "MERGE (a)-[r:LIKES]->(b)",
                         parameters("username", u.getUsername(),
                                 "arxiv_id", p.getArxivId(),
@@ -199,7 +199,7 @@ public class Neo4jManager {
     public boolean unlike(User u, Paper p) {
         try (Session session = driver.session()) {
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User{name:$username})-[r:LIKES]->" +
+                tx.run("MATCH (u:User{username:$username})-[r:LIKES]->" +
                                 "(p:Paper{arxiv_id:$arxiv_id,vixra_id:$vixra_id}) " +
                                 " DELETE r",
                         parameters("username", u.getUsername(),
@@ -223,8 +223,8 @@ public class Neo4jManager {
     public void hasCommented(String user, String id){
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User) where u.name = $user " +
-                        "MATCH (p:Paper) where (p.arxiv_id = $id OR p.vixra_id =$id) " +
+                tx.run("MATCH (u:User) WHERE u.username = $user " +
+                        "MATCH (p:Paper) WHERE (p.arxiv_id = $id OR p.vixra_id =$id) " +
                         "MERGE (u)-[:HAS_COMMENTED]->(p)", parameters("user", user, "id", id));
                 return null; });
         }catch (Exception ex) {
@@ -240,7 +240,7 @@ public class Neo4jManager {
     public void deleteHasCommented(String user, String id){
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User {name:$user})-[r:HAS_COMMENTED]->(p:Paper) WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
+                tx.run("MATCH (u:User {username:$user})-[r:HAS_COMMENTED]->(p:Paper) WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
                         "DELETE r", parameters("user", user, "id", id));
                 return null; });
         }catch (Exception ex) {
@@ -292,8 +292,8 @@ public class Neo4jManager {
         int numFollowers;
         try (Session session = driver.session()) {
             numFollowers = session.writeTransaction((TransactionWork<Integer>) tx -> {
-                Result result = tx.run("MATCH (:ReadingList {title: $title, username: $owner})<-[r:FOLLOWS]-() " +
-                        "RETURN count(r) AS numFollowers", parameters("title", title, "owner", owner));
+                Result result = tx.run("MATCH (:ReadingList {title: $title, owner: $owner})<-[r:FOLLOWS]-() " +
+                        "RETURN COUNT(r) AS numFollowers", parameters("title", title, "owner", owner));
                 return result.next().get("numFollowers").asInt();
             });
         }
@@ -310,7 +310,7 @@ public class Neo4jManager {
         try (Session session = driver.session()) {
             numLikes = session.writeTransaction((TransactionWork<Integer>) tx -> {
                 Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-() WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
-                        "RETURN count(r) AS numLikes", parameters("id", id));
+                        "RETURN COUNT(r) AS numLikes", parameters("id", id));
                 return result.next().get("numLikes").asInt();
             });
         }
@@ -327,7 +327,7 @@ public class Neo4jManager {
         try (Session session = driver.session()) {
             numComments = session.writeTransaction((TransactionWork<Integer>) tx -> {
                 Result result = tx.run("MATCH (p:Paper)<-[r:HAS_COMMENTED]-() WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
-                        "RETURN count(r) AS numComments", parameters("id", id));
+                        "RETURN COUNT(r) AS numComments", parameters("id", id));
                 return result.next().get("numComments").asInt();
             });
         }
@@ -339,16 +339,16 @@ public class Neo4jManager {
      * the owner and  the new relationship
      *
      * @param title name of the reading list
-     * @param username owner of the reading list
+     * @param owner owner of the reading list
      */
-    public boolean createReadingList (final String title, final String username) {
+    public boolean createReadingList (final String title, final String owner) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (owner:User {name: $username}) " +
-                                "MERGE (r:ReadingList {title: $title, username: $username}) " +
+                tx.run("MATCH (owner:User {username: $owner}) " +
+                                "MERGE (r:ReadingList {title: $title, owner: owner}) " +
                                 "MERGE (owner)-[p:OWNS]->(r) " +
                                 "ON CREATE SET p.date = datetime()"
-                        , parameters("title", title, "username", username));
+                        , parameters("title", title, "owner", owner));
                 return null;
             });
         }
@@ -368,7 +368,7 @@ public class Neo4jManager {
     public void followReadingList (final String title, final String owner, final String username) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User {name: $username}), (r:ReadingList {title: $title, username: $owner}) " +
+                tx.run("MATCH (u:User {username: $username}), (r:ReadingList {title: $title, owner: $owner}) " +
                                 "MERGE (u)-[p:FOLLOWS]->(r) " +
                                 "ON CREATE SET p.date = datetime()",
                         parameters("username", username, "title", title, "owner", owner));
@@ -385,7 +385,7 @@ public class Neo4jManager {
     public void followUser (final String username, final String target) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User {name: $username}), (t:User {name: $target}) " +
+                tx.run("MATCH (u:User {username: $username}), (t:User {username: $target}) " +
                                 "MERGE (u)-[p:FOLLOWS]->(t) " +
                                 "ON CREATE SET p.date = datetime()",
                         parameters("username", username, "target", target));
@@ -397,14 +397,14 @@ public class Neo4jManager {
     /**
      * Remove a reading list and all its relationships
      * @param title title of the reading list
-     * @param username owner of the reading list
+     * @param owner owner of the reading list
      */
-    public void deleteReadingList (final String title, final String username) {
+    public void deleteReadingList (final String title, final String owner) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (r:ReadingList {title: $title, username: $username}) " +
+                tx.run("MATCH (r:ReadingList {title: $title, owner: owner}) " +
                                 "DETACH DELETE r",
-                        parameters("title", title, "username", username));
+                        parameters("title", title, "owner", owner));
                 return null;
             });
         }
@@ -419,7 +419,7 @@ public class Neo4jManager {
     public void unfollowReadingList (final String title, final String owner, final String username) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (:User {name: $username})-[r:FOLLOWS]->(:ReadingList {title: $title, username: $owner}) " +
+                tx.run("MATCH (:User {username: $username})-[r:FOLLOWS]->(:ReadingList {title: $title, owner: $owner}) " +
                                 "DELETE r",
                         parameters("username", username, "title", title, "owner", owner));
                 return null;
@@ -435,7 +435,7 @@ public class Neo4jManager {
     public void unfollowUser (final String username, final String target) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (:User {name: $username})-[r:FOLLOWS]->(:User {name: $target}) " +
+                tx.run("MATCH (:User {username: $username})-[r:FOLLOWS]->(:User {username: $target}) " +
                                 "DELETE r",
                         parameters("username", username, "target", target));
                 return null;
@@ -453,13 +453,13 @@ public class Neo4jManager {
         List<ReadingList> readingListsSnap = new ArrayList<>();
         try(Session session = driver.session()) {
             session.readTransaction((TransactionWork<List<ReadingList>>) tx -> {
-                Result result = tx.run("MATCH (u:User{name: $username})-[r:FOLLOWS]->(b:ReadingList) " +
-                        "return b.username as username, b.title as title",
+                Result result = tx.run("MATCH (u:User{username: $username})-[r:FOLLOWS]->(b:ReadingList) " +
+                        "RETURN b.username as username, b.title as title",
                         parameters("username", u.getUsername()));
-                System.out.println(result.hasNext());
+
                 while (result.hasNext()) {
                     Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("title").asString(), null);
+                    ReadingList snap = new ReadingList(r.get("title").asString(), new ArrayList<>());
                     readingListsSnap.add(snap);
                 }
 
@@ -482,12 +482,12 @@ public class Neo4jManager {
         List<Pair<String, String>> readingLists = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS]-(me:User{name:$username}), " +
+                Result result = tx.run("MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}), " +
                                 "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.username AS username, target.title AS title, " +
                                 "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
                                 "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $firstLevel" +
                                 "UNION " +
-                                "MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS*2..2]-(me:User{name:$username}), " +
+                                "MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}), " +
                                 "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.username AS username, target.title AS title, " +
                                 "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
                                 "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $secondLevel",
@@ -555,7 +555,7 @@ public class Neo4jManager {
         List<Pair<String, Integer>> topUsers = new ArrayList<>();
         try(Session session = driver.session()) {
             session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (u:User)-[l:HAS_COMMENTED]->(:Paper) RETURN u.name AS username, " +
+                Result result = tx.run("MATCH (u:User)-[l:HAS_COMMENTED]->(:Paper) RETURN u.username AS username, " +
                                 "COUNT(l) AS comments_count ORDER BY comments_count DESC " +
                                 "LIMIT $limit",
                         parameters( "limit", number));
@@ -591,11 +591,11 @@ public class Neo4jManager {
         List<Paper> papersSnap = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS]-(me:User{name:$username}) " +
+                Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}) " +
                                 "RETURN p.arxiv_id AS arxiv_id, p.vixra_id AS vixra_id, p.title as title " +
                                 " LIMIT $firstlevel " +
                                 "UNION " +
-                                "MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS*2..2]-(me:User{name:$username}) " +
+                                "MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}) " +
                                 "RETURN p.arxiv_id AS arxiv_id, p.vixra_id AS vixra_id, p.title as title " +
                                 "LIMIT $secondLevel",
                         parameters("username", u.getUsername(), "firstlevel", numberFirstLv, "secondLevel", numberSecondLv));
@@ -625,7 +625,7 @@ public class Neo4jManager {
         HashMap<String, Integer> suggestion;
         try (Session session = driver.session()) {
             suggestion = session.readTransaction((TransactionWork<HashMap<String, Integer>>) tx -> {
-                Result result = tx.run("MATCH (:User {name: $username})-[:FOLLOWS]->(:User)-[:FOLLOWS]-(target:User), " +
+                Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(:User)-[:FOLLOWS]-(target:User), " +
                                 "(target)<-[r:FOLLOWS]-() RETURN DISTINCT target.name as Name, " +
                                 "count(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("username", username, "num", num));
@@ -649,8 +649,8 @@ public class Neo4jManager {
         HashMap<String, Integer> rank;
         try (Session session = driver.session()) {
             rank = session.readTransaction((TransactionWork<HashMap<String, Integer>>) tx -> {
-                Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) RETURN DISTINCT target.name as Name, " +
-                                "count(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
+                Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) RETURN DISTINCT target.username as Username, " +
+                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("num", num));
                 HashMap<String, Integer> popularUser = new HashMap<>();
                 while (result.hasNext()) {

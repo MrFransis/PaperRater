@@ -11,10 +11,10 @@ public class User {
     private String picture;
     private int age;
     private List<ReadingList> readingLists;
-    private int numFollower;
+    private int type;
 
     public User(String username, String email, String password, String firstName, String lastName,
-                String picture, int age, List<ReadingList> readingLists) {
+                String picture, int age, List<ReadingList> readingLists, int type) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -23,6 +23,7 @@ public class User {
         this.picture = picture;
         this.age = age;
         this.readingLists = readingLists;
+        this.type = type;
     }
 
     public String getUsername() {
@@ -57,7 +58,7 @@ public class User {
         return readingLists;
     }
 
-    public int getNumFollower() { return this.numFollower; }
+    public int getType() { return this.type; }
 
     public void setUsername(String username) {
         this.username = username;
@@ -87,7 +88,7 @@ public class User {
         this.age = age;
     }
 
-    public void setNumFollower(int numFollower) { this.numFollower = numFollower; }
+    public void setType(int numFollower) { this.type = type; }
 
     @Override
     public String toString() {

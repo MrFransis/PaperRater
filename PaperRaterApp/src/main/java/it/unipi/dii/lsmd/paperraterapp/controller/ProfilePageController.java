@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 public class ProfilePageController {
@@ -40,7 +41,8 @@ public class ProfilePageController {
     @FXML private Text nFollower;
     @FXML private Text nFollowing;
     @FXML private Button followBtn;
-    @FXML private VBox readingListsBox;
+    @FXML private Label boxLabel;
+    @FXML private VBox box;
     @FXML private Button addReadingListBtn;
 
 
@@ -88,7 +90,12 @@ public class ProfilePageController {
             addReadingListBtn.setVisible(false);
         }
 
-        readingListsBox.getChildren().clear();
+        box.getChildren().clear();
+        loadMyReadingList();
+    }
+
+    private void loadMyReadingList () {
+        boxLabel.setText("My Reading Lists");
         if (!user.getReadingLists().isEmpty()) {
             Iterator<ReadingList> it = user.getReadingLists().iterator();
 
@@ -100,11 +107,11 @@ public class ProfilePageController {
                 Pane p = loadReadingListCard(r, user.getUsername());
 
                 row.getChildren().addAll(p);
-                readingListsBox.getChildren().add(row);
+                box.getChildren().add(row);
             }
         }
         else {
-            readingListsBox.getChildren().add(new Label("No Reading Lists :("));
+            box.getChildren().add(new Label("No Reading Lists :("));
         }
     }
 
@@ -151,11 +158,18 @@ public class ProfilePageController {
     }
 
     private void clickOnFollower (MouseEvent mouseEvent) {
+
         System.out.println("Browse Follower");
+
     }
 
     private void clickOnFollowing (MouseEvent mouseEvent) {
+
         System.out.println("Browse Following");
+
+        boxLabel.setText("Followed Reading Lists");
+        List<ReadingList> readingListsSnaps = neoMan.getSnapsOfFollowedReadingLists(user);
+
     }
 
     private void clickOnEditIcon (MouseEvent mouseEvent) {
@@ -186,7 +200,8 @@ public class ProfilePageController {
                         lastName.getText(),
                         Session.getInstance().getLoggedUser().getPicture(),
                         Integer.parseInt(age.getText()),
-                        Session.getInstance().getLoggedUser().getReadingLists());
+                        Session.getInstance().getLoggedUser().getReadingLists(),
+                        Session.getInstance().getLoggedUser().getType());
             }
             return null;
         });
@@ -201,7 +216,6 @@ public class ProfilePageController {
     }
 
     private void clickOnAddReadingListBtn (MouseEvent mouseEvent) {
-        // create a text input dialog
         TextInputDialog td = new TextInputDialog("r_list" +
                 (Session.getInstance().getLoggedUser().getReadingLists().size() + 1));
         td.setHeaderText("Insert the title of the Reading List");

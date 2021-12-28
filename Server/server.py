@@ -65,8 +65,11 @@ class App(cmd.Cmd):
         users_col.insert_many(data_dict)
 
         for index, row in users_df.iterrows():
-            query = ("CREATE (u:User { name: $username }) ")
+            query = ("CREATE (u:User { username: $username }) ")
             session.write_transaction(lambda tx: tx.run(query, username=row['username']))
+
+        query = ("CREATE (u:User { username: $username }) ")
+        session.write_transaction(lambda tx: tx.run(query, username='admin'))
 
         print("Added users to database")
        
@@ -85,7 +88,7 @@ class App(cmd.Cmd):
 
                 query = (
                     "MATCH (a:User), (b:Paper) "
-                    "WHERE a.name = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) "
+                    "WHERE a.username = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) "
                     "MERGE (a)-[r:HAS_COMMENTED]->(b)"
                 )
                 session.write_transaction(lambda tx: tx.run(query, username=rand_user,
@@ -103,7 +106,8 @@ class App(cmd.Cmd):
 
             # Generate a random number of reading lists
             for i in range(0, num_reading_lists):
-                reading_list = {'title': 'r_list' + str(i)}
+                title = 'r_list' + str(i)
+                reading_list = {'title': title}
 
                 papers = []
                 num_papers_in_reading_list = int(random.random() * 31)
@@ -125,8 +129,8 @@ class App(cmd.Cmd):
                 reading_list['papers'] = papers
 
                 query = ("MATCH (a:User) "
-                         "WHERE a.name = $username "
-                         "CREATE (b:ReadingList { username: $username, title: $title}) "
+                         "WHERE a.username = $username "
+                         "CREATE (b:ReadingList { owner: $username, title: $title}) "
                          "CREATE (a)-[r:OWNS]->(b)")
                 session.write_transaction(lambda tx: tx.run(query, username=user['username'], title=reading_list['title']))
 
@@ -141,7 +145,7 @@ class App(cmd.Cmd):
 
                     query = (
                             "MATCH (a:User), (b:ReadingList) "
-                            "WHERE a.name = $username1 AND (b.username = $username2 AND b.title = $title) "
+                            "WHERE a.username = $username1 AND (b.username = $username2 AND b.title = $title) "
                             "CREATE (a)-[r:FOLLOWS]->(b)"
                     )
                     reading_lists.append(reading_list)
@@ -157,7 +161,7 @@ class App(cmd.Cmd):
         for index, row in users_df.iterrows():
             query = (
                     "MATCH (a:User), (b:User) "
-                    "WHERE a.name = $username1 AND b.name = $username2 "
+                    "WHERE a.username = $username1 AND b.username = $username2 "
                     "CREATE (a)-[r:FOLLOWS]->(b)"
             )
 
@@ -172,7 +176,7 @@ class App(cmd.Cmd):
 
             query = (
                     "MATCH (a:User), (b:Paper) "
-                    "WHERE a.name = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) "
+                    "WHERE a.username = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) "
                     "CREATE (a)-[r:LIKES]->(b)"
             )
 
@@ -186,6 +190,15 @@ class App(cmd.Cmd):
                                     {'$inc': {'numLikes': 1}})
 
         print("Added User Follows and Likes")
+
+        admin = {
+            "username": "admin",
+            "email": "admin@gmail.com",
+            "password": "admin",
+            "type": 1
+        }
+        users_col.insert_one(admin)
+        print("Added Administrator")
 
         session.close()
 
