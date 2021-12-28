@@ -32,9 +32,9 @@
       </HBox>
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="549.0" prefWidth="908.0" VBox.vgrow="ALWAYS">
          <children>
-            <HBox alignment="TOP_CENTER" layoutX="151.0" layoutY="3.0" prefHeight="36.0" prefWidth="543.0" spacing="10.0">
+            <HBox alignment="TOP_CENTER" layoutX="67.0" layoutY="3.0" prefHeight="36.0" prefWidth="761.0" spacing="10.0">
                <children>
-                  <Label fx:id="readingListTitle" alignment="CENTER" style="&#10;" text="Reading List Title" textAlignment="CENTER" textFill="#100000" wrapText="false">
+                  <Label fx:id="readingListTitle" alignment="CENTER" prefHeight="27.0" prefWidth="250.0" style="&#10;" text="Reading List Title" textAlignment="CENTER" textFill="#100000" wrapText="false">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -70,7 +70,12 @@
                         <Label text="Papers" />
                      </children>
                   </VBox>
-                  <Button fx:id="deleteReadingListBtn" mnemonicParsing="false" text="Delete">
+                  <Button fx:id="followBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" text="Follow">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="deleteReadingListBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="Delete">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>

@@ -27,6 +27,7 @@ import java.util.Iterator;
 
 public class ReadingListPageController {
     private ReadingList readingList;
+    private String owner;
     private MongoDBManager mongoMan;
     private Neo4jManager neoMan;
 
@@ -37,25 +38,28 @@ public class ReadingListPageController {
     @FXML private ImageView backIcon;
     @FXML private VBox papersBox;
     @FXML private Button deleteReadingListBtn;
+    @FXML private Button followBtn;
 
     public void initialize () {
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
         neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
+        followBtn.setOnMouseClicked(mouseEvent -> clickOnFollowBtn(mouseEvent));
         backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));
         deleteReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnDeleteBtn(mouseEvent));
     }
 
     public void setReadingList (ReadingList readingList, String username) {
         this.readingList = readingList;
-        this.username.setText(username);
-
-        readingListTitle.setText(readingList.getName());
-        numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getName(), username)));
-        numPapers.setText(String.valueOf(readingList.getPapers().size()));
+        this.owner = username;
 
         // Push
         Session.getInstance().getPreviousPageReadingList().add(readingList);
         Session.getInstance().getPreviousPageUser().add(new User(username, null,null,null,null,null,0,null));
+
+        this.username.setText(username);
+        readingListTitle.setText(readingList.getName());
+        numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getName(), username)));
+        numPapers.setText(String.valueOf(readingList.getPapers().size()));
 
         if (!readingList.getPapers().isEmpty()) {
             papersBox.getChildren().clear();
@@ -75,6 +79,19 @@ public class ReadingListPageController {
         else {
             papersBox.getChildren().add(new Label("No Papers :("));
         }
+
+        if (owner.equals(Session.getInstance().getLoggedUser().getUsername())) {
+            followBtn.setVisible(false);
+            deleteReadingListBtn.setVisible(true);
+        }
+        else {
+            followBtn.setVisible(true);
+            deleteReadingListBtn.setVisible(false);
+        }
+
+        if (neoMan.isUserFollowingReadingList(Session.getInstance().getLoggedUser().getUsername(), owner, readingList))
+            followBtn.setText("Unfollow");
+
     }
 
     private Pane loadPaperCard (Paper p) {
@@ -91,6 +108,20 @@ public class ReadingListPageController {
             e.printStackTrace();
         }
         return pane;
+    }
+
+    private void clickOnFollowBtn (MouseEvent mouseEvent) {
+        String tmp = followBtn.getText();
+        if (tmp.equals("Follow")) {
+            neoMan.followReadingList(readingList.getName(), owner, Session.getInstance().getLoggedUser().getUsername());
+            numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getName(), owner)));
+            followBtn.setText("Unfollow");
+        }
+        else {
+            neoMan.unfollowReadingList(readingList.getName(), owner, Session.getInstance().getLoggedUser().getUsername());
+            numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getName(), owner)));
+            followBtn.setText("Follow");
+        }
     }
 
     private void clickOnDeleteBtn (MouseEvent mouseEvent) {
@@ -114,6 +145,7 @@ public class ReadingListPageController {
         Session.getInstance().getPreviousPageUser().remove(
                 Session.getInstance().getPreviousPageUser().size() - 1);
 
+        // Check if previous page was a Profile Page
         if (Session.getInstance().getPreviousPageUser().isEmpty())
             Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
         else {

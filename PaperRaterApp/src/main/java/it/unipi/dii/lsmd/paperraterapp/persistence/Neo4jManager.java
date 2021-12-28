@@ -116,8 +116,27 @@ public class Neo4jManager {
         boolean res = false;
         try(Session session = driver.session()) {
             res = session.readTransaction((TransactionWork<Boolean>) tx -> {
-                Result r = tx.run("MATCH (a:User{username:$userA})-[r:FOLLOWS]->(b:User{username:$userB}) " +
+                Result r = tx.run("MATCH (a:User{name:$userA})-[r:FOLLOWS]->(b:User{name:$userB}) " +
                         "RETURN COUNT(*)", parameters("userA", userA, "userB", userB));
+                Record record = r.next();
+                if (record.get(0).asInt() == 0)
+                    return false;
+                else
+                    return true;
+            });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public boolean isUserFollowingReadingList (String user, String owner, ReadingList readingList) {
+        boolean res = false;
+        try(Session session = driver.session()) {
+            res = session.readTransaction((TransactionWork<Boolean>) tx -> {
+                Result r = tx.run("MATCH (a:User{name:$user})-[r:FOLLOWS]->(b:ReadingList{title:$title, username:$owner }) " +
+                        "RETURN COUNT(*)", parameters("user", user, "title", readingList.getName(), "owner", owner));
                 Record record = r.next();
                 if (record.get(0).asInt() == 0)
                     return false;

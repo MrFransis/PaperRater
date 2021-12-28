@@ -87,7 +87,7 @@ public class PaperCardCtrl {
                         Session.getInstance().getPreviousPageUser().size() - 1
                 ).getName(),
                 p);
-        System.out.println(res);
+
         Session.getInstance().getPreviousPageReadingList().get(
                 Session.getInstance().getPreviousPageReadingList().size() - 1).getPapers().remove(p);
 
