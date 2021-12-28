@@ -40,6 +40,7 @@ public class PaperPageController implements Initializable {
     @FXML private Text abstractPaper;
     @FXML private Button comment;
     @FXML private TextField commentText;
+    @FXML private Text comNum;
     @FXML private ScrollPane scrollpane;
     @FXML private Button likebtn;
 
@@ -77,6 +78,7 @@ public class PaperPageController implements Initializable {
     }
 
     private void setCommentBox() {
+        int numComment = 0;
         if (paper.getComments() != null) {
             commentsBox.getChildren().clear();
             Iterator<Comment> it = paper.getComments().iterator();
@@ -85,11 +87,12 @@ public class PaperPageController implements Initializable {
                 VBox row = new VBox();
                 Comment c = it.next();
                 Pane p = loadCommentCard(c, paper);
-
                 row.getChildren().addAll(p);
                 commentsBox.getChildren().add(row);
+                numComment++;
             }
         }
+        comNum.setText(String.valueOf(numComment));
     }
 
     private Pane loadCommentCard (Comment c, Paper p) {
@@ -98,6 +101,7 @@ public class PaperPageController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/comment_card.fxml"));
             pane = loader.load();
             CommentCtrl ctrl = loader.getController();
+            ctrl.textProperty().bindBidirectional(comNum.textProperty());
             ctrl.setCommentCard(c, user.getUsername(), p);
 
         }
@@ -117,6 +121,8 @@ public class PaperPageController implements Initializable {
         else {
             ReadingListPageController ctrl = (ReadingListPageController) Utils.changeScene(
                     "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
+            String previousUser = Session.getInstance().getPreviousPageUser().get(
+                    Session.getInstance().getPreviousPageUser().size()-1).getUsername();
 
             ctrl.setReadingList(Session.getInstance().getPreviousPageReadingList().remove(
                     Session.getInstance().getPreviousPageReadingList().size() - 1),
@@ -162,6 +168,7 @@ public class PaperPageController implements Initializable {
         if(!commentText.getText().isEmpty()){
             mongoMan.addComment(paper.getId(), commentText.getText(), user.getUsername());
             paper = mongoMan.getPaperById(paper.getId());
+            neoMan.hasCommented(user.getUsername(), paper.getId());
             setCommentBox();
             commentText.setText("");
 

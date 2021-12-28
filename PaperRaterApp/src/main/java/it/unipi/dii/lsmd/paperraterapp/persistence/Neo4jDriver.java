@@ -1,20 +1,29 @@
 package it.unipi.dii.lsmd.paperraterapp.persistence;
 
-import org.neo4j.driver.*;
+import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
+import org.neo4j.driver.AuthTokens;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.GraphDatabase;
+import java.util.Properties;
 
 public class Neo4jDriver {
     private static Neo4jDriver instance;
-
     private Driver driver;
+    public String neo4jIp;
+    public int neo4jPort;
+    public String neo4jUsername;
+    public String neo4jPassword;
 
-    private Neo4jDriver() {
-
+    private Neo4jDriver(Properties configurationParameters) {
+        this.neo4jIp = configurationParameters.getProperty("neo4jIp");
+        this.neo4jPort = Integer.parseInt(configurationParameters.getProperty("neo4jPort"));
+        this.neo4jUsername = configurationParameters.getProperty("neo4jUsername");
+        this.neo4jPassword = configurationParameters.getProperty("neo4jPassword");
     }
 
     public static Neo4jDriver getInstance() {
         if (instance == null)
-            //instance = new MongoDriver(Utils.readConfigurationParameters());
-            instance = new Neo4jDriver();
+            instance = new Neo4jDriver(Utils.readConfigurationParameters());
         return instance;
     }
 
@@ -22,7 +31,7 @@ public class Neo4jDriver {
         if (driver != null)
             return driver;
         try {
-            driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic( "neo4j", "root"));
+            driver = GraphDatabase.driver("bolt://" + neo4jIp + ":" + neo4jPort, AuthTokens.basic( neo4jUsername, neo4jPassword));
             driver.verifyConnectivity();
         }
         catch (Exception e) {

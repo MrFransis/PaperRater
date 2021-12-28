@@ -255,11 +255,35 @@ public class MongoDBManager {
         }
         catch (Exception e)
         {
-            System.out.println("Error in adding a commnet to a Paper");
+            System.out.println("Error in adding a comment to a Paper");
             e.printStackTrace();
             return false;
         }
     }
+
+    /**
+     * Add a new comment
+     * @param id Id of the paper
+     * @param user username
+     * @return  true if operation is successfully executed, false otherwise
+     */
+
+    public int numUserComments (String id, String user) {
+        Bson match = match(or(eq("arxiv_id", id), eq("vixra_id", id)));
+        Bson unwind = unwind("$comments");
+        Bson match2 = match(eq("comments.username", user));
+        Bson group = group("comments.username",
+                sum("sum", 1));
+
+        Document doc = (Document) papersCollection.aggregate(
+                Arrays.asList(match, unwind, match2, group)).first();
+        if (doc == null)
+            return 0;
+        else{
+            return doc.getInteger("sum");
+        }
+    }
+
     /**
      * Update the list of comments of a paper
      * @param p
@@ -318,7 +342,7 @@ public class MongoDBManager {
                 d = n;
                 break;
             }
-        n++;
+            n++;
         }
         comments.remove(d);
         updateComments(paper, comments);
@@ -610,7 +634,6 @@ public class MongoDBManager {
         while (iterator.hasNext())
         {
             Document document = iterator.next();
-            System.out.println(document);
             Document ReadingListDocument = (Document) document.get("ReadingList");
             ReadingList readingList = gson.fromJson(gson.toJson(ReadingListDocument), ReadingList.class);
             readingLists.add(readingList);
@@ -730,7 +753,7 @@ public class MongoDBManager {
                 excludeId(), include("nPapers")));
 
         try(MongoCursor<Document> cursor = papersCollection.aggregate(Arrays.asList(group, sort, project))
-                                    .iterator()) {
+                .iterator()) {
             while(cursor.hasNext()) {
                 Document doc = cursor.next();
                 String category = doc.getString("category");

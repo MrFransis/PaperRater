@@ -5,9 +5,10 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-
+import java.util.Properties;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
@@ -20,22 +21,30 @@ public class MongoDriver {
     private MongoClient client = null;
     private MongoDatabase database = null;
     private CodecRegistry pojoCodecRegistry;
-    public String firstIp;
-    public int firstPort;
-    public String dbName;
+    public String mongoFirstIp;
+    public int mongoFirstPort;
+    public String mongoSecondIp;
+    public int mongoSecondPort;
+    public String mongoThirdIp;
+    public int mongoThirdPort;
+    public String mongodbName;
 
-    /*
-    private MongoDriver(ConfigurationParameters configurationParameters){
-        this.firstIp = configurationParameters.mongoFirstIp;
-        this.firstPort = configurationParameters.mongoFirstPort;
-        this.dbName = configurationParameters.mongoDbName;
+
+
+    private MongoDriver(Properties configurationParameters){
+        this.mongoFirstIp = configurationParameters.getProperty("mongoFirstIp");
+        this.mongoFirstPort = Integer.parseInt(configurationParameters.getProperty("mongoFirstPort"));
+        this.mongoSecondIp = configurationParameters.getProperty("mongoSecondIp");
+        this.mongoSecondPort = Integer.parseInt(configurationParameters.getProperty("mongoSecondPort"));
+        this.mongoThirdIp = configurationParameters.getProperty("mongoThirdIp");
+        this.mongoThirdPort = Integer.parseInt(configurationParameters.getProperty("mongoThirdPort"));
+        this.mongodbName = configurationParameters.getProperty("mongoDbName");
     };
-    */
+
 
     public static MongoDriver getInstance() {
         if (instance == null)
-            //instance = new MongoDriver(Utils.readConfigurationParameters());
-            instance = new MongoDriver();
+            instance = new MongoDriver(Utils.readConfigurationParameters());
         return instance;
     }
 
@@ -49,16 +58,17 @@ public class MongoDriver {
         try
         {
             //String string = "mongodb://172.16.4.66:27020,172.16.4.67:27020,172.16.4.66:27020";
-            String string = "mongodb://localhost:27017";
+            String string = "mongodb://";
+            string += mongoFirstIp + ":" + mongoFirstPort;
             ConnectionString connectionString = new ConnectionString(string);
 
             pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                     fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
             MongoClientSettings clientSettings = MongoClientSettings.builder()
-                                                                    .applyConnectionString(connectionString)
-                                                                    .codecRegistry(pojoCodecRegistry)
-                                                                    .build();
+                    .applyConnectionString(connectionString)
+                    .codecRegistry(pojoCodecRegistry)
+                    .build();
 
             client = MongoClients.create(clientSettings);
 
@@ -80,7 +90,7 @@ public class MongoDriver {
     public void closeConnection() {
         if (client != null)
             System.out.println("Connection closed ...");
-            client.close();
+        client.close();
     }
 }
 
