@@ -57,8 +57,8 @@ public class ReadingListPageController {
         Session.getInstance().getPreviousPageUser().add(new User(username, null,null,null,null,null,0,null));
 
         this.username.setText(username);
-        readingListTitle.setText(readingList.getName());
-        numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getName(), username)));
+        readingListTitle.setText(readingList.getTitle());
+        numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getTitle(), username)));
         numPapers.setText(String.valueOf(readingList.getPapers().size()));
 
         if (!readingList.getPapers().isEmpty()) {
@@ -113,13 +113,13 @@ public class ReadingListPageController {
     private void clickOnFollowBtn (MouseEvent mouseEvent) {
         String tmp = followBtn.getText();
         if (tmp.equals("Follow")) {
-            neoMan.followReadingList(readingList.getName(), owner, Session.getInstance().getLoggedUser().getUsername());
-            numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getName(), owner)));
+            neoMan.followReadingList(readingList.getTitle(), owner, Session.getInstance().getLoggedUser().getUsername());
+            numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getTitle(), owner)));
             followBtn.setText("Unfollow");
         }
         else {
-            neoMan.unfollowReadingList(readingList.getName(), owner, Session.getInstance().getLoggedUser().getUsername());
-            numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getName(), owner)));
+            neoMan.unfollowReadingList(readingList.getTitle(), owner, Session.getInstance().getLoggedUser().getUsername());
+            numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getTitle(), owner)));
             followBtn.setText("Follow");
         }
     }
@@ -129,8 +129,8 @@ public class ReadingListPageController {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
-            mongoMan.deleteReadingList(username.getText(), readingList.getName());
-            neoMan.deleteReadingList(readingList.getName(), username.getText());
+            mongoMan.deleteReadingList(username.getText(), readingList.getTitle());
+            neoMan.deleteReadingList(readingList.getTitle(), username.getText());
 
             User owner = Session.getInstance().getPreviousPageUser().get(Session.getInstance().getPreviousPageUser().size()-1);
             owner.getReadingLists().remove(readingList);

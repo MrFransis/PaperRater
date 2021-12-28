@@ -11,7 +11,7 @@ public class ReadingList {
         this.papers = papers;
     }
 
-    public String getName() {
+    public String getTitle() {
         return title;
     }
 
@@ -19,7 +19,7 @@ public class ReadingList {
         return papers;
     }
 
-    public void setName(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 

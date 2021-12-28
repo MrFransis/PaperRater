@@ -85,7 +85,7 @@ public class PaperCardCtrl {
         UpdateResult res = mongoMan.removePaperFromReadingList(Session.getInstance().getLoggedUser().getUsername(),
                 Session.getInstance().getPreviousPageReadingList().get(
                         Session.getInstance().getPreviousPageUser().size() - 1
-                ).getName(),
+                ).getTitle(),
                 p);
 
         Session.getInstance().getPreviousPageReadingList().get(

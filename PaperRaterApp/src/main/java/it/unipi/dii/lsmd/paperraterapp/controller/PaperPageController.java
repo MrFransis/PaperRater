@@ -136,7 +136,7 @@ public class PaperPageController implements Initializable {
             Iterator<ReadingList> it = Session.getInstance().getLoggedUser().getReadingLists().iterator();
             List<String> choices = new ArrayList<>();
             while(it.hasNext()) {
-                choices.add(it.next().getName());
+                choices.add(it.next().getTitle());
             }
             ChoiceDialog<String> dialog = new ChoiceDialog<>(choices.get(0), choices);
             dialog.setTitle("Choose reading list");
@@ -152,6 +152,15 @@ public class PaperPageController implements Initializable {
                     alert.setHeaderText(null);
                     alert.setContentText("This paper is already present in this reading list!");
                     alert.showAndWait();
+                }
+                else {
+                    // Update Session User Object
+                    for (ReadingList r : Session.getInstance().getLoggedUser().getReadingLists()) {
+                        if (r.getTitle().equals(result.get())) {
+                            r.getPapers().add(paper);
+                            break;
+                        }
+                    }
                 }
             }
         }
