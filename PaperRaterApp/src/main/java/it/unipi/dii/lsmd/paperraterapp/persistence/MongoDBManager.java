@@ -841,12 +841,9 @@ public class MongoDBManager {
             String _abstract = (String) doc.get("_abstract");
             String category = (String) doc.get("category");
             List<String> authors = (List<String>) doc.get("authors");
-            //String published = (String) doc.get("published");
             Document docComments = (Document) doc.get("comments");
             Comment comment = gson.fromJson(gson.toJson(docComments), Comment.class);
             Paper paper = new Paper(arxiv_id, vixra_id, title, _abstract, category, authors, null, null );
-
-            System.out.println(paper);
 
             results.add(new Pair<>(paper, comment));
         };
