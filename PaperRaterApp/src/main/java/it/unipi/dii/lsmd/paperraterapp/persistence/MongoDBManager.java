@@ -338,38 +338,6 @@ public class MongoDBManager {
     }
 
     /**
-     * Braws all comments that has been written "numDays" ago
-     * @param start_date start date
-     * @param start_date finish date
-     * @param skipDoc how many comments skip
-     * @param limitDoc limit number of comments
-     * @return list of comments
-     */
-    public List<Pair<String, Comment>> searchLastComments(String start_date, String start_date, int skipDoc, int limitDoc) {
-
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").serializeSpecialFloatingPointValues().create();
-        List<Pair<String, Comment>> results = new ArrayList<>();
-        Consumer<Document> takeComments = doc -> {
-            String paperId = doc.getString("arxiv_id");
-            if(Objects.equals(paperId, "nan"))
-                paperId = doc.getString("vixra_id");
-            Document docComments = (Document) doc.get("comments");
-            Comment comment = gson.fromJson(gson.toJson(docComments), Comment.class);
-            results.add(new Pair<>(paperId, comment));
-        };
-
-        Bson unwind = unwind("$comments");
-        Bson filter = match(gte("comments.timestamp", start_date));
-        Bson filter2 = match(lte("comments.timestamp", end_date));
-        Bson sort = sort(ascending("comments.timestamp"));
-        Bson skip = skip(skipDoc);
-        Bson limit = limit(limitDoc);
-        papersCollection.aggregate(Arrays.asList(unwind, filter, filter2, sort, skip, limit)).forEach(takeComments);
-
-        return results;
-    }
-
-    /**
      * Function that deletes the paper from the database
      * @param p Paper to delete
      * @return true if operation is successfully executed, false otherwise
@@ -849,28 +817,37 @@ public class MongoDBManager {
 
     /**
      * Braws all comments that has been written "numDays" ago
-     * @param numDays how may day i want to scan
+     * @param start_date start date
+     * @param start_date finish date
+     * @param skipDoc how many comments skip
+     * @param limitDoc limit number of comments
      * @return list of comments
      */
-    public List<Comment> searchLastComments(int numDays) {
-        // create the date
-        LocalDateTime localDateTime = LocalDateTime.now().minusDays(numDays);
-        LocalDateTime startOfDay = localDateTime.toLocalDate().atStartOfDay();
-        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    public List<Pair<Paper, Comment>> searchLastComments(String start_date, String end_date, int skipDoc, int limitDoc) {
 
+        List<Pair<Paper, Comment>> results = new ArrayList<>();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").serializeSpecialFloatingPointValues().create();
-        List<Comment> results = new ArrayList<>();
+        List<Bson> pipeline = new ArrayList<>();
+
         Consumer<Document> takeComments = doc -> {
+
+            Paper paper = gson.fromJson((gson.toJson(doc)), Paper.class);
+            System.out.println(paper);
             Document docComments = (Document) doc.get("comments");
             Comment comment = gson.fromJson(gson.toJson(docComments), Comment.class);
-            results.add(comment);
+            results.add(new Pair<>(paper, comment));
         };
 
-        Bson unwind = unwind("$comments");
-        Bson filter = match(gte("comments.timestamp", filterDate));
-        Bson sort = sort(ascending("comments.timestamp"));
-        papersCollection.aggregate(Arrays.asList(unwind, filter, sort)).forEach(takeComments);
+        pipeline.add(Aggregates.unwind("$comments"));
+        if(!start_date.isEmpty())
+            pipeline.add(Aggregates.match(gte("comments.timestamp", start_date)));
+        if(!end_date.isEmpty())
+            pipeline.add(Aggregates.match(lte("comments.timestamp", end_date)));
+        pipeline.add(sort(ascending("comments.timestamp")));
+        pipeline.add(skip(skipDoc));
+        pipeline.add(limit(limitDoc));
 
+        papersCollection.aggregate(pipeline).forEach(takeComments);
         return results;
     }
 
