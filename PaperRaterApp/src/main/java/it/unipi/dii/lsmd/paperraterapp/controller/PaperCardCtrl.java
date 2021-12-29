@@ -1,22 +1,20 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
-import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
 import it.unipi.dii.lsmd.paperraterapp.model.Session;
-import it.unipi.dii.lsmd.paperraterapp.persistence.*;
+import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
+import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import javafx.util.Pair;
 
 public class PaperCardCtrl {
     private Paper p;
     private MongoDBManager mongoMan;
-    private Neo4jManager neoMan;
     private ReadingListPageController readingListPageCtrl;
 
     @FXML private Label paperId;
@@ -27,7 +25,6 @@ public class PaperCardCtrl {
     @FXML private Button removeFromReadingListBtn;
 
     public void initialize () {
-        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         paperTitle.setOnMouseClicked(mouseEvent -> clickOnPaperTitle(mouseEvent));
@@ -62,7 +59,6 @@ public class PaperCardCtrl {
         }
         paperAuthors.setText(tmp);
         paperCategory.setText(p.getCategory());
-        paperLikes.setText(String.valueOf(neoMan.getNumLikes(validId)));
 
         if (showDeleteBtn) {
             removeFromReadingListBtn.setVisible(true);
