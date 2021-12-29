@@ -49,8 +49,8 @@ public class RegisterController {
                                 lastNameTf.getText(), "", Integer.parseInt(ageTf.getText()), new ArrayList<ReadingList>(),0);
 
         mongoMan.addUser(newUser);
+        neoMan.addUser(newUser);
 
-        // add to neo4j
         Session.getInstance().setLoggedUser(newUser);
         Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
     }
