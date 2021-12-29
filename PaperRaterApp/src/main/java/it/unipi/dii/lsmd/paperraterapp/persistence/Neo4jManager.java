@@ -10,6 +10,7 @@ import org.neo4j.driver.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.neo4j.driver.Values.EmptyMap;
 import static org.neo4j.driver.Values.parameters;
 
 public class Neo4jManager {
@@ -18,53 +19,6 @@ public class Neo4jManager {
 
     public Neo4jManager(Driver driver) {
         this.driver = driver;
-    }
-
-
-    public List<User> getFollowedUser (final String username, int limit, int skip) {
-        List<User> followedUsers;
-        try (Session session = driver.session()) {
-            followedUsers = session.writeTransaction((TransactionWork<List<User>>) tx -> {
-                Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(u:User) " +
-                        "RETURN u.username AS Username, u.email AS Email ORDER BY username DESC " +
-                                "SKIP $skip LIMIT $limit",
-                        parameters("username", username, "limit", limit, "skip", skip));
-                List<User> followedList = new ArrayList<>();
-                while(result.hasNext()) {
-                    Record record = result.next();
-                    User u = new User(record.get("Username").asString(), record.get("Email").asString(),
-                            "","","","",-1, new ArrayList<>(), 0);
-                    followedList.add(u);
-                }
-                return followedList;
-            });
-        }
-        return followedUsers;
-    }
-
-    public List<Pair<String, ReadingList>> getFollowReadingListsByKeyword (final String keyword, String username,
-                                                                           int skip, int limit) {
-        List<Pair<String, ReadingList>> readingListsSnap = null;
-        try(Session session = driver.session()) {
-            readingListsSnap = session.readTransaction((TransactionWork<List<Pair<String, ReadingList>>>) tx -> {
-                Result result = tx.run("MATCH (u:User {username: $username})-[r:FOLLOWS]->(b:ReadingList) " +
-                                "WHERE toLower(b.title) CONTAINS $keyword " +
-                                "RETURN b.username as username, b.title as title ORDER BY username SKIP $skip " +
-                                "LIMIT $limit",
-                        parameters("username", username, "keyword", keyword, "skip", skip, "limit", limit));
-                List<Pair<String, ReadingList>> resultsList = new ArrayList<>();
-                while (result.hasNext()) {
-                    Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("title").asString());
-                    resultsList.add(new Pair<>(r.get("username").asString(), snap));
-                }
-                return resultsList;
-            });
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return readingListsSnap;
     }
 
     /**
@@ -104,7 +58,6 @@ public class Neo4jManager {
             return false;
         }
     }
-
 
     /**
      * return the number of reading lists of the user
@@ -405,18 +358,16 @@ public class Neo4jManager {
     }
 
     /**
-     * Add a FOLLOWS relationship between a User and a reading list
+     * Remove a reading list and all its relationships
      * @param title title of the reading list
      * @param owner owner of the reading list
-     * @param username follower
      */
-    public void followReadingList (final String title, final String owner, final String username) {
+    public void deleteReadingList (final String title, final String owner) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User {username: $username}), (r:ReadingList {title: $title, owner: $owner}) " +
-                                "MERGE (u)-[p:FOLLOWS]->(r) " +
-                                "ON CREATE SET p.date = datetime()",
-                        parameters("username", username, "title", title, "owner", owner));
+                tx.run("MATCH (r:ReadingList {title: $title, owner: owner}) " +
+                                "DETACH DELETE r",
+                        parameters("title", title, "owner", owner));
                 return null;
             });
         }
@@ -440,16 +391,34 @@ public class Neo4jManager {
     }
 
     /**
-     * Remove a reading list and all its relationships
-     * @param title title of the reading list
-     * @param owner owner of the reading list
+     * remove the relationship of FOLLOWS between two Users
+     * @param target followed
+     * @param username follower
      */
-    public void deleteReadingList (final String title, final String owner) {
+    public void unfollowUser (final String username, final String target) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (r:ReadingList {title: $title, owner: owner}) " +
-                                "DETACH DELETE r",
-                        parameters("title", title, "owner", owner));
+                tx.run("MATCH (:User {username: $username})-[r:FOLLOWS]->(:User {username: $target}) " +
+                                "DELETE r",
+                        parameters("username", username, "target", target));
+                return null;
+            });
+        }
+    }
+
+    /**
+     * Add a FOLLOWS relationship between a User and a reading list
+     * @param title title of the reading list
+     * @param owner owner of the reading list
+     * @param username follower
+     */
+    public void followReadingList (final String title, final String owner, final String username) {
+        try (Session session = driver.session()){
+            session.writeTransaction((TransactionWork<Void>) tx -> {
+                tx.run("MATCH (u:User {username: $username}), (r:ReadingList {title: $title, owner: $owner}) " +
+                                "MERGE (u)-[p:FOLLOWS]->(r) " +
+                                "ON CREATE SET p.date = datetime()",
+                        parameters("username", username, "title", title, "owner", owner));
                 return null;
             });
         }
@@ -473,20 +442,33 @@ public class Neo4jManager {
     }
 
     /**
-     * remove the relationship of FOLLOWS between two Users
-     * @param target followed
-     * @param username follower
+     *
+     * @param username
+     * @param limit
+     * @param skip
+     * @return
      */
-    public void unfollowUser (final String username, final String target) {
-        try (Session session = driver.session()){
-            session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (:User {username: $username})-[r:FOLLOWS]->(:User {username: $target}) " +
-                                "DELETE r",
-                        parameters("username", username, "target", target));
-                return null;
+    public List<User> getSnapsOfFollowedUser (final String username, int limit, int skip) {
+        List<User> followedUsers;
+        try (Session session = driver.session()) {
+            followedUsers = session.writeTransaction((TransactionWork<List<User>>) tx -> {
+                Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(u:User) " +
+                                "RETURN u.username AS Username, u.email AS Email ORDER BY username DESC " +
+                                "SKIP $skip LIMIT $limit",
+                        parameters("username", username, "limit", limit, "skip", skip));
+                List<User> followedList = new ArrayList<>();
+                while(result.hasNext()) {
+                    Record record = result.next();
+                    User snap = new User(record.get("Username").asString(), record.get("Email").asString(),
+                            "","","","",-1, new ArrayList<>(), 0);
+                    followedList.add(snap);
+                }
+                return followedList;
             });
         }
+        return followedUsers;
     }
+
 
     /**
      * Function that returns the snap of the Reading Lists followed by a User
@@ -498,7 +480,7 @@ public class Neo4jManager {
         try(Session session = driver.session()) {
             session.readTransaction((TransactionWork<List<ReadingList>>) tx -> {
                 Result result = tx.run("MATCH (u:User{username: $username})-[r:FOLLOWS]->(b:ReadingList) " +
-                        "RETURN b.username as username, b.title as title",
+                                "RETURN b.username as username, b.title as title",
                         parameters("username", u.getUsername()));
 
                 while (result.hasNext()) {
@@ -515,14 +497,39 @@ public class Neo4jManager {
         return readingListsSnap;
     }
 
+    public List<Pair<String, ReadingList>> getSnapsOfFollowedReadingListsByKeyword (final String keyword, String username,
+                                                                           int skip, int limit) {
+        List<Pair<String, ReadingList>> readingListsSnap = new ArrayList<>();
+        try(Session session = driver.session()) {
+            readingListsSnap = session.readTransaction((TransactionWork<List<Pair<String, ReadingList>>>) tx -> {
+                Result result = tx.run("MATCH (u:User {username: $username})-[r:FOLLOWS]->(b:ReadingList) " +
+                                "WHERE toLower(b.title) CONTAINS $keyword " +
+                                "RETURN b.username as username, b.title as title ORDER BY username SKIP $skip " +
+                                "LIMIT $limit",
+                        parameters("username", username, "keyword", keyword, "skip", skip, "limit", limit));
+                List<Pair<String, ReadingList>> resultsList = new ArrayList<>();
+                while (result.hasNext()) {
+                    Record r = result.next();
+                    ReadingList snap = new ReadingList(r.get("title").asString());
+                    resultsList.add(new Pair<>(r.get("username").asString(), snap));
+                }
+                return resultsList;
+            });
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return readingListsSnap;
+    }
+
     /**
      * Shows the suggested readingLists for the given user
      * @param user username of the user
      * @param numberFirstLv how many readingLists suggest from first level follow
      * @param numberSecondLv how many readingLists suggest from second level follow
      */
-    public List<Pair<String, String>> suggestedReadingLists(String user, int numberFirstLv, int numberSecondLv){
-        List<Pair<String, String>> readingLists = new ArrayList<>();
+    public List<Pair<String, ReadingList>> getSnapsOfSuggestedReadingLists(String user, int numberFirstLv, int numberSecondLv){
+        List<Pair<String, ReadingList>> readingListsSnap = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}), " +
@@ -538,9 +545,8 @@ public class Neo4jManager {
 
                 while(result.hasNext()){
                     Record r = result.next();
-                    String title = r.get("title").asString();
-                    String username = r.get("username").asString();
-                    readingLists.add(new Pair<>(title, username));
+                    ReadingList snap = new ReadingList(r.get("title").asString(), new ArrayList<>());
+                    readingListsSnap.add(new Pair<>(r.get("username").asString(), snap));
                 }
 
                 return null;
@@ -548,7 +554,7 @@ public class Neo4jManager {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return readingLists;
+        return readingListsSnap;
     }
 
     //Most liked Papers
@@ -557,25 +563,33 @@ public class Neo4jManager {
      * @param number Number or results
      * @return List of Papers
      */
-    public List<Pair<String, Integer>> searchMostLikePapers (int number)
+    public List<Pair<Paper, Integer>> getSnapsOfMostLikedPapers (int number)
     {
-        List<Pair<String, Integer>> topPapers = new ArrayList<>();
+        List<Pair<Paper, Integer>> topPapers = new ArrayList<>();
         try(Session session = driver.session()) {
             session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (:User)-[l:LIKES]->(p:Paper) RETURN p.arxiv_id AS Arxiv_id, p.vixra_id AS Vixra_id, " +
+                Result result = tx.run("MATCH (:User)-[l:LIKES]->(p:Paper) " +
+                                "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title AS Title, " +
+                                "p.category AS Category, p.authors AS authors " +
                                 "COUNT(l) AS like_count ORDER BY like_count DESC " +
                                 "LIMIT $limit",
                         parameters( "limit", number));
 
                 while(result.hasNext()){
                     Record r = result.next();
-                    String arxiv = r.get("Arxiv_id").asString();
-                    String vixra = r.get("Vixra_id").asString();
-                    int likes = r.get("like_count").asInt();
-                    if(!arxiv.isEmpty())
-                        topPapers.add(new Pair<>(arxiv, likes));
-                    else
-                        topPapers.add(new Pair<>(vixra, likes));
+                    List<String> authors = new ArrayList<>();
+
+                    for (Object o : r.get("Authors").asList())
+                        authors.add(o.toString());
+
+                    Paper snap = new Paper( r.get("ArxivId").asString(),
+                                            r.get("VixraId").asString(),
+                                            r.get("Title").asString(),
+                                            "",
+                                            r.get("Category").asString(),
+                                            authors, null, new ArrayList<>());
+
+                    topPapers.add(new Pair<>(snap, r.get("like_count").asInt()));
                 }
                 return null;
             });
@@ -593,23 +607,24 @@ public class Neo4jManager {
      * @param number Number or results
      * @return List of Users
      */
-    public List<Pair<String, Integer>> serachMostActiveUser (int number)
+    public List<Pair<User, Integer>> getSnapsOfMostActiveUsers (int number)
     {
-        List<Pair<String, Integer>> topUsers = new ArrayList<>();
+        List<Pair<User, Integer>> topUsers = new ArrayList<>();
         try(Session session = driver.session()) {
             session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (u:User)-[l:HAS_COMMENTED]->(:Paper) RETURN u.username AS username, " +
+                Result result = tx.run("MATCH (u:User)-[l:HAS_COMMENTED]->(:Paper) " +
+                                "RETURN u.username AS Username, u.email AS Email " +
                                 "COUNT(l) AS comments_count ORDER BY comments_count DESC " +
                                 "LIMIT $limit",
                         parameters( "limit", number));
 
                 while(result.hasNext()){
                     Record r = result.next();
-                    String arxiv = r.get("username").asString();
-                    int comments = r.get("comments_count").asInt();
-                    topUsers.add(new Pair<>(arxiv, comments));
+                    User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
+                            "","","","",-1, new ArrayList<>(), 0);
+
+                    topUsers.add(new Pair<>(snap, r.get("comments_count").asInt()));
                 }
-                System.out.println(topUsers);
                 return null;
             });
         }
@@ -630,7 +645,7 @@ public class Neo4jManager {
      * @param numberSecondLv how many papers suggest from second level follow
      * @return A list of snaps suggested papers
      */
-    public List<Paper> getSuggestedPapers(User u, int numberFirstLv, int numberSecondLv) {
+    public List<Paper> getSnapsOfSuggestedPapers(User u, int numberFirstLv, int numberSecondLv) {
         List<Paper> papersSnap = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
@@ -639,13 +654,24 @@ public class Neo4jManager {
                                 " LIMIT $firstlevel " +
                                 "UNION " +
                                 "MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}) " +
-                                "RETURN p.arxiv_id AS arxiv_id, p.vixra_id AS vixra_id, p.title as title " +
+                                "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title as Title, " +
+                                "p.category AS Category, p.authors AS Authors" +
                                 "LIMIT $secondLevel",
                         parameters("username", u.getUsername(), "firstlevel", numberFirstLv, "secondLevel", numberSecondLv));
                 while(result.hasNext()){
                     Record r = result.next();
-                    Paper snap = new Paper(r.get("arxiv_id").asString(), r.get("vixra_id").asString(),
-                                        r.get("title").asString(), null, null, null, null, null);
+                    List<String> authors = new ArrayList<>();
+
+                    for (Object o : r.get("Authors").asList())
+                        authors.add(o.toString());
+
+                    Paper snap = new Paper( r.get("ArxivId").asString(),
+                            r.get("VixraId").asString(),
+                            r.get("Title").asString(),
+                            "",
+                            r.get("Category").asString(),
+                            authors, null, new ArrayList<>());
+
                     papersSnap.add(snap);
                 }
 
@@ -664,18 +690,23 @@ public class Neo4jManager {
      * @param num num of suggestions
      * @return pair (name, numFollower)
      */
-    public List<Pair<String, Integer>> suggestUser(final String username, final int num) {
-        List<Pair<String, Integer>> suggestion;
+    public List<Pair<User, Integer>> getSnapsOfSuggestedUsers(final String username, final int num) {
+        List<Pair<User, Integer>> suggestion;
+
         try (Session session = driver.session()) {
-            suggestion = session.readTransaction((TransactionWork<List<Pair<String, Integer>>>) tx -> {
+            suggestion = session.readTransaction((TransactionWork<List<Pair<User, Integer>>>) tx -> {
                 Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(:User)-[:FOLLOWS]-(target:User), " +
-                                "(target)<-[r:FOLLOWS]-() RETURN DISTINCT target.name as Name, " +
+                                "(target)<-[r:FOLLOWS]-() " +
+                                "RETURN DISTINCT target.username AS Userame, target.email AS Email " +
                                 "count(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("username", username, "num", num));
-                List<Pair<String, Integer>> suggestionsList = new ArrayList<>();
+                List<Pair<User, Integer>> suggestionsList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
-                    suggestionsList.add(new Pair<>(r.get("Name").asString(), r.get("numFollower").asInt()));
+                    User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
+                            "","","","",-1, new ArrayList<>(), 0);
+
+                    suggestionsList.add(new Pair<>(snap, r.get("numFollower").asInt()));
                 }
                 return suggestionsList;
             });
@@ -688,17 +719,21 @@ public class Neo4jManager {
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public List<Pair<String, Integer>> mostPopularUsers (final int num) {
-        List<Pair<String, Integer>> rank;
+    public List<Pair<User, Integer>> getSnapsOfMostPopularUsers (final int num) {
+        List<Pair<User, Integer>> rank;
         try (Session session = driver.session()) {
-            rank = session.readTransaction((TransactionWork<List<Pair<String, Integer>>>) tx -> {
-                Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) RETURN DISTINCT target.username as Username, " +
+            rank = session.readTransaction((TransactionWork<List<Pair<User, Integer>>>) tx -> {
+                Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
+                                "RETURN DISTINCT target.username AS Username, target.email AS Email " +
                                 "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("num", num));
-                List<Pair<String, Integer>> popularUser = new ArrayList<>();
+                List<Pair<User, Integer>> popularUser = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
-                    popularUser.add(new Pair<>(r.get("Name").asString(), r.get("numFollower").asInt()));
+                    User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
+                            "","","","",-1, new ArrayList<>(), 0);
+
+                    popularUser.add(new Pair<>(snap, r.get("numFollower").asInt()));
                 }
                 return popularUser;
             });
