@@ -14,14 +14,14 @@
    <children>
       <VBox prefHeight="110.0" prefWidth="210.0">
          <children>
-            <Text fx:id="timestamp" strokeType="OUTSIDE" strokeWidth="0.0" text="Timestamp" textAlignment="RIGHT" wrappingWidth="205.0">
+            <Text fx:id="timestamp" strokeType="OUTSIDE" strokeWidth="0.0" text="Timestamp" textAlignment="RIGHT" wrappingWidth="178.0">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>
             </Text>
             <AnchorPane prefHeight="22.0" prefWidth="210.0">
                <children>
-                  <Label fx:id="username" prefHeight="19.0" prefWidth="171.0" text="Username">
+                  <Label fx:id="username" layoutX="6.0" prefHeight="19.0" prefWidth="165.0" text="Username">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>

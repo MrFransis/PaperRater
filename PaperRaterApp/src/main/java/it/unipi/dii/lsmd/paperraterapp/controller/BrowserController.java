@@ -87,6 +87,20 @@ public class BrowserController implements Initializable {
                 followsContainer.setVisible(true);
                 categoryContainer.setVisible(false);
             }
+            case "Moderate comments" -> {
+                authorContainer.setVisible(false);
+                dateContainer.setVisible(true);
+                keywordContainer.setVisible(false);
+                followsContainer.setVisible(false);
+                categoryContainer.setVisible(false);
+            }
+            case "Search moderator" -> {
+                authorContainer.setVisible(false);
+                dateContainer.setVisible(false);
+                keywordContainer.setVisible(true);
+                followsContainer.setVisible(false);
+                categoryContainer.setVisible(false);
+            }
             default -> {
                 authorContainer.setVisible(false);
                 dateContainer.setVisible(false);
@@ -228,8 +242,10 @@ public class BrowserController implements Initializable {
         typeList.add("Papers");
         typeList.add("Users");
         typeList.add("Reading lists");
-        if (user.getType() == 1)
+        if (user.getType() > 0)
             typeList.add("Moderate comments");
+        if (user.getType() == 2)
+            typeList.add("Search moderator");
         ObservableList<String> observableListType = FXCollections.observableList(typeList);
         chooseType.getItems().clear();
         chooseType.setItems(observableListType);
@@ -289,7 +305,6 @@ public class BrowserController implements Initializable {
         // load papers
         List<Paper> papersList = mongoManager.searchPapersByParameters(title, author, start_date, end_date, category,
                 3*page, 3);
-        System.out.println(papersList.size());
         if (papersList.size() != 3)
             forwardBt.setDisable(true);
         int row = 0;
@@ -317,7 +332,6 @@ public class BrowserController implements Initializable {
         if (readingLists.size() != 3)
             forwardBt.setDisable(true);
         int row = 0;
-        System.out.println(readingLists.size());
         for (Pair<String, ReadingList> cardInfo : readingLists) {
             Pane card = loadReadingListsCard(cardInfo.getValue(), cardInfo.getKey());
             cardsGrid.add(card, 0, row);
@@ -325,22 +339,29 @@ public class BrowserController implements Initializable {
         }
     }
 
-    private void fillComments(int day) {
+    private void fillComments(String start_date, String end_date) {
         cardsGrid.setAlignment(Pos.CENTER);
-        cardsGrid.setVgap(40);
-        cardsGrid.setPadding(new Insets(30,40,30,100));
+        cardsGrid.setVgap(20);
+        cardsGrid.setHgap(5);
+        cardsGrid.setPadding(new Insets(30,40,30,40));
         ColumnConstraints constraints = new ColumnConstraints();
-        constraints.setPercentWidth(100);
+        constraints.setPercentWidth(25);
         cardsGrid.getColumnConstraints().add(constraints);
+
         // load papers
-        List<Pair<String, Comment>> commentsList = manager.searchLastComments(day, 10);
-        if (commentsList.size() != 3)
+        List<Pair<Paper, Comment>> commentsList = mongoManager.searchLastComments(start_date, end_date, 16*page, 16);
+        if (commentsList.size() != 16)
             forwardBt.setDisable(true);
         int row = 0;
-        for (Pair<String, Comment> cardInfo : commentsList) {
-            Pane card = loadCommentCard(cardInfo.getValue(), manager.getPaperById(cardInfo.getKey()));
-            cardsGrid.add(card, 0, row);
+        int col = 0;
+        for (Pair<Paper, Comment> cardInfo : commentsList) {
+            Pane card = loadCommentCard(cardInfo.getValue(), cardInfo.getKey());
+            cardsGrid.add(card, col, row);
             row++;
+            if(row == 4){
+                row = 0;
+                col++;
+            }
         }
     }
 
@@ -386,6 +407,35 @@ public class BrowserController implements Initializable {
                 fillUsers(keywordTf.getText());
             }
             case "Reading lists" -> {
+                // form control
+                errorTf.setText("");
+                if (keywordTf.getText().equals("") && !followsCheckBox.isSelected()) {
+                    errorTf.setText("You have to specify an option.");
+                    return;
+                }
+                fillReadingLists(keywordTf.getText());
+            }
+            case "Moderate comments" -> {
+                // form control
+                errorTf.setText("");
+                if (toDate.getValue() != null && fromDate.getValue() != null &&
+                        toDate.getValue().isBefore(fromDate.getValue())) {
+                    errorTf.setText("The From date have to be before the To date.");
+                    forwardBt.setDisable(true);
+                    return;
+                }
+
+                String startDate = "";
+                String endDate = "";
+
+                if (toDate.getValue() != null)
+                    endDate = toDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                if (fromDate.getValue() != null)
+                    startDate = fromDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                fillComments(startDate, endDate);
+            }
+            case "Search moderator" -> {
                 // form control
                 errorTf.setText("");
                 if (keywordTf.getText().equals("") && !followsCheckBox.isSelected()) {
