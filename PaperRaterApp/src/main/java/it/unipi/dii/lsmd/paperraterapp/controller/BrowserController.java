@@ -1,9 +1,6 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
-import it.unipi.dii.lsmd.paperraterapp.model.Paper;
-import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
-import it.unipi.dii.lsmd.paperraterapp.model.Session;
-import it.unipi.dii.lsmd.paperraterapp.model.User;
+import it.unipi.dii.lsmd.paperraterapp.model.*;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
