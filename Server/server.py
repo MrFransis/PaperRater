@@ -146,7 +146,7 @@ class App(cmd.Cmd):
 
                     query = (
                             "MATCH (a:User), (b:ReadingList) "
-                            "WHERE a.username = $username1 AND (b.username = $username2 AND b.title = $title) "
+                            "WHERE a.username = $username1 AND (b.owner = $username2 AND b.title = $title) "
                             "CREATE (a)-[r:FOLLOWS]->(b)"
                     )
                     reading_lists.append(reading_list)
