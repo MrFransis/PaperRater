@@ -4,11 +4,10 @@ import it.unipi.dii.lsmd.paperraterapp.model.Paper;
 import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import javafx.util.Pair;
-import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
+import org.neo4j.driver.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.neo4j.driver.Values.parameters;
@@ -21,6 +20,40 @@ public class Neo4jManager {
         this.driver = driver;
     }
 
+
+    public List<String> getFollowUser (final String username) {
+        List<String> follows;
+        try (Session session = driver.session()) {
+            follows = session.writeTransaction((TransactionWork<List<String>>) tx -> {
+                Result result = tx.run("MATCH (:User {name: $username})-[:FOLLOWS]->(u:User) " +
+                        "RETURN u.name AS Names ORDER BY Names DESC", parameters("username", username));
+                List<String> followsList = new ArrayList<>();
+                while(result.hasNext()) {
+                    followsList.add(result.next().get("Names").asString());
+                }
+                return followsList;
+            });
+        }
+        return follows;
+    }
+
+    public List<Pair<String, String>> getFollowReadingLists (final String username) {
+        List<Pair<String, String>> follows;
+        try (Session session = driver.session()) {
+            follows = session.writeTransaction((TransactionWork<List<Pair<String, String>>>) tx -> {
+                Result result = tx.run("MATCH (:User {name: $username})-[:FOLLOWS]->(r:ReadingList) " +
+                        "RETURN r.title AS Titles, r.username AS Owner ORDER BY Owner DESC",
+                        parameters("username", username));
+                List<Pair<String, String>> followsList = new ArrayList<>();
+                while(result.hasNext()) {
+                    Record record = result.next();
+                    followsList.add(new Pair<>(record.get("Owner").asString(), record.get("Titles").asString()));
+                }
+                return followsList;
+            });
+        }
+        return follows;
+    }
 
     /**
      * Function that add the info of a new user to GraphDB
@@ -621,18 +654,18 @@ public class Neo4jManager {
      * @param num num of suggestions
      * @return pair (name, numFollower)
      */
-    public HashMap<String, Integer> suggestUser(final String username, final int num) {
-        HashMap<String, Integer> suggestion;
+    public List<Pair<String, Integer>> suggestUser(final String username, final int num) {
+        List<Pair<String, Integer>> suggestion;
         try (Session session = driver.session()) {
-            suggestion = session.readTransaction((TransactionWork<HashMap<String, Integer>>) tx -> {
+            suggestion = session.readTransaction((TransactionWork<List<Pair<String, Integer>>>) tx -> {
                 Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(:User)-[:FOLLOWS]-(target:User), " +
                                 "(target)<-[r:FOLLOWS]-() RETURN DISTINCT target.name as Name, " +
                                 "count(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("username", username, "num", num));
-                HashMap<String, Integer> suggestionsList = new HashMap<>();
+                List<Pair<String, Integer>> suggestionsList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
-                    suggestionsList.put(r.get("Name").asString(), r.get("numFollower").asInt());
+                    suggestionsList.add(new Pair<>(r.get("Name").asString(), r.get("numFollower").asInt()));
                 }
                 return suggestionsList;
             });
@@ -645,17 +678,17 @@ public class Neo4jManager {
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public HashMap<String, Integer> mostPopularUsers (final int num) {
-        HashMap<String, Integer> rank;
+    public List<Pair<String, Integer>> mostPopularUsers (final int num) {
+        List<Pair<String, Integer>> rank;
         try (Session session = driver.session()) {
-            rank = session.readTransaction((TransactionWork<HashMap<String, Integer>>) tx -> {
+            rank = session.readTransaction((TransactionWork<List<Pair<String, Integer>>>) tx -> {
                 Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) RETURN DISTINCT target.username as Username, " +
                                 "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("num", num));
-                HashMap<String, Integer> popularUser = new HashMap<>();
+                List<Pair<String, Integer>> popularUser = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
-                    popularUser.put(r.get("Name").asString(), r.get("numFollower").asInt());
+                    popularUser.add(new Pair<>(r.get("Name").asString(), r.get("numFollower").asInt()));
                 }
                 return popularUser;
             });

@@ -3,6 +3,7 @@
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -111,8 +112,20 @@
                         <String fx:value="shadow" />
                      </styleClass>
                      <VBox.margin>
+                        <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox fx:id="followsContainer" alignment="CENTER" prefHeight="35.0" prefWidth="300.0">
+                     <VBox.margin>
                         <Insets bottom="50.0" left="30.0" right="30.0" top="10.0" />
                      </VBox.margin>
+                     <children>
+                        <CheckBox fx:id="followsCheckBox" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="20.0" prefWidth="199.0" text="Search from your follows" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </CheckBox>
+                     </children>
                   </HBox>
                   <Button fx:id="searchBt" disable="true" mnemonicParsing="false" onAction="#startResearch" prefHeight="30.0" prefWidth="200.0" text="Search">
                      <styleClass>

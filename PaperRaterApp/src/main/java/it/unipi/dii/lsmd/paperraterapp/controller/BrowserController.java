@@ -6,6 +6,8 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
+import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,8 +54,11 @@ public class BrowserController implements Initializable {
     @FXML private Label errorTf;
     @FXML private GridPane cardsGrid;
     @FXML private Label logoutLabel;
+    @FXML private CheckBox followsCheckBox;
+    @FXML private HBox followsContainer;
 
-    private MongoDBManager manager;
+    private MongoDBManager mongoManager;
+    private Neo4jManager neo4jManager;
     private User user;
     private int page;
 
@@ -69,6 +74,8 @@ public class BrowserController implements Initializable {
     void activeResearch() {
         searchBt.setDisable(false);
         backBt.setDisable(true);
+        forwardBt.setDisable(true);
+        followsCheckBox.setSelected(false);
         switch (chooseType.getValue()) {
             case "Papers" -> {
                 authorContainer.setVisible(true);
@@ -80,6 +87,7 @@ public class BrowserController implements Initializable {
                 authorContainer.setVisible(false);
                 dateContainer.setVisible(false);
                 keywordContainer.setVisible(true);
+                followsContainer.setVisible(true);
                 categoryContainer.setVisible(false);
             }
             default -> {
@@ -87,6 +95,7 @@ public class BrowserController implements Initializable {
                 dateContainer.setVisible(false);
                 keywordContainer.setVisible(false);
                 categoryContainer.setVisible(false);
+                followsContainer.setVisible(false);
             }
         }
     }
@@ -116,9 +125,10 @@ public class BrowserController implements Initializable {
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
-        manager = new MongoDBManager(MongoDriver.getInstance().openConnection());
+        mongoManager = new MongoDBManager(MongoDriver.getInstance().openConnection());
+        neo4jManager = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         user = Session.getInstance().getLoggedUser();
-        loadSpecialQuery();
+        loadComboBox();
         hideFilterForm();
         forwardBt.setOnMouseClicked(mouseEvent -> goForward());
         backBt.setOnMouseClicked(mouseEvent -> goBack());
@@ -167,7 +177,7 @@ public class BrowserController implements Initializable {
         return pane;
     }
 
-    private void loadSpecialQuery () {
+    private void loadComboBox () {
         // load suggestion
         List<String> suggestionList = new ArrayList<>();
         suggestionList.add("Suggested paper");
@@ -212,7 +222,8 @@ public class BrowserController implements Initializable {
         chooseType.setItems(observableListType);
 
         // load categories
-        List<String> categoriesList = manager.getCategories();
+        List<String> categoriesList = mongoManager.getCategories();
+        categoriesList.add(0, "Select category");
         ObservableList<String> observableListCategories = FXCollections.observableList(categoriesList);
         chooseCategory.getItems().clear();
         chooseCategory.setItems(observableListCategories);
@@ -223,6 +234,7 @@ public class BrowserController implements Initializable {
         dateContainer.setVisible(false);
         keywordContainer.setVisible(false);
         categoryContainer.setVisible(false);
+        followsContainer.setVisible(false);
     }
 
     private void fillUsers(String keyword) {
@@ -234,7 +246,12 @@ public class BrowserController implements Initializable {
         constraints.setPercentWidth(25);
         cardsGrid.getColumnConstraints().add(constraints);
         // load users
-        List<User> usersList = manager.getUsersByKeyword(keyword, page);
+        List<User> usersList = null;
+        if(followsCheckBox.isSelected()) {
+            List<String> followsList = neo4jManager.getFollowUser(user.getUsername());
+            usersList = mongoManager.getUsersByKeyword(keyword, page, followsList);
+        } else
+            usersList = mongoManager.getUsersByKeyword(keyword, page, null);
         if (usersList.size() != 8)
             forwardBt.setDisable(true);
         int row = 0;
@@ -258,8 +275,9 @@ public class BrowserController implements Initializable {
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
         // load papers
-        List<Paper> papersList = manager.searchPapersByParameters(title, author, start_date, end_date, category,
+        List<Paper> papersList = mongoManager.searchPapersByParameters(title, author, start_date, end_date, category,
                 3*page, 3);
+        System.out.println(papersList.size());
         if (papersList.size() != 3)
             forwardBt.setDisable(true);
         int row = 0;
@@ -279,11 +297,16 @@ public class BrowserController implements Initializable {
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
         // load papers
-        List<Pair<String, ReadingList>> readingLists = manager.getReadingListByKeywords(keyword, 3*page, 3);
+        List<Pair<String, ReadingList>> readingLists = null;
+        if (followsCheckBox.isSelected()) {
+            List<Pair<String, String>> follows = neo4jManager.getFollowReadingLists(user.getUsername());
+            readingLists = mongoManager.getReadingListByKeywords(keyword, 3*page, 3, follows);      // non va
+        } else
+            readingLists = mongoManager.getReadingListByKeywords(keyword, 3*page, 3, null);
         if (readingLists.size() != 3)
             forwardBt.setDisable(true);
         int row = 0;
-
+        System.out.println(readingLists.size());
         for (Pair<String, ReadingList> cardInfo : readingLists) {
             Pane card = loadReadingListsCard(cardInfo.getValue(), cardInfo.getKey());
             cardsGrid.add(card, 0, row);
@@ -299,19 +322,22 @@ public class BrowserController implements Initializable {
                 // check the form values
                 errorTf.setText("");
                 if (keywordTf.getText().equals("") && toDate.getValue() == null && fromDate.getValue() == null &&
-                        chooseCategory.getValue() == null && authorTf.getText().equals("")) {
+                        (chooseCategory.getValue() == null || chooseCategory.getValue().equals("Select category"))
+                        && authorTf.getText().equals("")) {
                     errorTf.setText("You have to set some filters.");
+                    forwardBt.setDisable(true);
                     return;
                 }
                 if (toDate.getValue() != null && fromDate.getValue() != null &&
                         toDate.getValue().isBefore(fromDate.getValue())) {
                     errorTf.setText("The From date have to be before the To date.");
+                    forwardBt.setDisable(true);
                     return;
                 }
                 String category = "";
                 String startDate = "";
                 String endDate = "";
-                if (chooseCategory.getValue() != null)
+                if (chooseCategory.getValue() != null && !chooseCategory.getValue().equals("Select category"))
                     category = chooseCategory.getValue();
                 if (toDate.getValue() != null)
                     endDate = toDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -323,8 +349,8 @@ public class BrowserController implements Initializable {
             case "Users" -> {
                 // form control
                 errorTf.setText("");
-                if (keywordTf.getText().equals("")) {
-                    errorTf.setText("You have to insert a keyword.");
+                if (keywordTf.getText().equals("") && !followsCheckBox.isSelected()) {
+                    errorTf.setText("You have to specify an option.");
                     return;
                 }
                 fillUsers(keywordTf.getText());
@@ -332,8 +358,8 @@ public class BrowserController implements Initializable {
             case "Reading lists" -> {
                 // form control
                 errorTf.setText("");
-                if (keywordTf.getText().equals("")) {
-                    errorTf.setText("You have to insert a keyword.");
+                if (keywordTf.getText().equals("") && !followsCheckBox.isSelected()) {
+                    errorTf.setText("You have to specify an option.");
                     return;
                 }
                 fillReadingLists(keywordTf.getText());

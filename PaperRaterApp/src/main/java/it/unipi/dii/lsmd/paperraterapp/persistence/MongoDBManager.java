@@ -53,26 +53,15 @@ public class MongoDBManager {
         papersCollection = db.getCollection("Papers");
     }
 
-    // da correggere
-    public int getNumUsers (String keyword) {
-        List<User> results = new ArrayList<>();
-        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
-        Consumer<Document> convertInUser = doc -> {
-            User user = gson.fromJson(gson.toJson(doc), User.class);
-            results.add(user);
-        };
-        Pattern pattern= Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
-        Bson filter = Aggregates.match(Filters.regex("username", pattern));
-        usersCollection.aggregate(Arrays.asList(filter)).forEach(convertInUser);
-        return results.size();
-    }
-
     /**
-     * Return users the contains the keyword, by
+     * Return users the contains the keyword, if we give a list of user
+     * the research is added only inside this sublist
+     * @param next select the portion of result
+     * @param follows sublist of research
      * @param keyword keyword to search users
      * @return list of users
      */
-    public List<User> getUsersByKeyword (String keyword, int next) {
+    public List<User> getUsersByKeyword (String keyword, int next, List<String> follows) {
         List<User> results = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         Consumer<Document> convertInUser = doc -> {
@@ -83,7 +72,11 @@ public class MongoDBManager {
         Bson filter = Aggregates.match(Filters.regex("username", pattern));
         Bson limit = limit(8);
         Bson skip = skip(next*8);
-        usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
+        if (follows != null) {
+            Bson follow = match(in("username", follows));
+            usersCollection.aggregate(Arrays.asList(follow, filter, skip, limit)).forEach(convertInUser);
+        } else
+            usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
         return results;
     }
 
@@ -694,7 +687,8 @@ public class MongoDBManager {
      * @param keyword part of the title
      * @return  The list of reading lists and its owner
      */
-    public List<Pair<String, ReadingList>> getReadingListByKeywords (String keyword, int skipDoc, int limitDoc) {
+    public List<Pair<String, ReadingList>> getReadingListByKeywords (String keyword, int skipDoc, int limitDoc,
+                                                                     List<Pair<String, String>> follows) {
         List<Pair<String, ReadingList>> readingLists = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeNulls().create();
         Bson unwind = unwind("$readingLists");
@@ -702,13 +696,20 @@ public class MongoDBManager {
         Bson filter = Aggregates.match(Filters.regex("readingLists.title", pattern));
         Bson skip = skip(skipDoc);
         Bson limit = limit(limitDoc);
-        MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(unwind, filter, skip, limit)).iterator();
+        MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(unwind, filter, skip,
+                    limit)).iterator();
         while(iterator.hasNext()){
             Document document = iterator.next();
             String username = document.getString("username");
             Document ReadingListDocument = (Document) document.get("readingLists");
             ReadingList readingList = gson.fromJson(gson.toJson(ReadingListDocument), ReadingList.class);
-            readingLists.add(new Pair<>(username, readingList));
+            if (follows != null) {
+                for (Pair<String, String> curr : follows) {
+                    if(curr.getKey().equals(username) && curr.getValue().equals(readingList.getTitle()))
+                        readingLists.add(new Pair<>(username, readingList));
+                }
+            } else
+                readingLists.add(new Pair<>(username, readingList));
         }
         return readingLists;
     }
