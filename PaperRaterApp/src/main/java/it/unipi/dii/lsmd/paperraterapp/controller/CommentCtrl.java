@@ -96,11 +96,12 @@ public class CommentCtrl {
     private void clickOnBin (MouseEvent mouseEvent) {
         int numComments = 0;
         for (Comment comment: paper.getComments()){
-            if (comment.getUsername() == c.getUsername())
+            if (Objects.equals(comment.getUsername(), c.getUsername()))
                 numComments++;
             if (numComments > 1)
                 break;
         }
+        System.out.println(numComments);
         if (numComments == 1)
             neoMan.deleteHasCommented(c.getUsername(), paper);
         mongoMan.deleteComment(paper, c);
@@ -114,7 +115,7 @@ public class CommentCtrl {
         paper = mongoMan.getPaperById(paper);
         int numComments = 0;
         for (Comment comment: paper.getComments()){
-            if (comment.getUsername() == c.getUsername())
+            if (Objects.equals(comment.getUsername(), c.getUsername()))
                 numComments++;
             if (numComments > 1)
                 break;
