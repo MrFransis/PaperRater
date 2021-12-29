@@ -1,17 +1,13 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.User;
-import it.unipi.dii.lsmd.paperraterapp.persistence.*;
+import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
+import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
@@ -22,7 +18,7 @@ public class UserCardCtrl implements Initializable {
 
     @FXML private Circle imageProfile;
     @FXML private Label usernameLb;
-    @FXML private Label emailTf;
+    @FXML private Text emailTf;
 
     private User user;
     private MongoDBManager mongoMan;

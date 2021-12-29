@@ -60,11 +60,10 @@ public class MongoDBManager {
      * Return users the contains the keyword, if we give a list of user
      * the research is added only inside this sublist
      * @param next select the portion of result
-     * @param follows sublist of research
      * @param keyword keyword to search users
      * @return list of users
      */
-    public List<User> getUsersByKeyword (String keyword, int next) {
+    public List<User> getUsersByKeyword (String keyword, boolean moderator, int next) {
         List<User> results = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         Consumer<Document> convertInUser = doc -> {
@@ -75,7 +74,12 @@ public class MongoDBManager {
         Bson filter = Aggregates.match(Filters.regex("username", pattern));
         Bson limit = limit(8);
         Bson skip = skip(next*8);
-        usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
+        if (moderator) {
+            Bson moderatorFilter = match(eq("type", 1));
+            usersCollection.aggregate(Arrays.asList(filter, moderatorFilter, skip, limit)).forEach(convertInUser);
+
+        } else
+            usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
         return results;
     }
 

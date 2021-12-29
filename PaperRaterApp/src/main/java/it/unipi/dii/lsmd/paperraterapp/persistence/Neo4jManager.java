@@ -459,8 +459,7 @@ public class Neo4jManager {
                 List<User> followedList = new ArrayList<>();
                 while(result.hasNext()) {
                     Record record = result.next();
-                    User snap = new User(record.get("Username").asString(), record.get("Email").asString(),
-                            "","","","",-1, new ArrayList<>(), 0);
+                    User snap = new User(record.get("Username").asString(), record.get("Email").asString());
                     followedList.add(snap);
                 }
                 return followedList;

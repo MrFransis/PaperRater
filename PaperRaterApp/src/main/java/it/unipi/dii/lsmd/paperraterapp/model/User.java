@@ -26,6 +26,10 @@ public class User {
         this.type = type;
     }
 
+    public User(String username, String email) {
+        this(username, email, null, null, null, null, -1, null, -1);
+    }
+
     public String getUsername() {
         return username;
     }

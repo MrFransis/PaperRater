@@ -266,7 +266,7 @@ public class BrowserController implements Initializable {
         followsContainer.setVisible(false);
     }
 
-    private void fillUsers(String keyword) {
+    private void fillUsers(String keyword, boolean moderator) {
         // set new layout
         cardsGrid.setHgap(20);
         cardsGrid.setVgap(20);
@@ -276,10 +276,12 @@ public class BrowserController implements Initializable {
         cardsGrid.getColumnConstraints().add(constraints);
         // load users
         List<User> usersList = null;
+        // check if you need follows
         if(followsCheckBox.isSelected())
-            usersList = neo4jManager.getSnapsOfFollowedUserByKeyword(user, keyword, 3, 3*page);
+            usersList = neo4jManager.getSnapsOfFollowedUserByKeyword(user, keyword, 8, 8*page);
         else
-            usersList = mongoManager.getUsersByKeyword(keyword, page);
+            usersList = mongoManager.getUsersByKeyword(keyword, moderator, page);
+
         if (usersList.size() != 8)
             forwardBt.setDisable(true);
         int row = 0;
@@ -404,7 +406,7 @@ public class BrowserController implements Initializable {
                     errorTf.setText("You have to specify an option.");
                     return;
                 }
-                fillUsers(keywordTf.getText());
+                fillUsers(keywordTf.getText(), false);
             }
             case "Reading lists" -> {
                 // form control
@@ -438,11 +440,8 @@ public class BrowserController implements Initializable {
             case "Search moderator" -> {
                 // form control
                 errorTf.setText("");
-                if (keywordTf.getText().equals("") && !followsCheckBox.isSelected()) {
-                    errorTf.setText("You have to specify an option.");
-                    return;
-                }
-                fillReadingLists(keywordTf.getText());
+
+                fillUsers(keywordTf.getText(), true);
             }
         }
     }
