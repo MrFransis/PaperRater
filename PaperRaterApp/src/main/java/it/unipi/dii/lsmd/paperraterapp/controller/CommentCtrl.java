@@ -82,8 +82,8 @@ public class CommentCtrl {
 
     private void clickOnBin (MouseEvent mouseEvent) {
         mongoMan.deleteComment(paper, c);
-        if(mongoMan.numUserComments(paper.getId(), c.getUsername()) == 0)
-            neoMan.deleteHasCommented(c.getUsername(), paper.getId());
+        if(mongoMan.numUserComments(paper, c.getUsername()) == 0)
+            neoMan.deleteHasCommented(c.getUsername(), paper);
         ((VBox) commentBox.getParent()).getChildren().remove(commentBox);
         int numComm = Integer.parseInt(getText());
         numComm--;

@@ -191,14 +191,14 @@ public class Neo4jManager {
     /**
      * Function that return true if exist a relation user-like->paper
      * @param user Username
-     * @param id Paper_id
+     * @param paper Paper object
      */
-    public boolean userLikePaper (String user, String id){
+    public boolean userLikePaper (String user, Paper paper){
         boolean res = false;
         try(Session session = driver.session()){
             res = session.readTransaction((TransactionWork<Boolean>) tx -> {
-                Result r = tx.run("MATCH (:User{username:$user})-[r:LIKES]->(p:Paper) WHERE (p.arxiv_id = $id OR p.vixra_id =$id) " +
-                        "RETURN COUNT(*)", parameters("user", user, "id", id));
+                Result r = tx.run("MATCH (:User{username:$user})-[r:LIKES]->(p:Paper) WHERE (p.arxiv_id = $arxiv_id AND p.vixra_id =$vixra_id) " +
+                        "RETURN COUNT(*)", parameters("user", user, "arxiv_id", paper.getArxivId(), "vixra_id", paper.getVixraId()));
                 Record record = r.next();
                 if (record.get(0).asInt() == 0)
                     return false;
@@ -256,14 +256,14 @@ public class Neo4jManager {
     /**
      * It creates the relation user-[:HAS_COMMENTED]->paper
      * @param user  Username of the target user
-     * @param id  Id of the target paper
+     * @param paper  Paper Object
      */
-    public void hasCommented(String user, String id){
+    public void hasCommented(String user, Paper paper){
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
                 tx.run("MATCH (u:User) WHERE u.username = $user " +
-                        "MATCH (p:Paper) WHERE (p.arxiv_id = $id OR p.vixra_id =$id) " +
-                        "MERGE (u)-[:HAS_COMMENTED]->(p)", parameters("user", user, "id", id));
+                        "MATCH (p:Paper) WHERE (p.arxiv_id = $arxiv_id AND p.vixra_id =$vixra_id) " +
+                        "MERGE (u)-[:HAS_COMMENTED]->(p)", parameters("user", user, "arxiv_id", paper.getArxivId(), "vixra_id", paper.getVixraId() ));
                 return null; });
         }catch (Exception ex) {
             System.err.println(ex);
@@ -273,13 +273,13 @@ public class Neo4jManager {
     /**
      * Delete the relation user-[:HAS_COMMENTED]->paper
      * @param user  Username of the target user
-     * @param id  Id of the target paper
+     * @param paper Paper object
      */
-    public void deleteHasCommented(String user, String id){
+    public void deleteHasCommented(String user, Paper paper){
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User {username:$user})-[r:HAS_COMMENTED]->(p:Paper) WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
-                        "DELETE r", parameters("user", user, "id", id));
+                tx.run("MATCH (u:User {username:$user})-[r:HAS_COMMENTED]->(p:Paper) WHERE p.arxiv_id = $arxiv_id AND p.vixra_id = $vixra_id " +
+                        "DELETE r", parameters("user", user, "arxiv_id", paper.getArxivId(), "vixra_id", paper.getVixraId()));
                 return null; });
         }catch (Exception ex) {
             System.err.println(ex);
@@ -340,15 +340,15 @@ public class Neo4jManager {
 
     /**
      * return the number of likes of a papers
-     * @param id ID of a paper
+     * @param paper Paper object
      * @return number of likes
      */
-    public int getNumLikes(final String id) {
+    public int getNumLikes(final Paper paper) {
         int numLikes;
         try (Session session = driver.session()) {
             numLikes = session.writeTransaction((TransactionWork<Integer>) tx -> {
-                Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-() WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
-                        "RETURN COUNT(r) AS numLikes", parameters("id", id));
+                Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-() WHERE p.arxiv_id = $arxiv_id AND p.vixra_id = $vixra_id " +
+                        "RETURN COUNT(r) AS numLikes", parameters("arxiv_id", paper.getArxivId(), "vixra_id", paper.getVixraId()));
                 return result.next().get("numLikes").asInt();
             });
         }

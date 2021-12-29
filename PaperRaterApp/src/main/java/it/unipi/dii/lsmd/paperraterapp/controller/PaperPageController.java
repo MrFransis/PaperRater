@@ -57,24 +57,34 @@ public class PaperPageController implements Initializable {
     }
 
     public void setPaperPage (Paper p) {
-        this.paper = mongoMan.getPaperById(p.getId());
+        this.paper = mongoMan.getPaperById(p);
         this.user = Session.getInstance().getLoggedUser();
 
         // Push
         Session.getInstance().getPreviousPagePaper().add(p);
 
         title.setText(paper.getTitle());
-        id.setText(paper.getId());
+
+        String validId;
+        if (!p.getArxivId().isEmpty()) {
+            validId = p.getArxivId();
+            id.setText("arXiv:" + validId);
+        }
+        else {
+            validId = p.getVixraId();
+            id.setText("viXra:" + validId);
+        }
+
         category.setText(paper.getCategory());
         authors.setText(paper.getAuthors().toString());
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         published.setText(formatter.format(paper.getPublished()));
         abstractPaper.setText(paper.getAbstract());
-        if(neoMan.userLikePaper(user.getUsername(), paper.getId()))
+        if(neoMan.userLikePaper(user.getUsername(), paper))
             likebtn.setText("Unlike");
         else
             likebtn.setText("Like");
-        likes.setText(Integer.toString(neoMan.getNumLikes(paper.getId())));
+        likes.setText(Integer.toString(neoMan.getNumLikes(paper)));
         setCommentBox();
     }
 
@@ -176,9 +186,9 @@ public class PaperPageController implements Initializable {
 
     private void clickOnAddCommentBtn (MouseEvent mouseEvent){
         if(!commentText.getText().isEmpty()){
-            mongoMan.addComment(paper.getId(), commentText.getText(), user.getUsername());
-            paper = mongoMan.getPaperById(paper.getId());
-            neoMan.hasCommented(user.getUsername(), paper.getId());
+            mongoMan.addComment(paper, commentText.getText(), user.getUsername());
+            paper = mongoMan.getPaperById(paper);
+            neoMan.hasCommented(user.getUsername(), paper);
             setCommentBox();
             commentText.setText("");
 
@@ -194,11 +204,11 @@ public class PaperPageController implements Initializable {
     private void clickLike (MouseEvent mouseEvent){
         if(Objects.equals(likebtn.getText(), "Like")){
             neoMan.like(user, paper);
-            likes.setText(Integer.toString(neoMan.getNumLikes(paper.getId())));
+            likes.setText(Integer.toString(neoMan.getNumLikes(paper)));
             likebtn.setText("UnLike");
         }else{
             neoMan.unlike(user, paper);
-            likes.setText(Integer.toString(neoMan.getNumLikes(paper.getId())));
+            likes.setText(Integer.toString(neoMan.getNumLikes(paper)));
             likebtn.setText("Like");
         }
     }

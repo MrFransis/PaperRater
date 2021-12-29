@@ -230,18 +230,18 @@ public class MongoDBManager {
 
     /**
      * Add a new comment
-     * @param id Id of the paper
+     * @param paper Paper Object
      * @param text text of the comment
      * @return  true if operation is successfully executed, false otherwise
      */
-    public boolean addComment (String id, String text, String user) {
+    public boolean addComment (Paper paper, String text, String user) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Document comment = new Document("username", user)
                     .append("text",text)
                     .append("timestamp",dateFormat.format(new Date()));
 
-            Bson find = or(eq("arxiv_id", id), eq("vixra_id", id));
+            Bson find = and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()));
             Bson update = Updates.addToSet("comments", comment);
             papersCollection.updateOne(find, update);
             return true;
@@ -256,13 +256,13 @@ public class MongoDBManager {
 
     /**
      * Add a new comment
-     * @param id Id of the paper
+     * @param paper Paper object
      * @param user username
      * @return  true if operation is successfully executed, false otherwise
      */
 
-    public int numUserComments (String id, String user) {
-        Bson match = match(or(eq("arxiv_id", id), eq("vixra_id", id)));
+    public int numUserComments (Paper paper, String user) {
+        Bson match = match(and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId())));
         Bson unwind = unwind("$comments");
         Bson match2 = match(eq("comments.username", user));
         Bson group = group("comments.username",
@@ -363,16 +363,16 @@ public class MongoDBManager {
 
     /**
      * Function that return the paper that matches the id
-     * @param id of the paper to retrieve
-     * @return the paper object
+     * @param paper Paper object
+     * @return Paper object
      */
-    public Paper getPaperById (String id) {
+    public Paper getPaperById (Paper paper) {
         try {
             Paper p = null;
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
 
             Document myDoc = (Document) papersCollection.find(
-                    or(eq("arxiv_id", id), eq("vixra_id", id))).first();
+                    and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()))).first();
             p = gson.fromJson(gson.toJson(myDoc), Paper.class);
             return p;
         }
