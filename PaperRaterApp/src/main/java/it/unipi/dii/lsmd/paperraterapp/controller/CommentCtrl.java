@@ -69,7 +69,7 @@ public class CommentCtrl {
         comment.setText(c.getText());
     }
 
-    public void setCommentCard (Comment c, Paper paper) {
+    public void setCommentCardfromBrowser (Comment c, Paper paper) {
         this.c = c;
         this.paper = paper;
         bin.setOnMouseClicked(mouseEvent -> clickOnBinBrowser(mouseEvent));
@@ -94,10 +94,16 @@ public class CommentCtrl {
     }
 
     private void clickOnBin (MouseEvent mouseEvent) {
+        int numComments = 0;
+        for (Comment comment: paper.getComments()){
+            if (comment.getUsername() == c.getUsername())
+                numComments++;
+            if (numComments > 1)
+                break;
+        }
+        if (numComments == 1)
+            neoMan.deleteHasCommented(c.getUsername(), paper);
         mongoMan.deleteComment(paper, c);
-        //if (paper.getComments().contains(c) == 1)
-        // controlla se ci sono piu' commenti fatti da un utente
-        neoMan.deleteHasCommented(c.getUsername(), paper);
         ((VBox) commentBox.getParent()).getChildren().remove(commentBox);
         int numComm = Integer.parseInt(getText());
         numComm--;
@@ -106,9 +112,16 @@ public class CommentCtrl {
 
     private void clickOnBinBrowser (MouseEvent mouseEvent) {
         paper = mongoMan.getPaperById(paper);
-        mongoMan.deleteComment(paper, c);
-        if(mongoMan.numUserComments(paper, c.getUsername()) == 0)
+        int numComments = 0;
+        for (Comment comment: paper.getComments()){
+            if (comment.getUsername() == c.getUsername())
+                numComments++;
+            if (numComments > 1)
+                break;
+        }
+        if (numComments == 1)
             neoMan.deleteHasCommented(c.getUsername(), paper);
+        mongoMan.deleteComment(paper, c);
         ((GridPane) commentBox.getParent()).getChildren().remove(commentBox);
     }
 

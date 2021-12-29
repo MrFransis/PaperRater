@@ -28,7 +28,7 @@ public class PaperPageController implements Initializable {
     private User user;
     private MongoDBManager mongoMan;
     private Neo4jManager neoMan;
-
+    private final int maxLength = 280;
     @FXML private ImageView backIcon;
     @FXML private Text title;
     @FXML private Text id;
@@ -74,7 +74,6 @@ public class PaperPageController implements Initializable {
             validId = p.getVixraId();
             id.setText("viXra:" + validId);
         }
-
         category.setText(paper.getCategory());
         authors.setText(paper.getAuthors().toString());
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -185,7 +184,7 @@ public class PaperPageController implements Initializable {
     }
 
     private void clickOnAddCommentBtn (MouseEvent mouseEvent){
-        if(!commentText.getText().isEmpty()){
+        if((!commentText.getText().isEmpty()) || (commentText.getText().length() <= maxLength)){
             mongoMan.addComment(paper, commentText.getText(), user.getUsername());
             paper = mongoMan.getPaperById(paper);
             neoMan.hasCommented(user.getUsername(), paper);
