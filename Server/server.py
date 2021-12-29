@@ -150,7 +150,7 @@ class App(cmd.Cmd):
 
             result = db.Users.update_one({'_id': user['_id']}, {'$set': {'readingLists': reading_lists}})
 
-        print("Added Reading Lists, Owns and Follows")
+        print("Added Reading Lists and Follows")
 
         ### User Follows and Likes
         for index, row in users_df.iterrows():
@@ -181,8 +181,7 @@ class App(cmd.Cmd):
                 session.write_transaction(lambda tx: tx.run(query, username=row['username'],
                                                             arxiv_id=rand_paper['arxiv_id'].values[0],
                                                             vixra_id=rand_paper['vixra_id'].values[0]))
-                db.Papers.update_one({'arxiv_id': rand_paper['arxiv_id'].values[0], 'vixra_id': rand_paper['vixra_id'].values[0]},
-                                    {'$inc': {'numLikes': 1}})
+
 
         print("Added User Follows and Likes")
 
