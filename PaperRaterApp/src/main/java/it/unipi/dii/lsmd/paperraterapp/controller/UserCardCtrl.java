@@ -20,38 +20,39 @@ import java.util.ResourceBundle;
 
 public class UserCardCtrl implements Initializable {
 
-    @FXML private Text numFollowerTf;
-    @FXML private Text numReadingListTf;
     @FXML private Circle imageProfile;
     @FXML private Label usernameLb;
+    @FXML private Label emailTf;
 
     private User user;
-    private Neo4jManager neoMan;
+    private MongoDBManager mongoMan;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
-        //mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
+        mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
     }
 
     public void setParameters (User user) {
         this.user = user;
 
         usernameLb.setText(user.getUsername());
+        emailTf.setText(user.getEmail());
 
         // set image
       /*  Image image = new Image(user.getPicture(),false);
         imageProfile.setFill(new ImagePattern(image));
         imageProfile.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));*/
-
-        numFollowerTf.setText(String.valueOf(neoMan.getNumFollowersUser(user.getUsername())));
-        numReadingListTf.setText(String.valueOf(user.getReadingLists().size()));
     }
 
     @FXML
     void showProfile(MouseEvent event) {
         ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
+
+        // If user object is a snap, load the complete user object
+        if (user.getPassword().isEmpty())
+            user = mongoMan.getUserByUsername(user.getUsername());
+
         ctrl.setProfilePage(user);
     }
 }
