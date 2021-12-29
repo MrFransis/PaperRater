@@ -31,36 +31,19 @@
                </VBox.margin>
             </Label>
             <Circle fx:id="imageProfile" fill="ORANGE" radius="80.0" stroke="BLACK" strokeType="INSIDE" />
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="110.0">
-                     <children>
-                        <Text fx:id="numFollowerTf" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Text>
-                        <Label text="Follower">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                     </children>
-                     <HBox.margin>
-                        <Insets bottom="5.0" right="2.0" top="5.0" />
-                     </HBox.margin>
-                  </VBox>
                   <VBox alignment="TOP_CENTER" prefHeight="67.0" prefWidth="110.0">
                      <HBox.margin>
                         <Insets bottom="5.0" left="2.0" top="5.0" />
                      </HBox.margin>
                      <children>
-                        <Text fx:id="numReadingListTf" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                        <Text fx:id="emailTf" strokeType="OUTSIDE" strokeWidth="0.0" text="Email">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Text>
-                        <Label text="Reading lists">
+                        <Label text="Email">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>

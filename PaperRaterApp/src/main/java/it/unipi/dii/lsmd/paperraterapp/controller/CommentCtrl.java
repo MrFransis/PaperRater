@@ -68,6 +68,17 @@ public class CommentCtrl {
         comment.setText(c.getText());
     }
 
+    public void setCommentCard (Comment c, Paper paper) {
+        this.c = c;
+        this.paper = paper;
+        bin.setVisible(true);
+        modify.setVisible(false);
+        username.setText(c.getUsername());
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        timestamp.setText(formatter.format(c.getTimestamp()));
+        comment.setText(c.getText());
+    }
+
     public StringProperty textProperty() {
         return text ;
     }

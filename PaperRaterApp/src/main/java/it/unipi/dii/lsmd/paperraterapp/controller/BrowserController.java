@@ -1,9 +1,6 @@
 package it.unipi.dii.lsmd.paperraterapp.controller;
 
-import it.unipi.dii.lsmd.paperraterapp.model.Paper;
-import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
-import it.unipi.dii.lsmd.paperraterapp.model.Session;
-import it.unipi.dii.lsmd.paperraterapp.model.User;
+import it.unipi.dii.lsmd.paperraterapp.model.*;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
@@ -177,6 +174,20 @@ public class BrowserController implements Initializable {
         return pane;
     }
 
+    private Pane loadCommentCard (Comment comment, Paper paper) {
+        Pane pane = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/comment_card.fxml"));
+            pane = loader.load();
+            CommentCtrl ctrl = loader.getController();
+            ctrl.setCommentCard(comment, paper);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pane;
+    }
+
     private void loadComboBox () {
         // load suggestion
         List<String> suggestionList = new ArrayList<>();
@@ -217,6 +228,8 @@ public class BrowserController implements Initializable {
         typeList.add("Papers");
         typeList.add("Users");
         typeList.add("Reading lists");
+        if (user.getType() == 1)
+            typeList.add("Moderate comments");
         ObservableList<String> observableListType = FXCollections.observableList(typeList);
         chooseType.getItems().clear();
         chooseType.setItems(observableListType);
@@ -247,11 +260,10 @@ public class BrowserController implements Initializable {
         cardsGrid.getColumnConstraints().add(constraints);
         // load users
         List<User> usersList = null;
-        if(followsCheckBox.isSelected()) {
-            List<String> followsList = neo4jManager.getFollowUser(user.getUsername());
-            //usersList = mongoManager.getUsersByKeyword(keyword, page, followsList);
-        } else
-            //usersList = mongoManager.getUsersByKeyword(keyword, page, null);
+        if(followsCheckBox.isSelected())
+            usersList = neo4jManager.getSnapsOfFollowedUserByKeyword(user, keyword, 3, 3*page);
+        else
+            usersList = mongoManager.getUsersByKeyword(keyword, page);
         if (usersList.size() != 8)
             forwardBt.setDisable(true);
         int row = 0;
@@ -299,7 +311,7 @@ public class BrowserController implements Initializable {
         // load papers
         List<Pair<String, ReadingList>> readingLists = null;
         if (followsCheckBox.isSelected())
-            readingLists = neo4jManager.getFollowReadingListsByKeyword(keyword, user.getUsername(), 3*page, 3);
+            readingLists = neo4jManager.getSnapsOfFollowedReadingListsByKeyword(keyword, user, 3*page, 3);
         else
             readingLists = mongoManager.getReadingListByKeywords(keyword, 3*page, 3);
         if (readingLists.size() != 3)
@@ -308,6 +320,25 @@ public class BrowserController implements Initializable {
         System.out.println(readingLists.size());
         for (Pair<String, ReadingList> cardInfo : readingLists) {
             Pane card = loadReadingListsCard(cardInfo.getValue(), cardInfo.getKey());
+            cardsGrid.add(card, 0, row);
+            row++;
+        }
+    }
+
+    private void fillComments(int day) {
+        cardsGrid.setAlignment(Pos.CENTER);
+        cardsGrid.setVgap(40);
+        cardsGrid.setPadding(new Insets(30,40,30,100));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(100);
+        cardsGrid.getColumnConstraints().add(constraints);
+        // load papers
+        List<Pair<String, Comment>> commentsList = manager.searchLastComments(day, 10);
+        if (commentsList.size() != 3)
+            forwardBt.setDisable(true);
+        int row = 0;
+        for (Pair<String, Comment> cardInfo : commentsList) {
+            Pane card = loadCommentCard(cardInfo.getValue(), manager.getPaperById(cardInfo.getKey()));
             cardsGrid.add(card, 0, row);
             row++;
         }

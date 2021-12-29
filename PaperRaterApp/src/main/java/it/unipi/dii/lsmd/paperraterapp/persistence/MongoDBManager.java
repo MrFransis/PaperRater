@@ -61,7 +61,7 @@ public class MongoDBManager {
      * @param keyword keyword to search users
      * @return list of users
      */
-    public List<User> getUsersByKeyword (String keyword, int next, List<String> follows) {
+    public List<User> getUsersByKeyword (String keyword, int next) {
         List<User> results = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         Consumer<Document> convertInUser = doc -> {
@@ -72,11 +72,7 @@ public class MongoDBManager {
         Bson filter = Aggregates.match(Filters.regex("username", pattern));
         Bson limit = limit(8);
         Bson skip = skip(next*8);
-        if (follows != null) {
-            Bson follow = match(in("username", follows));
-            usersCollection.aggregate(Arrays.asList(follow, filter, skip, limit)).forEach(convertInUser);
-        } else
-            usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
+        usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
         return results;
     }
 
@@ -340,6 +336,39 @@ public class MongoDBManager {
         comments.remove(d);
         updateComments(paper, comments);
     }
+
+    /**
+     * Braws all comments that has been written "numDays" ago
+     * @param start_date start date
+     * @param start_date finish date
+     * @param skipDoc how many comments skip
+     * @param limitDoc limit number of comments
+     * @return list of comments
+     */
+    public List<Pair<String, Comment>> searchLastComments(String start_date, String start_date, int skipDoc, int limitDoc) {
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").serializeSpecialFloatingPointValues().create();
+        List<Pair<String, Comment>> results = new ArrayList<>();
+        Consumer<Document> takeComments = doc -> {
+            String paperId = doc.getString("arxiv_id");
+            if(Objects.equals(paperId, "nan"))
+                paperId = doc.getString("vixra_id");
+            Document docComments = (Document) doc.get("comments");
+            Comment comment = gson.fromJson(gson.toJson(docComments), Comment.class);
+            results.add(new Pair<>(paperId, comment));
+        };
+
+        Bson unwind = unwind("$comments");
+        Bson filter = match(gte("comments.timestamp", start_date));
+        Bson filter2 = match(lte("comments.timestamp", end_date));
+        Bson sort = sort(ascending("comments.timestamp"));
+        Bson skip = skip(skipDoc);
+        Bson limit = limit(limitDoc);
+        papersCollection.aggregate(Arrays.asList(unwind, filter, filter2, sort, skip, limit)).forEach(takeComments);
+
+        return results;
+    }
+
     /**
      * Function that deletes the paper from the database
      * @param p Paper to delete

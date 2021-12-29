@@ -10,7 +10,6 @@ import org.neo4j.driver.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.neo4j.driver.Values.EmptyMap;
 import static org.neo4j.driver.Values.parameters;
 
 public class Neo4jManager {
@@ -448,14 +447,15 @@ public class Neo4jManager {
      * @param skip
      * @return
      */
-    public List<User> getSnapsOfFollowedUser (User u, int limit, int skip) {
+    public List<User> getSnapsOfFollowedUserByKeyword (User u, String keyword, int limit, int skip) {
         List<User> followedUsers;
         try (Session session = driver.session()) {
             followedUsers = session.writeTransaction((TransactionWork<List<User>>) tx -> {
                 Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(u:User) " +
+                                "WHERE toLower(u.username) CONTAINS $keyword " +
                                 "RETURN u.username AS Username, u.email AS Email ORDER BY Username DESC " +
                                 "SKIP $skip LIMIT $limit",
-                        parameters("username", u.getUsername(), "limit", limit, "skip", skip));
+                        parameters("username", u.getUsername(), "keyword", keyword, "limit", limit, "skip", skip));
                 List<User> followedList = new ArrayList<>();
                 while(result.hasNext()) {
                     Record record = result.next();
