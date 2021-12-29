@@ -129,6 +129,12 @@ class App(cmd.Cmd):
 
                 reading_list['papers'] = papers
 
+                query = ("MATCH (a:User) "
+                         "WHERE a.username = $username "
+                         "CREATE (b:ReadingList { owner: $username, title: $title}) ")
+                session.write_transaction(
+                    lambda tx: tx.run(query, username=user['username'], title=reading_list['title']))
+
                 n_follows = int(random.random() * 4)
                 for i in range(0, n_follows):
 
