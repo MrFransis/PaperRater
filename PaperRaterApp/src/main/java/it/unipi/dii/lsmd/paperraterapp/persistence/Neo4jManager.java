@@ -21,20 +21,25 @@ public class Neo4jManager {
     }
 
 
-    public List<String> getFollowUser (final String username) {
-        List<String> follows;
+    public List<User> getFollowedUser (final String username, int limit, int skip) {
+        List<User> followedUsers;
         try (Session session = driver.session()) {
-            follows = session.writeTransaction((TransactionWork<List<String>>) tx -> {
-                Result result = tx.run("MATCH (:User {name: $username})-[:FOLLOWS]->(u:User) " +
-                        "RETURN u.name AS Names ORDER BY Names DESC", parameters("username", username));
-                List<String> followsList = new ArrayList<>();
+            followedUsers = session.writeTransaction((TransactionWork<List<User>>) tx -> {
+                Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(u:User) " +
+                        "RETURN u.username AS Username, u.email AS Email ORDER BY username DESC " +
+                                "SKIP $skip LIMIT $limit",
+                        parameters("username", username, "limit", limit, "skip", skip));
+                List<User> followedList = new ArrayList<>();
                 while(result.hasNext()) {
-                    followsList.add(result.next().get("Names").asString());
+                    Record record = result.next();
+                    User u = new User(record.get("Username").asString(), record.get("Email").asString(),
+                            "","","","",-1, new ArrayList<>(), 0);
+                    followedList.add(u);
                 }
-                return followsList;
+                return followedList;
             });
         }
-        return follows;
+        return followedUsers;
     }
 
     public List<Pair<String, String>> getFollowReadingLists (final String username) {
