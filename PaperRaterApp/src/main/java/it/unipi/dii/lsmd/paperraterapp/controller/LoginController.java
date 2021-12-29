@@ -17,7 +17,6 @@ import javafx.scene.control.TextField;
 public class LoginController {
 
     private MongoDBManager mongoMan;
-    private Neo4jManager neoMan;
     @FXML private Button loginButton;
     @FXML private PasswordField passwordTf;
     @FXML private Button registerButton;
@@ -25,7 +24,6 @@ public class LoginController {
     @FXML private Label errorTf;
 
     public void initialize () {
-        neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
     }
 
