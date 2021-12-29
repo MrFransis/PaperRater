@@ -249,9 +249,9 @@ public class BrowserController implements Initializable {
         List<User> usersList = null;
         if(followsCheckBox.isSelected()) {
             List<String> followsList = neo4jManager.getFollowUser(user.getUsername());
-            usersList = mongoManager.getUsersByKeyword(keyword, page, followsList);
+            //usersList = mongoManager.getUsersByKeyword(keyword, page, followsList);
         } else
-            usersList = mongoManager.getUsersByKeyword(keyword, page, null);
+            //usersList = mongoManager.getUsersByKeyword(keyword, page, null);
         if (usersList.size() != 8)
             forwardBt.setDisable(true);
         int row = 0;
@@ -298,11 +298,10 @@ public class BrowserController implements Initializable {
         cardsGrid.getColumnConstraints().add(constraints);
         // load papers
         List<Pair<String, ReadingList>> readingLists = null;
-        if (followsCheckBox.isSelected()) {
-            List<Pair<String, String>> follows = neo4jManager.getFollowReadingLists(user.getUsername());
-            readingLists = mongoManager.getReadingListByKeywords(keyword, 3*page, 3, follows);      // non va
-        } else
-            readingLists = mongoManager.getReadingListByKeywords(keyword, 3*page, 3, null);
+        if (followsCheckBox.isSelected())
+            readingLists = neo4jManager.getFollowReadingListsByKeyword(keyword, user.getUsername(), 3*page, 3);
+        else
+            readingLists = mongoManager.getReadingListByKeywords(keyword, 3*page, 3);
         if (readingLists.size() != 3)
             forwardBt.setDisable(true);
         int row = 0;

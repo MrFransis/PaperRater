@@ -42,22 +42,29 @@ public class Neo4jManager {
         return followedUsers;
     }
 
-    public List<Pair<String, String>> getFollowReadingLists (final String username) {
-        List<Pair<String, String>> follows;
-        try (Session session = driver.session()) {
-            follows = session.writeTransaction((TransactionWork<List<Pair<String, String>>>) tx -> {
-                Result result = tx.run("MATCH (:User {name: $username})-[:FOLLOWS]->(r:ReadingList) " +
-                        "RETURN r.title AS Titles, r.username AS Owner ORDER BY Owner DESC",
-                        parameters("username", username));
-                List<Pair<String, String>> followsList = new ArrayList<>();
-                while(result.hasNext()) {
-                    Record record = result.next();
-                    followsList.add(new Pair<>(record.get("Owner").asString(), record.get("Titles").asString()));
+    public List<Pair<String, ReadingList>> getFollowReadingListsByKeyword (final String keyword, String username,
+                                                                           int skip, int limit) {
+        List<Pair<String, ReadingList>> readingListsSnap = null;
+        try(Session session = driver.session()) {
+            readingListsSnap = session.readTransaction((TransactionWork<List<Pair<String, ReadingList>>>) tx -> {
+                Result result = tx.run("MATCH (u:User {username: $username})-[r:FOLLOWS]->(b:ReadingList) " +
+                                "WHERE toLower(b.title) CONTAINS $keyword " +
+                                "RETURN b.username as username, b.title as title ORDER BY username SKIP $skip " +
+                                "LIMIT $limit",
+                        parameters("username", username, "keyword", keyword, "skip", skip, "limit", limit));
+                List<Pair<String, ReadingList>> resultsList = new ArrayList<>();
+                while (result.hasNext()) {
+                    Record r = result.next();
+                    ReadingList snap = new ReadingList(r.get("title").asString());
+                    resultsList.add(new Pair<>(r.get("username").asString(), snap));
                 }
-                return followsList;
+                return resultsList;
             });
         }
-        return follows;
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return readingListsSnap;
     }
 
     /**
@@ -487,7 +494,6 @@ public class Neo4jManager {
      * @return a snap List of the followed Reading Lists
      */
     public List<ReadingList> getSnapsOfFollowedReadingLists(User u) {
-
         List<ReadingList> readingListsSnap = new ArrayList<>();
         try(Session session = driver.session()) {
             session.readTransaction((TransactionWork<List<ReadingList>>) tx -> {
@@ -500,7 +506,6 @@ public class Neo4jManager {
                     ReadingList snap = new ReadingList(r.get("title").asString(), new ArrayList<>());
                     readingListsSnap.add(snap);
                 }
-
                 return null;
             });
         }

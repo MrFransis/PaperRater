@@ -11,6 +11,10 @@ public class ReadingList {
         this.papers = papers;
     }
 
+    public ReadingList(String title) {
+        this(title, null);
+    }
+
     public String getTitle() {
         return title;
     }

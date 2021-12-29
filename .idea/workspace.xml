@@ -4,23 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="implemeted logout">
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="fix category bugs and implemented the follows filter in the browser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/ReadingList.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/model/ReadingList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/Neo4jManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/Neo4jManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/CommentCtrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/CommentCtrl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperPageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperPageController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/Neo4jManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/Neo4jManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,7 +226,8 @@
       <workItem from="1640334449657" duration="14195000" />
       <workItem from="1640471068033" duration="8495000" />
       <workItem from="1640511428116" duration="19233000" />
-      <workItem from="1640728050799" duration="14134000" />
+      <workItem from="1640728050799" duration="14252000" />
+      <workItem from="1640770579159" duration="5903000" />
     </task>
     <task id="LOCAL-00001" summary="create the folder to start the app dev">
       <created>1638650378848</created>
@@ -564,7 +558,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640629652138</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="fix category bugs and implemented the follows filter in the browser">
+      <created>1640742647051</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1640742647051</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -584,8 +585,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="PUSH DEFINITIVA" />
-    <MESSAGE value="adjust path" />
     <MESSAGE value="Resolve path" />
     <MESSAGE value="Resolve path 2.0" />
     <MESSAGE value="Create driver for MongoDB" />
@@ -609,7 +608,9 @@
     <MESSAGE value="add owner display in the reading lists cards" />
     <MESSAGE value="fix browser" />
     <MESSAGE value="implemeted logout" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemeted logout" />
+    <MESSAGE value="fic category bugs and implemented the follows filter in the browser" />
+    <MESSAGE value="fix category bugs and implemented the follows filter in the browser" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix category bugs and implemented the follows filter in the browser" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
