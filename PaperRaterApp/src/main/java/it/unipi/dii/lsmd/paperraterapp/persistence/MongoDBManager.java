@@ -77,7 +77,6 @@ public class MongoDBManager {
         if (moderator) {
             Bson moderatorFilter = match(eq("type", 1));
             usersCollection.aggregate(Arrays.asList(filter, moderatorFilter, skip, limit)).forEach(convertInUser);
-
         } else
             usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
         return results;
