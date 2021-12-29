@@ -443,19 +443,19 @@ public class Neo4jManager {
 
     /**
      *
-     * @param username
+     * @param u Logged User
      * @param limit
      * @param skip
      * @return
      */
-    public List<User> getSnapsOfFollowedUser (final String username, int limit, int skip) {
+    public List<User> getSnapsOfFollowedUser (User u, int limit, int skip) {
         List<User> followedUsers;
         try (Session session = driver.session()) {
             followedUsers = session.writeTransaction((TransactionWork<List<User>>) tx -> {
                 Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(u:User) " +
-                                "RETURN u.username AS Username, u.email AS Email ORDER BY username DESC " +
+                                "RETURN u.username AS Username, u.email AS Email ORDER BY Username DESC " +
                                 "SKIP $skip LIMIT $limit",
-                        parameters("username", username, "limit", limit, "skip", skip));
+                        parameters("username", u.getUsername(), "limit", limit, "skip", skip));
                 List<User> followedList = new ArrayList<>();
                 while(result.hasNext()) {
                     Record record = result.next();
@@ -469,24 +469,23 @@ public class Neo4jManager {
         return followedUsers;
     }
 
-
     /**
      * Function that returns the snap of the Reading Lists followed by a User
      * @param u Logged User
      * @return a snap List of the followed Reading Lists
      */
-    public List<ReadingList> getSnapsOfFollowedReadingLists(User u) {
-        List<ReadingList> readingListsSnap = new ArrayList<>();
+    public List<Pair<String, ReadingList>> getSnapsOfFollowedReadingLists(User u) {
+        List<Pair<String, ReadingList>>  readingListsSnap = new ArrayList<>();
         try(Session session = driver.session()) {
             session.readTransaction((TransactionWork<List<ReadingList>>) tx -> {
                 Result result = tx.run("MATCH (u:User{username: $username})-[r:FOLLOWS]->(b:ReadingList) " +
-                                "RETURN b.username as username, b.title as title",
+                                "RETURN b.username as Username, b.title as Title",
                         parameters("username", u.getUsername()));
 
                 while (result.hasNext()) {
                     Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("title").asString(), new ArrayList<>());
-                    readingListsSnap.add(snap);
+                    ReadingList snap = new ReadingList(r.get("Title").asString(), new ArrayList<>());
+                    readingListsSnap.add(new Pair<>(r.get("username").asString(), snap));
                 }
                 return null;
             });
@@ -497,20 +496,20 @@ public class Neo4jManager {
         return readingListsSnap;
     }
 
-    public List<Pair<String, ReadingList>> getSnapsOfFollowedReadingListsByKeyword (final String keyword, String username,
+    public List<Pair<String, ReadingList>> getSnapsOfFollowedReadingListsByKeyword (final String keyword, User u,
                                                                            int skip, int limit) {
         List<Pair<String, ReadingList>> readingListsSnap = new ArrayList<>();
         try(Session session = driver.session()) {
             readingListsSnap = session.readTransaction((TransactionWork<List<Pair<String, ReadingList>>>) tx -> {
                 Result result = tx.run("MATCH (u:User {username: $username})-[r:FOLLOWS]->(b:ReadingList) " +
                                 "WHERE toLower(b.title) CONTAINS $keyword " +
-                                "RETURN b.username as username, b.title as title ORDER BY username SKIP $skip " +
+                                "RETURN b.owner as username, b.title as title ORDER BY username SKIP $skip " +
                                 "LIMIT $limit",
-                        parameters("username", username, "keyword", keyword, "skip", skip, "limit", limit));
+                        parameters("username", u.getUsername(), "keyword", keyword, "skip", skip, "limit", limit));
                 List<Pair<String, ReadingList>> resultsList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("title").asString());
+                    ReadingList snap = new ReadingList(r.get("title").asString(), new ArrayList<>());
                     resultsList.add(new Pair<>(r.get("username").asString(), snap));
                 }
                 return resultsList;
@@ -524,24 +523,24 @@ public class Neo4jManager {
 
     /**
      * Shows the suggested readingLists for the given user
-     * @param user username of the user
+     * @param u user
      * @param numberFirstLv how many readingLists suggest from first level follow
      * @param numberSecondLv how many readingLists suggest from second level follow
      */
-    public List<Pair<String, ReadingList>> getSnapsOfSuggestedReadingLists(String user, int numberFirstLv, int numberSecondLv){
+    public List<Pair<String, ReadingList>> getSnapsOfSuggestedReadingLists(User u, int numberFirstLv, int numberSecondLv){
         List<Pair<String, ReadingList>> readingListsSnap = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}), " +
-                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.username AS username, target.title AS title, " +
+                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.owner AS username, target.title AS title, " +
                                 "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
-                                "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $firstLevel" +
+                                "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $firstLevel " +
                                 "UNION " +
                                 "MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}), " +
-                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.username AS username, target.title AS title, " +
+                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.owner AS username, target.title AS title, " +
                                 "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
                                 "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $secondLevel",
-                        parameters("username", user, "firstlevel", numberFirstLv, "secondLevel", numberSecondLv));
+                        parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv));
 
                 while(result.hasNext()){
                     Record r = result.next();
@@ -570,7 +569,7 @@ public class Neo4jManager {
             session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (:User)-[l:LIKES]->(p:Paper) " +
                                 "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title AS Title, " +
-                                "p.category AS Category, p.authors AS authors " +
+                                "p.category AS Category, p.authors AS Authors, " +
                                 "COUNT(l) AS like_count ORDER BY like_count DESC " +
                                 "LIMIT $limit",
                         parameters( "limit", number));
@@ -613,7 +612,7 @@ public class Neo4jManager {
         try(Session session = driver.session()) {
             session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (u:User)-[l:HAS_COMMENTED]->(:Paper) " +
-                                "RETURN u.username AS Username, u.email AS Email " +
+                                "RETURN u.username AS Username, u.email AS Email, " +
                                 "COUNT(l) AS comments_count ORDER BY comments_count DESC " +
                                 "LIMIT $limit",
                         parameters( "limit", number));
@@ -650,12 +649,13 @@ public class Neo4jManager {
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}) " +
-                                "RETURN p.arxiv_id AS arxiv_id, p.vixra_id AS vixra_id, p.title as title " +
-                                " LIMIT $firstlevel " +
+                                "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title as Title, " +
+                                "p.category AS Category, p.authors AS Authors " +
+                                "LIMIT $firstlevel " +
                                 "UNION " +
                                 "MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}) " +
                                 "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title as Title, " +
-                                "p.category AS Category, p.authors AS Authors" +
+                                "p.category AS Category, p.authors AS Authors " +
                                 "LIMIT $secondLevel",
                         parameters("username", u.getUsername(), "firstlevel", numberFirstLv, "secondLevel", numberSecondLv));
                 while(result.hasNext()){
@@ -686,20 +686,20 @@ public class Neo4jManager {
 
     /**
      * Return a hashmap with the suggested user ranked by their popularity
-     * @param username who need suggestions
+     * @param u user who need suggestions
      * @param num num of suggestions
      * @return pair (name, numFollower)
      */
-    public List<Pair<User, Integer>> getSnapsOfSuggestedUsers(final String username, final int num) {
+    public List<Pair<User, Integer>> getSnapsOfSuggestedUsers(User u, final int num) {
         List<Pair<User, Integer>> suggestion;
 
         try (Session session = driver.session()) {
             suggestion = session.readTransaction((TransactionWork<List<Pair<User, Integer>>>) tx -> {
                 Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(:User)-[:FOLLOWS]-(target:User), " +
                                 "(target)<-[r:FOLLOWS]-() " +
-                                "RETURN DISTINCT target.username AS Userame, target.email AS Email " +
+                                "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
                                 "count(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
-                        parameters("username", username, "num", num));
+                        parameters("username", u.getUsername(), "num", num));
                 List<Pair<User, Integer>> suggestionsList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
@@ -724,7 +724,7 @@ public class Neo4jManager {
         try (Session session = driver.session()) {
             rank = session.readTransaction((TransactionWork<List<Pair<User, Integer>>>) tx -> {
                 Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
-                                "RETURN DISTINCT target.username AS Username, target.email AS Email " +
+                                "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
                                 "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("num", num));
                 List<Pair<User, Integer>> popularUser = new ArrayList<>();
