@@ -56,8 +56,10 @@ class App(cmd.Cmd):
         papers_col.insert_many(data_dict)
 
         for index, row in papers_df.iterrows():
-            query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id}) ")
-            session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id']))
+            query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id, title: $title, category: $category,"
+                     " authors: $authors}) ")
+            session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id'],
+                                                        title=row['title'],category=row['category'], authors=row['authors']))
 
         print("Added papers to databases")
 
@@ -67,11 +69,8 @@ class App(cmd.Cmd):
         users_col.insert_many(data_dict)
 
         for index, row in users_df.iterrows():
-            query = ("CREATE (u:User { username: $username }) ")
-            session.write_transaction(lambda tx: tx.run(query, username=row['username']))
-
-        query = ("CREATE (u:User { username: $username }) ")
-        session.write_transaction(lambda tx: tx.run(query, username='admin'))
+            query = ("CREATE (u:User { username: $username , email: $email}) ")
+            session.write_transaction(lambda tx: tx.run(query, username=row['username'], email=row['email']))
 
         print("Added users to database")
        
@@ -205,6 +204,9 @@ class App(cmd.Cmd):
             "type": 2
         }
         users_col.insert_one(admin)
+
+        query = ("CREATE (u:User { username: $username, email: $email }) ")
+        session.write_transaction(lambda tx: tx.run(query, username='admin', email='admin'))
         print("Added Administrator")
 
         for i in range(0,5):
@@ -222,6 +224,9 @@ class App(cmd.Cmd):
                 "type": 1
             }
             users_col.insert_one(moderator)
+            query = ("CREATE (u:User { username: $username, email: $email}) ")
+            session.write_transaction(lambda tx: tx.run(query, username=moderator['username'], email=moderator['email']))
+
         print("Added Moderators")
 
         session.close()
