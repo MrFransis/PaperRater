@@ -38,43 +38,75 @@
           </font>
         </Label>
             <ImageView fx:id="profileImg" fitHeight="85.0" fitWidth="119.0" layoutX="148.0" layoutY="38.0" pickOnBounds="true" preserveRatio="true" styleClass="-fx-background-radius: 100;">
-                <Image url="@../img/user.jpg" />
+                <Image url="@../img/user.png" />
             </ImageView>
-            <Text fx:id="nFollower" layoutX="259.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollowe" textAlignment="CENTER" wrappingWidth="70.66666666666674">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Text>
-            <Label layoutX="269.0" layoutY="65.0" text="Followers" textAlignment="CENTER" />
-            <Text fx:id="nFollowing" layoutX="336.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2000" textAlignment="CENTER" wrappingWidth="70.66666666666674">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Text>
-            <Label layoutX="346.0" layoutY="65.0" text="Following" textAlignment="CENTER" />
-            <Label layoutX="431.0" layoutY="65.0" text="Papers Saved" />
-            <Text layoutX="429.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nPaperSaved" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Text>
+            <HBox layoutX="252.0" layoutY="31.0" prefHeight="49.0" prefWidth="244.0" style="-fx-spacing: 10;">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="49.0" prefWidth="61.0">
+                     <children>
+                        <Text fx:id="nFollower" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollower" textAlignment="CENTER" wrappingWidth="70.66666666666674">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Text>
+                        <Label text="Followers" textAlignment="CENTER" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Text fx:id="nFollowing" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollowing" textAlignment="CENTER" wrappingWidth="70.66666666666674">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Text>
+                        <Label text="Following" textAlignment="CENTER" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="49.0" prefWidth="89.0">
+                     <children>
+                        <Text fx:id="nPapersSaved" strokeType="OUTSIDE" strokeWidth="0.0" text="nPaperSaved" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Label text="Papers Saved" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
             <Button fx:id="followBtn" layoutX="291.0" layoutY="89.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="169.0" text="Follow">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Label layoutX="149.0" layoutY="140.0" text="Email:" />
-            <Text fx:id="email" layoutX="193.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="email@gmail.com" wrappingWidth="264.0000305175781" />
-            <Label layoutX="148.0" layoutY="165.0" text="First Name:" />
-            <Text fx:id="firstName" layoutX="222.0" layoutY="178.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" wrappingWidth="179.07620239257812" />
-            <Label layoutX="149.0" layoutY="191.0" text="Last Name:" />
-            <Text fx:id="lastName" layoutX="223.0" layoutY="204.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" wrappingWidth="179.07620239257812" />
-            <ImageView fx:id="editIcon" fitHeight="36.0" fitWidth="57.0" layoutX="413.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true">
+            <VBox layoutX="143.0" layoutY="139.0" prefHeight="69.0" prefWidth="273.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="35.0" text="Email:" />
+                        <Text fx:id="email" strokeType="OUTSIDE" strokeWidth="0.0" text="email@gmail.com" wrappingWidth="235.99998474121094" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                     <children>
+                        <Label text="First Name:" />
+                        <Text fx:id="firstName" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" wrappingWidth="179.07620239257812" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                     <children>
+                        <Label text="Last Name:" />
+                        <Text fx:id="lastName" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" wrappingWidth="179.07620239257812" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <ImageView fx:id="editIcon" fitHeight="36.0" fitWidth="57.0" layoutX="442.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/edit.png" />
                </image>
