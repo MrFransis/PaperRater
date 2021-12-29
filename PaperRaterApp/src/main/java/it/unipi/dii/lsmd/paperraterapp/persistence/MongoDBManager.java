@@ -25,7 +25,10 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -826,15 +829,25 @@ public class MongoDBManager {
     public List<Pair<Paper, Comment>> searchLastComments(String start_date, String end_date, int skipDoc, int limitDoc) {
 
         List<Pair<Paper, Comment>> results = new ArrayList<>();
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").serializeSpecialFloatingPointValues().create();
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<Bson> pipeline = new ArrayList<>();
 
         Consumer<Document> takeComments = doc -> {
 
-            Paper paper = gson.fromJson((gson.toJson(doc)), Paper.class);
-            System.out.println(paper);
+            String arxiv_id = (String) doc.get("arxiv_id");
+            String vixra_id = (String) doc.get("vixra_id");
+            String title = (String) doc.get("title");
+            String _abstract = (String) doc.get("_abstract");
+            String category = (String) doc.get("category");
+            List<String> authors = (List<String>) doc.get("authors");
+            //String published = (String) doc.get("published");
             Document docComments = (Document) doc.get("comments");
             Comment comment = gson.fromJson(gson.toJson(docComments), Comment.class);
+            Paper paper = new Paper(arxiv_id, vixra_id, title, _abstract, category, authors, null, null );
+
+            System.out.println(paper);
+
             results.add(new Pair<>(paper, comment));
         };
 

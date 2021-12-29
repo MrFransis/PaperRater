@@ -16,6 +16,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -43,7 +44,6 @@ public class CommentCtrl {
     public void initialize () {
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
         neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
-        bin.setOnMouseClicked(mouseEvent -> clickOnBin(mouseEvent));
         modify.setOnMouseClicked(mouseEvent -> clickOnModify(mouseEvent));
         scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
@@ -52,6 +52,7 @@ public class CommentCtrl {
         this.c = c;
         this.paper = paper;
         this.user = user;
+        bin.setOnMouseClicked(mouseEvent -> clickOnBin(mouseEvent));
         if(Objects.equals(user.getUsername(), c.getUsername())) {
             bin.setVisible(true);
             modify.setVisible(true);
@@ -71,6 +72,7 @@ public class CommentCtrl {
     public void setCommentCard (Comment c, Paper paper) {
         this.c = c;
         this.paper = paper;
+        bin.setOnMouseClicked(mouseEvent -> clickOnBinBrowser(mouseEvent));
         bin.setVisible(true);
         modify.setVisible(false);
         username.setText(c.getUsername());
@@ -99,6 +101,15 @@ public class CommentCtrl {
         int numComm = Integer.parseInt(getText());
         numComm--;
         setText(String.valueOf(numComm));
+    }
+
+    private void clickOnBinBrowser (MouseEvent mouseEvent) {
+        if (paper.getComments() == null)
+            paper = mongoMan.getPaperById(paper);
+        mongoMan.deleteComment(paper, c);
+        if(mongoMan.numUserComments(paper, c.getUsername()) == 0)
+            neoMan.deleteHasCommented(c.getUsername(), paper);
+        ((GridPane) commentBox.getParent()).getChildren().remove(commentBox);
     }
 
     private void clickOnModify (MouseEvent mouseEvent) {
