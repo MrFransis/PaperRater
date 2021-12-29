@@ -32,36 +32,49 @@
       </HBox>
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="549.0" prefWidth="908.0" VBox.vgrow="ALWAYS">
          <children>
-            <HBox alignment="TOP_CENTER" layoutX="67.0" layoutY="3.0" prefHeight="36.0" prefWidth="761.0" spacing="10.0">
+            <HBox alignment="TOP_CENTER" layoutX="33.0" layoutY="3.0" prefHeight="36.0" prefWidth="845.0" spacing="10.0">
                <children>
-                  <Label fx:id="readingListTitle" alignment="CENTER" prefHeight="27.0" prefWidth="250.0" style="&#10;" text="Reading List Title" textAlignment="CENTER" textFill="#100000" wrapText="false">
+                  <Label fx:id="readingListTitle" alignment="TOP_RIGHT" prefHeight="27.0" prefWidth="212.0" style="&#10;" text="Reading List Title" textAlignment="CENTER" textFill="#100000" wrapText="false">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" style="&#10;" text="by" textAlignment="CENTER" textFill="#100000" wrapText="false">
+                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="29.0" style="&#10;" text="by" textAlignment="CENTER" textFill="#100000" wrapText="false">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="username" alignment="CENTER" style="&#10;" text="Username" textAlignment="CENTER" textFill="#100000" wrapText="false">
+                  <Label fx:id="username" alignment="TOP_LEFT" prefHeight="27.0" prefWidth="148.0" style="&#10;" text="Username" textAlignment="CENTER" textFill="#100000" wrapText="false">
                      <font>
                         <Font size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets right="50.0" />
+                        <Insets right="10.0" />
                      </HBox.margin>
                   </Label>
-                  <VBox prefHeight="36.0" prefWidth="55.0">
+                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="176.0">
                      <children>
-                        <Text fx:id="numFollowers" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollowers">
+                        <Text fx:id="mostCommonCategory" strokeType="OUTSIDE" strokeWidth="0.0" text="MostCommonCategory">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Text>
+                        <Label text="Most Common Category" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="55.0">
+                     <children>
+                        <Text fx:id="numFollowers" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollowers" textAlignment="CENTER" wrappingWidth="67.107421875">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font></Text>
-                        <Label text="Followers" />
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="17.0" prefWidth="72.0" text="Followers" textAlignment="CENTER" />
                      </children>
                   </VBox>
-                  <VBox prefHeight="36.0" prefWidth="49.0">
+                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="49.0">
                      <children>
                         <Text fx:id="numPapers" strokeType="OUTSIDE" strokeWidth="0.0" text="nPapers">
                            <font>
@@ -75,14 +88,14 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="deleteReadingListBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="Delete">
+                  <Button fx:id="deleteReadingListBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Delete">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Button>
                </children>
             </HBox>
-            <ScrollPane layoutX="34.0" layoutY="49.0" prefHeight="441.0" prefWidth="845.0">
+            <ScrollPane layoutX="34.0" layoutY="41.0" prefHeight="449.0" prefWidth="845.0">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>

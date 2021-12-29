@@ -24,7 +24,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class ReadingListPageController {
     private ReadingList readingList;
@@ -34,6 +37,7 @@ public class ReadingListPageController {
 
     @FXML private Label username;
     @FXML private Label readingListTitle;
+    @FXML private Text mostCommonCategory;
     @FXML private Text numFollowers;
     @FXML private Text numPapers;
     @FXML private ImageView backIcon;
@@ -58,6 +62,7 @@ public class ReadingListPageController {
 
         username.setText(owner);
         readingListTitle.setText(readingList.getTitle());
+        mostCommonCategory.setText(getMostCommonCategory(readingList.getPapers()));
         numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getTitle(), owner)));
         numPapers.setText(String.valueOf(readingList.getPapers().size()));
 
@@ -108,6 +113,24 @@ public class ReadingListPageController {
             e.printStackTrace();
         }
         return pane;
+    }
+
+    private String getMostCommonCategory(List<Paper> papers) {
+        Map<String, Integer> map = new HashMap<>();
+
+        for (Paper p : papers) {
+            Integer val = map.get(p.getCategory());
+            map.put(p.getCategory(), val == null ? 1 : val + 1);
+        }
+
+        Map.Entry<String, Integer> max = null;
+
+        for (Map.Entry<String, Integer> e : map.entrySet()) {
+            if (max == null || e.getValue() > max.getValue())
+                max = e;
+        }
+
+        return max.getKey();
     }
 
     private void clickOnFollowBtn (MouseEvent mouseEvent) {

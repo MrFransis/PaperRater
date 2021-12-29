@@ -40,6 +40,7 @@ public class ProfilePageController {
     @FXML private Text lastName;
     @FXML private Text nFollower;
     @FXML private Text nFollowing;
+    @FXML private Text nPapersSaved;
     @FXML private Button followBtn;
     @FXML private Label boxLabel;
     @FXML private VBox box;
@@ -73,6 +74,11 @@ public class ProfilePageController {
         nFollower.setText(String.valueOf(neoMan.getNumFollowersUser(user.getUsername())));
         nFollowing.setText(String.valueOf(neoMan.getNumFollowingUser(user.getUsername())));
 
+        int nPapers = 0;
+        for (ReadingList r: user.getReadingLists())
+            nPapers += r.getPapers().size();
+        nPapersSaved.setText(String.valueOf(nPapers));
+
 
         if (!user.getPicture().isEmpty())
             profileImg.setImage(new Image(user.getPicture()));
@@ -99,11 +105,11 @@ public class ProfilePageController {
 
 
         box.getChildren().clear();
-        loadMyReadingList();
+        loadMyReadingLists();
     }
 
-    private void loadMyReadingList () {
-        boxLabel.setText("My Reading Lists");
+    private void loadMyReadingLists () {
+        boxLabel.setText("Reading Lists");
         if (!user.getReadingLists().isEmpty()) {
             Iterator<ReadingList> it = user.getReadingLists().iterator();
 
