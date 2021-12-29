@@ -105,8 +105,7 @@ public class CommentCtrl {
     }
 
     private void clickOnBinBrowser (MouseEvent mouseEvent) {
-        if (paper.getComments() == null)
-            paper = mongoMan.getPaperById(paper);
+        paper = mongoMan.getPaperById(paper);
         mongoMan.deleteComment(paper, c);
         if(mongoMan.numUserComments(paper, c.getUsername()) == 0)
             neoMan.deleteHasCommented(c.getUsername(), paper);
