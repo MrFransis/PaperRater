@@ -61,7 +61,7 @@ public class MongoDBManager {
      * @param keyword keyword to search users
      * @return list of users
      */
-    public List<User> getUsersByKeyword (String keyword, int next, List<String> follows) {
+    public List<User> getUsersByKeyword (String keyword, int next) {
         List<User> results = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         Consumer<Document> convertInUser = doc -> {
@@ -72,11 +72,7 @@ public class MongoDBManager {
         Bson filter = Aggregates.match(Filters.regex("username", pattern));
         Bson limit = limit(8);
         Bson skip = skip(next*8);
-        if (follows != null) {
-            Bson follow = match(in("username", follows));
-            usersCollection.aggregate(Arrays.asList(follow, filter, skip, limit)).forEach(convertInUser);
-        } else
-            usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
+        usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
         return results;
     }
 

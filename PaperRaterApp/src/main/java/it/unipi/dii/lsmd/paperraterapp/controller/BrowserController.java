@@ -217,6 +217,8 @@ public class BrowserController implements Initializable {
         typeList.add("Papers");
         typeList.add("Users");
         typeList.add("Reading lists");
+        if (user.getType() == 1)
+            typeList.add("Moderate comments");
         ObservableList<String> observableListType = FXCollections.observableList(typeList);
         chooseType.getItems().clear();
         chooseType.setItems(observableListType);
@@ -247,11 +249,10 @@ public class BrowserController implements Initializable {
         cardsGrid.getColumnConstraints().add(constraints);
         // load users
         List<User> usersList = null;
-        if(followsCheckBox.isSelected()) {
-            List<String> followsList = neo4jManager.getFollowUser(user.getUsername());
-            //usersList = mongoManager.getUsersByKeyword(keyword, page, followsList);
-        } else
-            //usersList = mongoManager.getUsersByKeyword(keyword, page, null);
+        if(followsCheckBox.isSelected())
+            usersList = neo4jManager.getSnapsOfFollowedUserByKeyword(user, keyword, 3, 3*page);
+        else
+            usersList = mongoManager.getUsersByKeyword(keyword, page);
         if (usersList.size() != 8)
             forwardBt.setDisable(true);
         int row = 0;
@@ -299,7 +300,7 @@ public class BrowserController implements Initializable {
         // load papers
         List<Pair<String, ReadingList>> readingLists = null;
         if (followsCheckBox.isSelected())
-            readingLists = neo4jManager.getFollowReadingListsByKeyword(keyword, user.getUsername(), 3*page, 3);
+            readingLists = neo4jManager.getSnapsOfFollowedReadingListsByKeyword(keyword, user, 3*page, 3);
         else
             readingLists = mongoManager.getReadingListByKeywords(keyword, 3*page, 3);
         if (readingLists.size() != 3)
