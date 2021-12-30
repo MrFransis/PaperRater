@@ -164,15 +164,14 @@ public class MongoDBManager {
                 doc.append("picture", u.getPicture());
             if (u.getAge() != -1)
                 doc.append("age", u.getAge());
+            doc.append("type", u.getType());
 
             Bson updateOperation = new Document("$set", doc);
             usersCollection.updateOne(new Document("username", u.getUsername()), updateOperation);
             return true;
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             ex.printStackTrace();
-            System.err.println("Error in updating user on MongoDB");
             return false;
         }
     }

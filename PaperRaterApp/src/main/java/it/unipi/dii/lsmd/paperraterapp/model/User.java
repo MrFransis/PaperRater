@@ -92,7 +92,7 @@ public class User {
         this.age = age;
     }
 
-    public void setType(int numFollower) { this.type = type; }
+    public void setType(int type) { this.type = type; }
 
     @Override
     public String toString() {

@@ -31,37 +31,53 @@ public class ProfilePageController {
     private MongoDBManager mongoMan;
     private Neo4jManager neoMan;
 
-    @FXML private ImageView backIcon;
-    @FXML private ImageView editIcon;
-    @FXML private ImageView profileImg;
-    @FXML private Label username;
-    @FXML private Text email;
-    @FXML private Text firstName;
-    @FXML private Text lastName;
-    @FXML private Text nFollower;
-    @FXML private Text nFollowing;
-    @FXML private Text nPapersSaved;
-    @FXML private Button followBtn;
-    @FXML private Label boxLabel;
-    @FXML private VBox box;
-    @FXML private Button addReadingListBtn;
-    @FXML private Button deleteUserBtn;
+    @FXML
+    private ImageView backIcon;
+    @FXML
+    private ImageView editIcon;
+    @FXML
+    private ImageView profileImg;
+    @FXML
+    private Label username;
+    @FXML
+    private Text email;
+    @FXML
+    private Text firstName;
+    @FXML
+    private Text lastName;
+    @FXML
+    private Text nFollower;
+    @FXML
+    private Text nFollowing;
+    @FXML
+    private Text nPapersSaved;
+    @FXML
+    private Button followBtn;
+    @FXML
+    private Label boxLabel;
+    @FXML
+    private VBox box;
+    @FXML
+    private Button addReadingListBtn;
+    @FXML
+    private Button moderatorBtn;
+    @FXML
+    private Button deleteUserBtn;
 
 
-    public void initialize () {
+    public void initialize() {
         neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
 
         backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));
         followBtn.setOnMouseClicked(mouseEvent -> clickOnFollowBtn(mouseEvent));
-        nFollowing.setOnMouseClicked(mouseEvent -> clickOnFollowing(mouseEvent));
-        nFollower.setOnMouseClicked(mouseEvent -> clickOnFollower(mouseEvent));
         editIcon.setOnMouseClicked(mouseEvent -> clickOnEditIcon(mouseEvent));
         addReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnAddReadingListBtn(mouseEvent));
+        moderatorBtn.setOnMouseClicked(mouseEvent -> clickOnModeratorBtn(mouseEvent));
         deleteUserBtn.setOnMouseClicked(mouseEvent -> clickOnDeleteUserBtn(mouseEvent));
     }
 
-    public void setProfilePage (User user) {
+    public void setProfilePage(User user) {
         this.user = user;
 
         // Push
@@ -75,7 +91,7 @@ public class ProfilePageController {
         nFollowing.setText(String.valueOf(neoMan.getNumFollowingUser(user.getUsername())));
 
         int nPapers = 0;
-        for (ReadingList r: user.getReadingLists())
+        for (ReadingList r : user.getReadingLists())
             nPapers += r.getPapers().size();
         nPapersSaved.setText(String.valueOf(nPapers));
 
@@ -90,30 +106,36 @@ public class ProfilePageController {
             followBtn.setVisible(false);
             editIcon.setVisible(true);
             addReadingListBtn.setVisible(true);
-        }
-        else {
+        } else {
             followBtn.setVisible(true);
             editIcon.setVisible(false);
             addReadingListBtn.setVisible(false);
         }
 
         if (Session.getInstance().getLoggedUser().getType() == 2 &&
-                !user.getUsername().equals(Session.getInstance().getLoggedUser().getUsername()))
+                !user.getUsername().equals(Session.getInstance().getLoggedUser().getUsername())) {
+            moderatorBtn.setVisible(true);
             deleteUserBtn.setVisible(true);
-        else
-            deleteUserBtn.setVisible(false);
 
+            if (user.getType() == 1)
+                moderatorBtn.setText("Dismiss Moderator");
+            else
+                moderatorBtn.setText("Elect Moderator");
+        } else {
+            moderatorBtn.setVisible(false);
+            deleteUserBtn.setVisible(false);
+        }
 
         box.getChildren().clear();
         loadMyReadingLists();
     }
 
-    private void loadMyReadingLists () {
+    private void loadMyReadingLists() {
         boxLabel.setText("Reading Lists");
         if (!user.getReadingLists().isEmpty()) {
             Iterator<ReadingList> it = user.getReadingLists().iterator();
 
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 HBox row = new HBox();
                 row.setAlignment(Pos.CENTER);
                 row.setStyle("-fx-padding: 10px");
@@ -123,13 +145,12 @@ public class ProfilePageController {
                 row.getChildren().addAll(p);
                 box.getChildren().add(row);
             }
-        }
-        else {
+        } else {
             box.getChildren().add(new Label("No Reading Lists :("));
         }
     }
 
-    private Pane loadReadingListCard (ReadingList r, String owner) {
+    private Pane loadReadingListCard(ReadingList r, String owner) {
         Pane pane = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -137,16 +158,15 @@ public class ProfilePageController {
             pane = loader.load();
             ReadingListCardCtrl ctrl = loader.getController();
             ctrl.setReadingListCard(r, owner);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return pane;
     }
 
-    private void clickOnBackIcon (MouseEvent mouseEvent) {
+    private void clickOnBackIcon(MouseEvent mouseEvent) {
         // Pop
-        Session.getInstance().getPreviousPageUsers().remove(Session.getInstance().getPreviousPageUsers().size()-1 );
+        Session.getInstance().getPreviousPageUsers().remove(Session.getInstance().getPreviousPageUsers().size() - 1);
 
         // Check if previous page is a Paper Page
         if (Session.getInstance().getPreviousPagePaper().isEmpty())
@@ -159,45 +179,18 @@ public class ProfilePageController {
         }
     }
 
-    private void clickOnFollowBtn (MouseEvent mouseEvent) {
+    private void clickOnFollowBtn(MouseEvent mouseEvent) {
         String tmp = followBtn.getText();
         if (tmp.equals("Follow")) {
             neoMan.followUser(Session.getInstance().getLoggedUser().getUsername(), user.getUsername());
             followBtn.setText("Unfollow");
-        }
-        else {
+        } else {
             neoMan.unfollowUser(Session.getInstance().getLoggedUser().getUsername(), user.getUsername());
             followBtn.setText("Follow");
         }
     }
 
-    private void clickOnFollower (MouseEvent mouseEvent) {
-        // Pop
-        Session.getInstance().getPreviousPageUsers().remove(Session.getInstance().getPreviousPageUsers().size()-1 );
-
-
-        BrowserController ctrl = (BrowserController) Utils.changeScene(
-                    "/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
-
-        ctrl.chooseSuggestion.setValue("Browse Follower");
-
-        //ctrl.startResearch();
-    }
-
-    private void clickOnFollowing (MouseEvent mouseEvent) {
-        // Pop
-        Session.getInstance().getPreviousPageUsers().remove(Session.getInstance().getPreviousPageUsers().size()-1 );
-
-
-        BrowserController ctrl = (BrowserController) Utils.changeScene(
-                "/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
-
-        ctrl.chooseSuggestion.setValue("Browse Following");
-
-        //ctrl.startResearch();
-    }
-
-    private void clickOnEditIcon (MouseEvent mouseEvent) {
+    private void clickOnEditIcon(MouseEvent mouseEvent) {
         /* Edit form */
         Dialog<User> dialog = new Dialog<>();
         dialog.setTitle("Edit Profile Information");
@@ -240,7 +233,7 @@ public class ProfilePageController {
         });
     }
 
-    private void clickOnAddReadingListBtn (MouseEvent mouseEvent) {
+    private void clickOnAddReadingListBtn(MouseEvent mouseEvent) {
         TextInputDialog td = new TextInputDialog("r_list" +
                 (Session.getInstance().getLoggedUser().getReadingLists().size() + 1));
         td.setHeaderText("Insert the title of the Reading List");
@@ -275,5 +268,19 @@ public class ProfilePageController {
 
     private void clickOnDeleteUserBtn(MouseEvent mouseEvent) {
         mongoMan.deleteUser(user);
+        Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
+    }
+
+    private void clickOnModeratorBtn(MouseEvent mouseEvent) {
+        if (moderatorBtn.getText().equals("Elect Moderator")) {
+            moderatorBtn.setText("Dismiss Moderator");
+            user.setType(1);
+        }
+        else {
+            moderatorBtn.setText("Elect Moderator");
+            user.setType(0);
+        }
+
+        mongoMan.updateUser(user);
     }
 }
