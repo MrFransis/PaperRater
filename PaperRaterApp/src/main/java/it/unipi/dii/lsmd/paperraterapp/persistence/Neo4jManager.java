@@ -520,41 +520,6 @@ public class Neo4jManager {
         return readingListsSnap;
     }
 
-    /**
-     * Shows the suggested readingLists for the given user
-     * @param u user
-     * @param numberFirstLv how many readingLists suggest from first level follow
-     * @param numberSecondLv how many readingLists suggest from second level follow
-     */
-    public List<Pair<String, ReadingList>> getSnapsOfSuggestedReadingLists(User u, int numberFirstLv, int numberSecondLv){
-        List<Pair<String, ReadingList>> readingListsSnap = new ArrayList<>();
-        try(Session session = driver.session()){
-            session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}), " +
-                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.owner AS username, target.title AS title, " +
-                                "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
-                                "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $firstLevel " +
-                                "UNION " +
-                                "MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}), " +
-                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT target.owner AS username, target.title AS title, " +
-                                "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
-                                "RETURN username, title, numFollower + follow AS followers ORDER BY followers DESC LIMIT $secondLevel",
-                        parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv));
-
-                while(result.hasNext()){
-                    Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("title").asString(), new ArrayList<>());
-                    readingListsSnap.add(new Pair<>(r.get("username").asString(), snap));
-                }
-
-                return null;
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return readingListsSnap;
-    }
-
     //Most liked Papers
     /**
      * This function return the most liked papers
@@ -633,28 +598,61 @@ public class Neo4jManager {
         return topUsers;
     }
 
+    /**
+     * Return a hashmap with the most popular user
+     * @param num num of rank
+     * @return pair (name, numFollower)
+     */
+    public List<Pair<User, Integer>> getSnapsOfMostPopularUsers (final int num) {
+        List<Pair<User, Integer>> rank;
+        try (Session session = driver.session()) {
+            rank = session.readTransaction((TransactionWork<List<Pair<User, Integer>>>) tx -> {
+                Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
+                                "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
+                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
+                        parameters("num", num));
+                List<Pair<User, Integer>> popularUser = new ArrayList<>();
+                while (result.hasNext()) {
+                    Record r = result.next();
+                    User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
+                            "","","","",-1, new ArrayList<>(), 0);
+
+                    popularUser.add(new Pair<>(snap, r.get("numFollower").asInt()));
+                }
+                return popularUser;
+            });
+        }
+        return rank;
+    }
 
     /**
-     * Function that returns a list of snaps of suggested papers for the logged user
-     * Suggestions based on papers liked by followed users
+     * Function that returns a list of suggested papers snapshots for the logged user.
+     * Suggestions are based on papers liked by followed users (first level) and papers liked by users
+     * that are 2 FOLLOWS hops far from the logged user (second level).
+     * Papers returned are ordered by the number of times they appeared in the results, so papers
+     * that appear more are most likely to be similar to the interests of the logged user.
      *
      * @param u Logged User
-     * @param numberFirstLv how many papers suggest from first level follow
-     * @param numberSecondLv how many papers suggest from second level follow
-     * @return A list of snaps suggested papers
+     * @param numberFirstLv how many papers suggest from first level
+     * @param numberSecondLv how many papers suggest from second level
+     * @return A list of suggested papers snapshots
      */
     public List<Paper> getSnapsOfSuggestedPapers(User u, int numberFirstLv, int numberSecondLv) {
         List<Paper> papersSnap = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}) " +
-                                "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title as Title, " +
-                                "p.category AS Category, p.authors AS Authors " +
+                Result result = tx.run("MATCH (target:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}) " +
+                                "WHERE NOT EXISTS((me)-[:LIKES]->(target)) " +
+                                "RETURN target.arxiv_id AS ArxivId, target.vixra_id AS VixraId, target.title as Title, " +
+                                "target.category AS Category, target.authors AS Authors, COUNT(*) AS nOccurences " +
+                                "ORDER BY nOccurences DESC " +
                                 "LIMIT $firstlevel " +
                                 "UNION " +
-                                "MATCH (p:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}) " +
-                                "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title as Title, " +
-                                "p.category AS Category, p.authors AS Authors " +
+                                "MATCH (target:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}) " +
+                                "WHERE NOT EXISTS((me)-[:LIKES]->(target)) " +
+                                "RETURN target.arxiv_id AS ArxivId, target.vixra_id AS VixraId, target.title as Title, " +
+                                "target.category AS Category, target.authors AS Authors, COUNT(*) AS nOccurences " +
+                                "ORDER BY nOccurences DESC " +
                                 "LIMIT $secondLevel",
                         parameters("username", u.getUsername(), "firstlevel", numberFirstLv, "secondLevel", numberSecondLv));
                 while(result.hasNext()){
@@ -684,60 +682,95 @@ public class Neo4jManager {
 
 
     /**
-     * Return a hashmap with the suggested user ranked by their popularity
+     * Function that returns a list of suggested users snapshots for the logged user.
+     * Suggestions are based on most followed users who are 2 FOLLOWS hops far from the
+     * logged user (first level);
+     * The second level of suggestion returns most followed users that have likes in common with
+     * the logged user.
+     *
      * @param u user who need suggestions
-     * @param num num of suggestions
-     * @return pair (name, numFollower)
+     * @param numberFirstLv how many users suggest from first level suggestion
+     * @param numberSecondLv how many users suggest from second level
+     * @return A list of suggested users snapshots
      */
-    public List<Pair<User, Integer>> getSnapsOfSuggestedUsers(User u, final int num) {
-        List<Pair<User, Integer>> suggestion;
+    public List<User> getSnapsOfSuggestedUsers(User u, int numberFirstLv, int numberSecondLv) {
+        List<User> usersSnap = new ArrayList<>();
 
         try (Session session = driver.session()) {
-            suggestion = session.readTransaction((TransactionWork<List<Pair<User, Integer>>>) tx -> {
-                Result result = tx.run("MATCH (:User {username: $username})-[:FOLLOWS]->(:User)-[:FOLLOWS]-(target:User), " +
+            session.readTransaction(tx -> {
+                Result result = tx.run("MATCH (me:User {username: $username})-[:FOLLOWS*2..2]->(target:User), " +
                                 "(target)<-[r:FOLLOWS]-() " +
+                                "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target)) " +
                                 "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
-                                "count(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
-                        parameters("username", u.getUsername(), "num", num));
-                List<Pair<User, Integer>> suggestionsList = new ArrayList<>();
+                                "COUNT(DISTINCT r) as numFollower " +
+                                "ORDER BY numFollower DESC " +
+                                "LIMIT $firstLevel " +
+                                "UNION " +
+                                "MATCH (me:User {username: $username})-[:LIKES]->()<-[:LIKES]-(target:User), " +
+                                "(target)<-[r:FOLLOWS]-() " +
+                                "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target)) " +
+                                "RETURN target.username AS Username, target.email AS Email, " +
+                                "COUNT(DISTINCT r) as numFollower " +
+                                "ORDER BY numFollower DESC " +
+                                "LIMIT $secondLevel",
+                        parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv));
                 while (result.hasNext()) {
                     Record r = result.next();
                     User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
                             "","","","",-1, new ArrayList<>(), 0);
 
-                    suggestionsList.add(new Pair<>(snap, r.get("numFollower").asInt()));
+                    usersSnap.add(snap);
                 }
-                return suggestionsList;
+                return null;
             });
         }
-        return suggestion;
+        return usersSnap;
     }
+
 
     /**
-     * Return a hashmap with the most popular user
-     * @param num num of rank
-     * @return pair (name, numFollower)
+     * Function that returns a list of suggested reading lists snapshots for the logged user.
+     * Suggestions are based on most followed reading lists followed by followed users (first level)
+     * and most followed reading lists followed by users that are 2 FOLLOWS hops far from the
+     * logged user (second level).
+     *
+     * @param u Logged User
+     * @param numberFirstLv how many readingLists suggest from first level
+     * @param numberSecondLv how many readingLists suggest from second level
+     * @return A list of suggested reading lists snapshots
      */
-    public List<Pair<User, Integer>> getSnapsOfMostPopularUsers (final int num) {
-        List<Pair<User, Integer>> rank;
-        try (Session session = driver.session()) {
-            rank = session.readTransaction((TransactionWork<List<Pair<User, Integer>>>) tx -> {
-                Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
-                                "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
-                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
-                        parameters("num", num));
-                List<Pair<User, Integer>> popularUser = new ArrayList<>();
-                while (result.hasNext()) {
+    public List<Pair<String, ReadingList>> getSnapsOfSuggestedReadingLists(User u, int numberFirstLv, int numberSecondLv){
+        List<Pair<String, ReadingList>> readingListsSnap = new ArrayList<>();
+        try(Session session = driver.session()){
+            session.readTransaction(tx -> {
+                Result result = tx.run("MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS]-(me:User{username:$username}), " +
+                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT me, target, " +
+                                "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
+                                "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target)) " +
+                                "RETURN target.owner AS Owner, target.title AS Title, numFollower + follow AS followers " +
+                                "ORDER BY followers DESC " +
+                                "LIMIT $firstLevel " +
+                                "UNION " +
+                                "MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}), " +
+                                "(target)<-[r:FOLLOWS]-(n:User) WITH DISTINCT me, target, " +
+                                "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
+                                "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target))" +
+                                "RETURN target.owner AS Owner, target.title AS Title, numFollower + follow AS followers " +
+                                "ORDER BY followers DESC " +
+                                "LIMIT $secondLevel",
+                        parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv));
+
+                while(result.hasNext()){
                     Record r = result.next();
-                    User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
-                            "","","","",-1, new ArrayList<>(), 0);
-
-                    popularUser.add(new Pair<>(snap, r.get("numFollower").asInt()));
+                    ReadingList snap = new ReadingList(r.get("Title").asString(), new ArrayList<>());
+                    readingListsSnap.add(new Pair<>(r.get("Owner").asString(), snap));
                 }
-                return popularUser;
-            });
-        }
-        return rank;
-    }
 
+                return null;
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return readingListsSnap;
+    }
 }
