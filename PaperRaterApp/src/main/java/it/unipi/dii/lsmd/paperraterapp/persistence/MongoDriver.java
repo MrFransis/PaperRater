@@ -13,13 +13,12 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 /**
- * This class is used to communicate with MongoDB
+ * Singleton class used to connect to MongoDB
  */
 public class MongoDriver {
     private static MongoDriver instance;
 
     private MongoClient client = null;
-    private MongoDatabase database = null;
     private CodecRegistry pojoCodecRegistry;
     public String mongoFirstIp;
     public int mongoFirstPort;
@@ -28,8 +27,6 @@ public class MongoDriver {
     public String mongoThirdIp;
     public int mongoThirdPort;
     public String mongodbName;
-
-
 
     private MongoDriver(Properties configurationParameters){
         this.mongoFirstIp = configurationParameters.getProperty("mongoFirstIp");
@@ -49,7 +46,7 @@ public class MongoDriver {
     }
 
     /**
-     * Method that inits the MongoClient and choose the correct database
+     * Method that connects to mongoDB and returns the MongoClient instance
      */
     public MongoClient openConnection() {
         if (client != null)
@@ -71,8 +68,6 @@ public class MongoDriver {
                     .build();
 
             client = MongoClients.create(clientSettings);
-
-            database = client.getDatabase("PaperRater");
 
             System.out.println("Connected to MongoDB ...");
             return client;

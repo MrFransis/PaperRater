@@ -185,7 +185,8 @@ public class PaperPageController implements Initializable {
 
     private void clickOnAddCommentBtn (MouseEvent mouseEvent){
         if((!commentText.getText().isEmpty()) || (commentText.getText().length() <= maxLength)){
-            mongoMan.addComment(paper, commentText.getText(), user.getUsername());
+            Comment comment = new Comment(user.getUsername(), commentText.getText(), new Date());
+            mongoMan.addComment(paper, comment);
             paper = mongoMan.getPaperById(paper);
             neoMan.hasCommented(user.getUsername(), paper);
             setCommentBox();

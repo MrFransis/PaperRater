@@ -39,17 +39,14 @@ import static com.mongodb.client.model.Indexes.ascending;
 import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Sorts.descending;
 
-
+/**
+ * MongoDB Queries Managers
+ */
 public class MongoDBManager {
     public MongoDatabase db;
     private MongoCollection usersCollection;
     private MongoCollection papersCollection;
 
-
-    /**
-     *
-     * @param client MongoDBClient
-     */
     public MongoDBManager(MongoClient client) {
         this.db = client.getDatabase("PaperRater");
         usersCollection = db.getCollection("Users");
@@ -57,36 +54,10 @@ public class MongoDBManager {
     }
 
     /**
-     * Return users the contains the keyword, if we give a list of user
-     * the research is added only inside this sublist
-     * @param next select the portion of result
-     * @param keyword keyword to search users
-     * @return list of users
-     */
-    public List<User> getUsersByKeyword (String keyword, boolean moderator, int next) {
-        List<User> results = new ArrayList<>();
-        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
-        Consumer<Document> convertInUser = doc -> {
-            User user = gson.fromJson(gson.toJson(doc), User.class);
-            results.add(user);
-        };
-        Pattern pattern= Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
-        Bson filter = Aggregates.match(Filters.regex("username", pattern));
-        Bson limit = limit(8);
-        Bson skip = skip(next*8);
-        if (moderator) {
-            Bson moderatorFilter = match(eq("type", 1));
-            usersCollection.aggregate(Arrays.asList(filter, moderatorFilter, skip, limit)).forEach(convertInUser);
-        } else
-            usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
-        return results;
-    }
-
-    /**
-     *
-     * @param username
+     * Method used to perform the login
+     * @param username User that is logging in
      * @param password
-     * @return
+     * @return User informations related to the username
      */
     public User login (String username, String password) {
         Document result = (Document) usersCollection.find(Filters.and(eq("username", username),
@@ -149,7 +120,7 @@ public class MongoDBManager {
     /**
      * Edit an already present user
      * @param u the new user information to replace the old one
-     * @return  true if operation is successfully executed, false otherwise
+     * @return true if operation is successfully executed, false otherwise
      */
     public boolean updateUser (User u){
         try {
@@ -177,7 +148,7 @@ public class MongoDBManager {
     }
 
     /**
-     * Search a user by his username
+     * Method that searches a user by his username
      * @param username username of the user
      * @return User
      */
@@ -193,57 +164,20 @@ public class MongoDBManager {
     }
 
     /**
-     * Add a new paper in MongoDB
-     * @param p The object Paper which contains all the necessary information about it
-     * @return  true if operation is successfully executed, false otherwise
-     */
-    public boolean addPaper (Paper p) {
-        try {
-            Document doc = new Document();
-            //Data conversion to string
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            String format = formatter.format(p.getPublished());
-
-            //Check paper source
-            if(!p.getArxivId().isEmpty())
-                doc.append("arxiv_id", p.getArxivId()).append("vixra_id", Float.NaN);
-            else
-                doc.append("arxiv_id", Float.NaN).append("vixra_id", p.getVixraId());
-
-            doc.append("_title", p.getTitle())
-                    .append("_abstract", p.getAbstract())
-                    .append("category", p.getCategory())
-                    .append("authors", p.getAuthors())
-                    .append("published", format)
-                    //No comment on insert
-                    .append("comments", null);
-
-            papersCollection.insertOne(doc);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            System.err.println("Error in adding a new paper");
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Add a new comment
+     * Method that adds a comment to a paper
      * @param paper Paper Object
-     * @param text text of the comment
-     * @return  true if operation is successfully executed, false otherwise
+     * @param comment text of the comment
+     * @return true if operation is successfully executed, false otherwise
      */
-    public boolean addComment (Paper paper, String text, String user) {
+    public boolean addComment (Paper paper, Comment comment) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Document comment = new Document("username", user)
-                    .append("text",text)
-                    .append("timestamp",dateFormat.format(new Date()));
+            Document doc = new Document("username", comment.getUsername())
+                    .append("text", comment.getText())
+                    .append("timestamp", dateFormat.format(comment.getTimestamp()));
 
             Bson find = and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()));
-            Bson update = Updates.addToSet("comments", comment);
+            Bson update = Updates.addToSet("comments", doc);
             papersCollection.updateOne(find, update);
             return true;
         }
@@ -256,16 +190,15 @@ public class MongoDBManager {
     }
 
     /**
-     * Add a new comment
+     * Method that returns the number of comment made by an user
      * @param paper Paper object
-     * @param user username
+     * @param user User object
      * @return  true if operation is successfully executed, false otherwise
      */
-
-    public int numUserComments (Paper paper, String user) {
+    public int numUserComments (Paper paper, User user) {
         Bson match = match(and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId())));
         Bson unwind = unwind("$comments");
-        Bson match2 = match(eq("comments.username", user));
+        Bson match2 = match(eq("comments.username", user.getUsername()));
         Bson group = group("comments.username",
                 sum("sum", 1));
 
@@ -279,10 +212,10 @@ public class MongoDBManager {
     }
 
     /**
-     * Update the list of comments of a paper
-     * @param p
-     * @param comments
-     * @return  true if operation is successfully executed, false otherwise
+     * Method that updates the list of comments of a paper
+     * @param p Paper Object
+     * @param comments List of the comments
+     * @return true if operation is successfully executed, false otherwise
      */
     public boolean updateComments(Paper p, List<Comment> comments){
         try{
@@ -303,9 +236,9 @@ public class MongoDBManager {
     }
 
     /**
-     * Update an existing comment
-     * @param paper
-     * @param comment
+     * Method that updates an existing comment
+     * @param paper Paper Object
+     * @param comment comment
      */
     public void updateComment(Paper paper, Comment comment){
         List<Comment> comments = paper.getComments();
@@ -323,9 +256,9 @@ public class MongoDBManager {
     }
 
     /**
-     * Add a new comment
-     * @param paper
-     * @param comment
+     * Method that deletes a comment
+     * @param paper Paper Object
+     * @param comment Comment Object
      */
     public void deleteComment (Paper paper, Comment comment) {
         List<Comment> comments = paper.getComments();
@@ -340,27 +273,6 @@ public class MongoDBManager {
         }
         comments.remove(d);
         updateComments(paper, comments);
-    }
-
-    /**
-     * Function that deletes the paper from the database
-     * @param p Paper to delete
-     * @return true if operation is successfully executed, false otherwise
-     */
-    public boolean deletePaper (Paper p) {
-        try {
-            if(!p.getArxivId().isEmpty())
-                papersCollection.deleteOne(eq("arxiv_id", p.getArxivId()));
-            else
-                papersCollection.deleteOne(eq("vixra_id", p.getVixraId()));
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            System.err.println("Error in delete paper");
-            return false;
-        }
     }
 
     /**
@@ -385,13 +297,13 @@ public class MongoDBManager {
     }
 
     /**
-     *
-     * @param title
+     * Method that searches papers given some parameters.
+     * @param title partial title of the papers to match
      * @param author
      * @param start_date
      * @param end_date
      * @param category
-     * @return
+     * @return a list of papers that match the parameters
      */
     public List<Paper> searchPapersByParameters (String title, String author, String start_date,
                                                  String end_date, String category, int skip, int limit) {
@@ -434,97 +346,14 @@ public class MongoDBManager {
     }
 
     /**
-     * Function that return the list of papers that partially match a title
-     * @param title title of the papers
-     * @return The list of papers
-     */
-    public List<Paper> searchPapersByTitle(String title) {
-        List<Paper> papers = new ArrayList<>();
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
-        Pattern pattern = Pattern.compile("^.*" + title + ".*$", Pattern.CASE_INSENSITIVE);
-        Bson match = Aggregates.match(Filters.regex("title", pattern));
-        Bson sort = sort(descending("published"));
-
-        /*
-        Bson limit = limit(10);
-        Bson skip = skip();
-         */
-
-        List<Document> results = (List<Document>) papersCollection.aggregate(Arrays.asList(match, sort))
-                .into(new ArrayList<>());
-        Type papersListType = new TypeToken<ArrayList<Paper>>(){}.getType();
-        papers = gson.fromJson(gson.toJson(results), papersListType);
-        return papers;
-    }
-
-    /**
-     * Function that retrieves all the papers published by an author
-     * @param author name of the author
-     * @return list of Papers
-     */
-    public List<Paper> searchPaperByAuthor(String author) {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").serializeSpecialFloatingPointValues().create();
-        List<Paper> results = new ArrayList<>();
-        Consumer<Document> transformDocument = doc -> {
-            Paper paper = gson.fromJson(gson.toJson(doc), Paper.class);
-            results.add(paper);
-        };
-        papersCollection.find(eq("authors", author)).forEach(transformDocument);
-        return results;
-    }
-
-    /**
-     * Return all the papers between a given time interval
-     * @param start_date start date
-     * @param end_date end date
-     * @return the list of Papers
-     */
-    public List<Paper> searchPapersByPublicationDate (String start_date, String end_date) {
-        List<Paper> papers = new ArrayList<>();
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
-
-        Bson match = match(and(
-                Filters.gte("published", start_date),
-                Filters.lte("published", end_date)));
-        Bson sort = sort(descending("published"));
-
-        /*
-        Bson limit = limit(10);
-        Bson skip = skip();
-         */
-
-        List<Document> results = (List<Document>) papersCollection.aggregate(Arrays.asList(match, sort))
-                .into(new ArrayList<>());
-        Type papersListType = new TypeToken<ArrayList<Paper>>(){}.getType();
-        papers = gson.fromJson(gson.toJson(results), papersListType);
-        return papers;
-    }
-
-    /**
-     * Function that return the list of papers related to a category
-     * @param category Category of the papers
-     * @return The list of papers
-     */
-    public List<Paper> searchPapersByCategory(String category){
-
-        List<Paper> papers = new ArrayList<>();
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
-        List<Document> results = (List<Document>) papersCollection.find(eq("category", category))
-                .into(new ArrayList<>());
-        Type paperListType = new TypeToken<ArrayList<Paper>>(){}.getType();
-        papers = gson.fromJson(gson.toJson(results), paperListType);
-        return papers;
-    }
-
-    /**
-     * Add a new empty reading list called "title" list at the user identify by username
-     * @param username username of the user
+     * Add a new empty reading list at the user identified by username
+     * @param user User Object
      * @param title title of the new reading list
      * @return true if it adds the reading list, otherwise it returns false
      */
-    public boolean createReadingList(String username, String title) {
+    public boolean createReadingList(User user, String title) {
         // check if there are other list with the same name
-        Document document = (Document) usersCollection.find(and(eq("username", username),
+        Document document = (Document) usersCollection.find(and(eq("username", user.getUsername()),
                 eq("readingLists.title", title))).first();
         if (document != null) {
             System.err.println("ERROR: name already in use.");
@@ -535,13 +364,12 @@ public class MongoDBManager {
                 .append("papers", Arrays.asList());
         // insert the new reading_list
         usersCollection.updateOne(
-                eq("username", username),
+                eq("username", user.getUsername()),
                 new Document().append(
                         "$push",
                         new Document("readingLists", readingList)
                 )
         );
-        System.out.println("Reading list " + title + " has been added");
         return true;
     }
 
@@ -568,6 +396,7 @@ public class MongoDBManager {
     /**
      * Method that adds a Paper to a ReadingList
      * @param user owner of the ReadingList
+     * @param title title of the Reading List
      * @param p Paper
      * @return true if the operation is successfully executed, false otherwise
      */
@@ -710,30 +539,30 @@ public class MongoDBManager {
     }
 
     /**
-     * Function that returns the most common category in a Reading List
-     * @param user Reading List to process
-     * @return the name of the category
+     * Return users the contains the keyword, if we give a list of user
+     * the research is added only inside this sublist
+     * @param next select the portion of result
+     * @param keyword keyword to search users
+     * @return list of users
      */
-    public String getMostCommonCategoryInReadingList(String user, String title) {
-
-        Bson match1 = match(Filters.eq("username", user));
-        Bson unwind1 = unwind("$reading_lists");
-        Bson match2 = match(Filters.eq("reading_lists.title", title));
-        Bson unwind2 = unwind("$reading_lists.papers");
-        Bson group = group("$reading_lists.papers.category",
-                sum("nPapers", 1));
-        Bson sort = sort(descending("nPapers"));
-        Bson project = project(fields(computed("category", "$_id"),
-                excludeId(), include("nPapers")));
-
-        Document doc = (Document) usersCollection.aggregate(
-                Arrays.asList(match1, unwind1, match2, unwind2, group, sort, project)).first();
-
-        String mostCommonCategory = doc.getString("category");
-
-        return mostCommonCategory;
+    public List<User> getUsersByKeyword (String keyword, boolean moderator, int next) {
+        List<User> results = new ArrayList<>();
+        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        Consumer<Document> convertInUser = doc -> {
+            User user = gson.fromJson(gson.toJson(doc), User.class);
+            results.add(user);
+        };
+        Pattern pattern= Pattern.compile("^.*" + keyword + ".*$", Pattern.CASE_INSENSITIVE);
+        Bson filter = Aggregates.match(Filters.regex("username", pattern));
+        Bson limit = limit(8);
+        Bson skip = skip(next*8);
+        if (moderator) {
+            Bson moderatorFilter = match(eq("type", 1));
+            usersCollection.aggregate(Arrays.asList(filter, moderatorFilter, skip, limit)).forEach(convertInUser);
+        } else
+            usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
+        return results;
     }
-
 
     /**
      *

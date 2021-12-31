@@ -240,7 +240,7 @@ public class ProfilePageController {
         td.showAndWait();
 
         // Add new Reading List to DB
-        boolean res = mongoMan.createReadingList(Session.getInstance().getLoggedUser().getUsername(), td.getEditor().getText());
+        boolean res = mongoMan.createReadingList(Session.getInstance().getLoggedUser(), td.getEditor().getText());
         neoMan.createReadingList(Session.getInstance().getLoggedUser().getUsername(), td.getEditor().getText());
 
         if (!res) {
