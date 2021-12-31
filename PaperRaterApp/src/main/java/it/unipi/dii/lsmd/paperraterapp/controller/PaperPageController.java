@@ -108,7 +108,7 @@ public class PaperPageController implements Initializable {
     private Pane loadCommentCard (Comment c, Paper p) {
         Pane pane = null;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/comment_card.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/commentcard.fxml"));
             pane = loader.load();
             CommentCtrl ctrl = loader.getController();
             ctrl.textProperty().bindBidirectional(comNum.textProperty());
