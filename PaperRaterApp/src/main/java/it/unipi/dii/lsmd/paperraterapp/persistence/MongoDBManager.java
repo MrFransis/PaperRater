@@ -38,6 +38,7 @@ import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Indexes.ascending;
 import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Sorts.descending;
+import static com.mongodb.client.model.Updates.inc;
 
 /**
  * MongoDB Queries Managers
@@ -272,7 +273,12 @@ public class MongoDBManager {
             n++;
         }
         comments.remove(d);
+        incrementDeletedCommentsCounter(comment.getUsername());
         updateComments(paper, comments);
+    }
+
+    public void incrementDeletedCommentsCounter(String username) {
+        usersCollection.updateOne(eq("username", username), inc("deletedComments", 1));
     }
 
     /**
@@ -565,6 +571,23 @@ public class MongoDBManager {
     }
 
     /**
+     * Method that returns a list of users whose comments have been deleted at least one time.
+     * It is used by admins to to ban users who have not respected application's policy.
+     *
+     * @return List of Users
+     */
+    public List<User> getBadUsers() {
+        List<User> results = new ArrayList<>();
+        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        Consumer<Document> convertInUser = doc -> {
+            User user = gson.fromJson(gson.toJson(doc), User.class);
+            results.add(user);
+        };
+        usersCollection.find(gte("deletedComments", 5)).forEach(convertInUser);
+        return results;
+    }
+
+    /**
      *
      * @return
      */
@@ -596,7 +619,7 @@ public class MongoDBManager {
 
     /*Weekly/Monthly/All time summary of the categories by number of papers Published */
     /**
-     * Function that return the top categories by the number of papaer published
+     * Function that return the top categories by the number of papers published
      * @param start initial date
      * @param finish final date
      * @param number number of results to show
@@ -630,10 +653,10 @@ public class MongoDBManager {
     {
         List<String> mostCommonCategories = new ArrayList<>();
 
-        Bson unwind1 = unwind("$reading_lists");
-        Bson unwind2 = unwind("$reading_lists.papers");
+        Bson unwind1 = unwind("$readingLists");
+        Bson unwind2 = unwind("$readingLists.papers");
         Bson groupMultiple = new Document("$group",
-                new Document("_id", new Document("username", "$username").append("category", "$reading_lists.papers.category")));
+                new Document("_id", new Document("username", "$username").append("category", "$readingLists.papers.category")));
         Bson group = group("$_id.username", sum("totalCategory", 1));
         Bson project = project(fields(excludeId(), computed("username", "$_id"), include("totalCategory")));
         Bson sort = sort(descending("totalCategory"));
@@ -646,8 +669,6 @@ public class MongoDBManager {
         }
         return mostCommonCategories;
     }
-
-
 
     /**
      * Braws all comments that has been written "numDays" ago

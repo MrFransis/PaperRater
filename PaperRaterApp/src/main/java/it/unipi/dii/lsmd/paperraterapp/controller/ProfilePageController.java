@@ -234,6 +234,12 @@ public class ProfilePageController {
     }
 
     private void clickOnAddReadingListBtn(MouseEvent mouseEvent) {
+        if (user.getReadingLists().size() >= 10) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("You have too many Reading Lists");
+            alert.show();
+            return;
+        }
         TextInputDialog td = new TextInputDialog("r_list" +
                 (Session.getInstance().getLoggedUser().getReadingLists().size() + 1));
         td.setHeaderText("Insert the title of the Reading List");

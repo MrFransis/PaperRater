@@ -155,6 +155,20 @@ public class PaperPageController implements Initializable {
 
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()){
+
+                // Check if selected Reading List does not exceed limit
+                for (int i=0; i<Session.getInstance().getLoggedUser().getReadingLists().size(); i++) {
+                    ReadingList tmp = Session.getInstance().getLoggedUser().getReadingLists().get(i);
+                    if (tmp.getPapers().size() > 100) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Information Dialog");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Too many papers in selected Reading List");
+                        alert.showAndWait();
+                        return;
+                    }
+                }
+
                 UpdateResult res = mongoMan.addPaperToReadingList(Session.getInstance().getLoggedUser().getUsername(), result.get(), paper);
                 if(res.getModifiedCount() == 0){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -196,7 +210,7 @@ public class PaperPageController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information Dialog");
             alert.setHeaderText(null);
-            alert.setContentText("Inser a commnet!");
+            alert.setContentText("Insert a commnet!");
             alert.showAndWait();
         }
     }
