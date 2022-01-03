@@ -2,13 +2,16 @@ package it.unipi.dii.lsmd.paperraterapp.persistence;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ReadPreference;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+
 import java.util.Properties;
+
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
@@ -20,6 +23,8 @@ public class MongoDriver {
 
     private MongoClient client = null;
     private CodecRegistry pojoCodecRegistry;
+    public String mongoUsername;
+    public String mongoPassword;
     public String mongoFirstIp;
     public int mongoFirstPort;
     public String mongoSecondIp;
@@ -29,6 +34,8 @@ public class MongoDriver {
     public String mongodbName;
 
     private MongoDriver(Properties configurationParameters){
+        this.mongoUsername = configurationParameters.getProperty("mongoUsername");
+        this.mongoPassword = configurationParameters.getProperty("mongoPassword");
         this.mongoFirstIp = configurationParameters.getProperty("mongoFirstIp");
         this.mongoFirstPort = Integer.parseInt(configurationParameters.getProperty("mongoFirstPort"));
         this.mongoSecondIp = configurationParameters.getProperty("mongoSecondIp");
@@ -54,9 +61,8 @@ public class MongoDriver {
 
         try
         {
-            //String string = "mongodb://172.16.4.66:27020,172.16.4.67:27020,172.16.4.66:27020";
             String string = "mongodb://";
-            string += mongoFirstIp + ":" + mongoFirstPort;
+            string += mongoUsername + ":" + mongoPassword + "@" + mongoFirstIp + ":" + mongoFirstPort + "," + mongoSecondIp + ":" + mongoSecondPort + "," + mongoThirdIp + ":" + mongoThirdPort;
             ConnectionString connectionString = new ConnectionString(string);
 
             pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
@@ -64,6 +70,9 @@ public class MongoDriver {
 
             MongoClientSettings clientSettings = MongoClientSettings.builder()
                     .applyConnectionString(connectionString)
+                    .readPreference(ReadPreference.secondaryPreferred())
+                    .retryWrites(true)
+                    .writeConcern(WriteConcern.W3)
                     .codecRegistry(pojoCodecRegistry)
                     .build();
 
