@@ -637,7 +637,7 @@ public class Neo4jManager {
      * @param numberSecondLv how many papers suggest from second level
      * @return A list of suggested papers snapshots
      */
-    public List<Paper> getSnapsOfSuggestedPapers(User u, int numberFirstLv, int numberSecondLv) {
+    public List<Paper> getSnapsOfSuggestedPapers(User u, int numberFirstLv, int numberSecondLv, int skipFirstLv, int skipSecondLv) {
         List<Paper> papersSnap = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
@@ -646,6 +646,7 @@ public class Neo4jManager {
                                 "RETURN target.arxiv_id AS ArxivId, target.vixra_id AS VixraId, target.title as Title, " +
                                 "target.category AS Category, target.authors AS Authors, COUNT(*) AS nOccurences " +
                                 "ORDER BY nOccurences DESC " +
+                                "SKIP $skipFirstLevel " +
                                 "LIMIT $firstlevel " +
                                 "UNION " +
                                 "MATCH (target:Paper)<-[r:LIKES]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}) " +
@@ -653,8 +654,9 @@ public class Neo4jManager {
                                 "RETURN target.arxiv_id AS ArxivId, target.vixra_id AS VixraId, target.title as Title, " +
                                 "target.category AS Category, target.authors AS Authors, COUNT(*) AS nOccurences " +
                                 "ORDER BY nOccurences DESC " +
+                                "SKIP $skipSecondLevel " +
                                 "LIMIT $secondLevel",
-                        parameters("username", u.getUsername(), "firstlevel", numberFirstLv, "secondLevel", numberSecondLv));
+                        parameters("username", u.getUsername(), "firstlevel", numberFirstLv, "secondLevel", numberSecondLv, "skipFirstLevel", skipFirstLv, "skipSecondLevel", skipSecondLv));
                 while(result.hasNext()){
                     Record r = result.next();
                     List<String> authors = new ArrayList<>();
@@ -693,7 +695,7 @@ public class Neo4jManager {
      * @param numberSecondLv how many users suggest from second level
      * @return A list of suggested users snapshots
      */
-    public List<User> getSnapsOfSuggestedUsers(User u, int numberFirstLv, int numberSecondLv) {
+    public List<User> getSnapsOfSuggestedUsers(User u, int numberFirstLv, int numberSecondLv, int skipFirstLv, int skipSecondLv) {
         List<User> usersSnap = new ArrayList<>();
 
         try (Session session = driver.session()) {
@@ -704,6 +706,7 @@ public class Neo4jManager {
                                 "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
                                 "COUNT(DISTINCT r) as numFollower " +
                                 "ORDER BY numFollower DESC " +
+                                "SKIP $skipFirstLevel " +
                                 "LIMIT $firstLevel " +
                                 "UNION " +
                                 "MATCH (me:User {username: $username})-[:LIKES]->()<-[:LIKES]-(target:User), " +
@@ -712,8 +715,9 @@ public class Neo4jManager {
                                 "RETURN target.username AS Username, target.email AS Email, " +
                                 "COUNT(DISTINCT r) as numFollower " +
                                 "ORDER BY numFollower DESC " +
+                                "SKIP $skipSecondLevel " +
                                 "LIMIT $secondLevel",
-                        parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv));
+                        parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv,  "skipFirstLevel", skipFirstLv, "skipSecondLevel", skipSecondLv));
                 while (result.hasNext()) {
                     Record r = result.next();
                     User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
@@ -739,7 +743,7 @@ public class Neo4jManager {
      * @param numberSecondLv how many readingLists suggest from second level
      * @return A list of suggested reading lists snapshots
      */
-    public List<Pair<String, ReadingList>> getSnapsOfSuggestedReadingLists(User u, int numberFirstLv, int numberSecondLv){
+    public List<Pair<String, ReadingList>> getSnapsOfSuggestedReadingLists(User u, int numberFirstLv, int numberSecondLv, int skipFirstLv, int skipSecondLv){
         List<Pair<String, ReadingList>> readingListsSnap = new ArrayList<>();
         try(Session session = driver.session()){
             session.readTransaction(tx -> {
@@ -749,6 +753,7 @@ public class Neo4jManager {
                                 "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target)) " +
                                 "RETURN target.owner AS Owner, target.title AS Title, numFollower + follow AS followers " +
                                 "ORDER BY followers DESC " +
+                                "SKIP $skipFirstLevel " +
                                 "LIMIT $firstLevel " +
                                 "UNION " +
                                 "MATCH (target:ReadingList)<-[f:FOLLOWS]-(u:User)<-[:FOLLOWS*2..2]-(me:User{username:$username}), " +
@@ -757,8 +762,9 @@ public class Neo4jManager {
                                 "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target))" +
                                 "RETURN target.owner AS Owner, target.title AS Title, numFollower + follow AS followers " +
                                 "ORDER BY followers DESC " +
+                                "SKIP $skipSecondLevel " +
                                 "LIMIT $secondLevel",
-                        parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv));
+                        parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv, "skipFirstLevel", skipFirstLv, "skipSecondLevel", skipSecondLv));
 
                 while(result.hasNext()){
                     Record r = result.next();
