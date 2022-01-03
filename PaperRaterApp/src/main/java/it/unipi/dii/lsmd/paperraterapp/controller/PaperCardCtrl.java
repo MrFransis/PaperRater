@@ -75,6 +75,10 @@ public class PaperCardCtrl {
     private void clickOnPaperTitle (MouseEvent mouseEvent) {
         PaperPageController ctrl = (PaperPageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/paperpage.fxml", mouseEvent);
+
+        // If paper object is a snapshot, load the complete paper object
+        if (p.getAbstract() == null)
+            p = mongoMan.getPaperById(p);
         ctrl.setPaperPage(p);
     }
 

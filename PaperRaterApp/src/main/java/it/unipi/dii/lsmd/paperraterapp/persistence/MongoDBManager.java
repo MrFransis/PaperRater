@@ -303,7 +303,7 @@ public class MongoDBManager {
     }
 
     /**
-     * Method that searches papers given some parameters.
+     * Method that searches papers given parameters.
      * @param title partial title of the papers to match
      * @param author
      * @param start_date
@@ -448,65 +448,16 @@ public class MongoDBManager {
     }
 
     /**
-     * Returns all the Reading Lists in the database MongoDB
-     * @return The list of the Reading List
-     */
-    public List<ReadingList> showReadingList() {
-        List<ReadingList> readingLists = new ArrayList<>();
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        Bson unwind = unwind("$reading_lists");
-        Bson project = project(fields(excludeId(), computed("ReadingList", "$reading_lists")));
-
-        MongoCursor<Document> iterator = (MongoCursor<Document>)
-                usersCollection.aggregate(Arrays.asList(unwind, project)).iterator();
-
-        Type readingListType = new TypeToken<ArrayList<ReadingList>>(){}.getType();
-        while (iterator.hasNext())
-        {
-            Document document = iterator.next();
-            Document ReadingListDocument = (Document) document.get("ReadingList");
-            ReadingList readingList = gson.fromJson(gson.toJson(ReadingListDocument), ReadingList.class);
-            readingLists.add(readingList);
-        }
-
-        return readingLists;
-    }
-
-    /**
-     * Function that return the ReadingLists given the user
-     * @param username Username of the user
-     * @return  The list of reading lists
-     */
-    public List<ReadingList> getReadingListByUser (String username){
-        List<ReadingList> readingLists = new ArrayList<>();
-        Gson gson = new GsonBuilder().serializeNulls().create();
-
-        Bson match = match(eq("username", username));
-        Bson unwind = unwind("$reading_lists");
-        Bson project = project(fields(excludeId() ,computed("ReadingList", "$reading_lists")));
-        MongoCursor<Document> iterator = (MongoCursor<Document>) usersCollection.aggregate(Arrays.asList(match, unwind, project)).iterator();
-        while (iterator.hasNext())
-        {
-            Document document = iterator.next();
-            Document ReadingListDocument = (Document) document.get("ReadingList");
-            ReadingList readingList = gson.fromJson(gson.toJson(ReadingListDocument), ReadingList.class);
-            readingLists.add(readingList);
-        }
-
-        return readingLists;
-    }
-
-    /**
-     * Function that return the ReadingLists given the user and the name
-     * @param username Username of the user
+     * Method that returns the Reading List given the user and the title
+     * @param owner Username of the user
      * @param title Name of the reading list
      * @return  The list of reading lists
      */
-    public ReadingList getReadingList (String username, String title) {
+    public ReadingList getReadingList(String owner, String title) {
         ReadingList readingList = null;
         Gson gson = new GsonBuilder().serializeNulls().create();
 
-        Bson match = match(eq("username", username));
+        Bson match = match(eq("username", owner));
         Bson unwind = unwind("$readingLists");
         Bson match2 = match(eq("readingLists.title", title));
         Bson project = project(fields(excludeId(), computed("ReadingList", "$readingLists")));
@@ -524,7 +475,7 @@ public class MongoDBManager {
      * @param keyword part of the title
      * @return  The list of reading lists and its owner
      */
-    public List<Pair<String, ReadingList>> getReadingListByKeywords (String keyword, int skipDoc, int limitDoc) {
+    public List<Pair<String, ReadingList>> getReadingListByKeyword (String keyword, int skipDoc, int limitDoc) {
         List<Pair<String, ReadingList>> readingLists = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeNulls().create();
         Bson unwind = unwind("$readingLists");
@@ -583,12 +534,12 @@ public class MongoDBManager {
             User user = gson.fromJson(gson.toJson(doc), User.class);
             results.add(user);
         };
-        usersCollection.find(gte("deletedComments", 5)).forEach(convertInUser);
+        usersCollection.find(gte("deletedComments", 1)).forEach(convertInUser);
         return results;
     }
 
     /**
-     *
+     * ???????????
      * @return
      */
     public List<Pair<String, Integer>> getCategoriesSummaryByLikes(/*String option*/) {
@@ -644,14 +595,18 @@ public class MongoDBManager {
     }
 
     /*Users with the highest number of categories in their reading lists  */
-    /**
-     * Function that return a list of User with the highest number of reading lists
+    /** TO FIX
+     * Function that return a list of User with the highest number of categories reading lists
      * @param number First "number" users
      * @return  The list of users
      */
-    public List<String> searchUsersWithHighestNumberOfCategories (int number)
-    {
-        List<String> mostCommonCategories = new ArrayList<>();
+    public List<User> getTopVersatileUsers (int number) {
+        List<User> results = new ArrayList<>();
+        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        Consumer<Document> convertInUser = doc -> {
+            User user = gson.fromJson(gson.toJson(doc), User.class);
+            results.add(user);
+        };
 
         Bson unwind1 = unwind("$readingLists");
         Bson unwind2 = unwind("$readingLists.papers");
@@ -662,12 +617,9 @@ public class MongoDBManager {
         Bson sort = sort(descending("totalCategory"));
         Bson limit = limit(number);
 
-        List<Document> results = (List<Document>) usersCollection.aggregate(Arrays.asList(unwind1, unwind2, groupMultiple, group, project, sort, limit)).into(new ArrayList<>());
-        for (Document document: results)
-        {
-            mostCommonCategories.add(document.getString("username"));
-        }
-        return mostCommonCategories;
+        usersCollection.aggregate(Arrays.asList(unwind1, unwind2, groupMultiple, group, project, sort, limit)).forEach(convertInUser);
+
+        return results;
     }
 
     /**
@@ -748,12 +700,46 @@ public class MongoDBManager {
     }
 
     /**
-     * Browse the top papers with more comments
+     * Method that returns users that with the highest number of comments in the specified period of time.
      * @param period (all, month, week)
      * @param top (positive integer)
      * @return HashMap with the title and the number of comments
      */
-    public List<Pair<String, Integer>> summaryPapersByComments(String period, int top) {
+    public List<Pair<String, Integer>> getUsersSummaryByComments(String period, int top) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDateTime startOfDay;
+        switch (period) {
+            case "all" -> startOfDay = LocalDateTime.MIN;
+            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
+            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
+            default -> {
+                System.err.println("ERROR: Wrong period.");
+                return null;
+            }
+        }
+        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        List<Pair<String, Integer>> results = new ArrayList<>();
+        Consumer<Document> rankPapers = doc ->
+                results.add(new Pair<>((String) doc.get("_id"), (Integer) doc.get("tots")));
+
+        Bson unwind = unwind("$comments");
+        Bson filter = match(gte("comments.timestamp", filterDate));
+        Bson group = group("$username", sum("tots", 1));
+        Bson sort = sort(Indexes.descending("tots"));
+        Bson limit = limit(top);
+        papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort, limit)).forEach(rankPapers);
+
+        return results;
+    }
+
+    /**
+     * Method that returns papers with the highest number of comments in the specified period of time.
+     * @param period (all, month, week)
+     * @param l (positive integer)
+     * @return HashMap with the title and the number of comments
+     */
+    public List<Pair<String, Integer>> getPapersSummaryByComments(String period, int l) {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
@@ -775,7 +761,7 @@ public class MongoDBManager {
         Bson filter = match(gte("comments.timestamp", filterDate));
         Bson group = group("$title", sum("tots", 1));
         Bson sort = sort(Indexes.descending("tots"));
-        Bson limit = limit(top);
+        Bson limit = limit(l);
         papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort, limit)).forEach(rankPapers);
 
         return results;

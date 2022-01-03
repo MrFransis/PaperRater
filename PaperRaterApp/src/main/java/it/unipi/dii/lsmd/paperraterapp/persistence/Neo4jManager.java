@@ -7,6 +7,8 @@ import javafx.util.Pair;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -520,23 +522,35 @@ public class Neo4jManager {
         return readingListsSnap;
     }
 
-    //Most liked Papers
     /**
-     * This function return the most liked papers
-     * @param number Number or results
+     * Method that returns papers with the highest number of likes in the specified period of time.
+     * @param limit
      * @return List of Papers
      */
-    public List<Pair<Paper, Integer>> getSnapsOfMostLikedPapers (int number)
-    {
-        List<Pair<Paper, Integer>> topPapers = new ArrayList<>();
+    public List<Paper> getPaperSummaryByLikes(String period, int limit) {
+        List<Paper> topPapers = new ArrayList<>();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDateTime startOfDay;
+        switch (period) {
+            case "all" -> startOfDay = LocalDateTime.MIN;
+            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
+            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
+            default -> {
+                System.err.println("ERROR: Wrong period.");
+                return null;
+            }
+        }
+        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         try(Session session = driver.session()) {
             session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (:User)-[l:LIKES]->(p:Paper) " +
+                                "WHERE p.published >= $start_date " +
                                 "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title AS Title, " +
                                 "p.category AS Category, p.authors AS Authors, " +
                                 "COUNT(l) AS like_count ORDER BY like_count DESC " +
                                 "LIMIT $limit",
-                        parameters( "limit", number));
+                        parameters( "start_date", filterDate,"limit", limit));
 
                 while(result.hasNext()){
                     Record r = result.next();
@@ -552,7 +566,7 @@ public class Neo4jManager {
                                             r.get("Category").asString(),
                                             authors, null, new ArrayList<>());
 
-                    topPapers.add(new Pair<>(snap, r.get("like_count").asInt()));
+                    topPapers.add(snap);
                 }
                 return null;
             });
@@ -603,21 +617,21 @@ public class Neo4jManager {
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public List<Pair<User, Integer>> getSnapsOfMostPopularUsers (final int num) {
-        List<Pair<User, Integer>> rank;
+    public List<User> getSnapsOfMostFollowedUsers (final int num) {
+        List<User> rank;
         try (Session session = driver.session()) {
-            rank = session.readTransaction((TransactionWork<List<Pair<User, Integer>>>) tx -> {
+            rank = session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
                                 "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
                                 "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("num", num));
-                List<Pair<User, Integer>> popularUser = new ArrayList<>();
+                List<User> popularUser = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
                     User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
                             "","","","",-1, new ArrayList<>(), 0);
 
-                    popularUser.add(new Pair<>(snap, r.get("numFollower").asInt()));
+                    popularUser.add(snap);
                 }
                 return popularUser;
             });

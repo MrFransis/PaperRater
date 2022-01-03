@@ -59,9 +59,10 @@ class App(cmd.Cmd):
 
         for index, row in papers_df.iterrows():
             query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id, title: $title, category: $category,"
-                     " authors: $authors}) ")
+                     " authors: $authors, published: $published}) ")
             session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id'],
-                                                        title=row['title'],category=row['category'], authors=row['authors']))
+                                                        title=row['title'],category=row['category'], authors=row['authors'],
+                                                        published=row['published']))
 
         print("Added papers to databases")
 
