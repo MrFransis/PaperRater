@@ -132,6 +132,7 @@
                         <Font size="14.0" />
                     </font>
                 </Text>
+            <Button fx:id="webLink" layoutX="336.0" layoutY="78.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="102.0" styleClass="buttonlog" text="Open PDF" />
             </children>
         </AnchorPane>
     </children>
