@@ -20,7 +20,6 @@ def get_data(start_date):
     year, month, day = int(year), int(month), int(day)
     stop_date = date(year, month, day)
     curr_date = date.today()
-    curr_date = date(2020, 6, 3)
     df = pd.DataFrame(columns=('vixra_id', 'title', 'abstract', 'category', 'authors', 'published'))
 
     while curr_date >= stop_date:
