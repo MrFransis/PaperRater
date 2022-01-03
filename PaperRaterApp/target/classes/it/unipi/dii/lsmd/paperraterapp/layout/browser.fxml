@@ -42,7 +42,7 @@
                         <String fx:value="shadow" />
                      </styleClass>
                      <children>
-                        <ComboBox fx:id="chooseType" onAction="#activeResearch" prefHeight="25.0" prefWidth="169.0" promptText="Type of research" styleClass="transparent" />
+                        <ComboBox fx:id="chooseType" onAction="#switchForm" prefHeight="25.0" prefWidth="169.0" promptText="Type of research" styleClass="transparent" />
                      </children>
                      <VBox.margin>
                         <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
@@ -191,7 +191,7 @@
                               <Insets left="50.0" right="20.0" />
                            </HBox.margin>
                         </Label>
-                        <Label fx:id="logoutLabel" onMouseClicked="#goToProfilePage" styleClass="dynamic-effect" text="Logout" textAlignment="CENTER" textFill="WHITE" underline="true">
+                        <Label fx:id="logoutLabel" onMouseClicked="#logout" styleClass="dynamic-effect" text="Logout" textAlignment="CENTER" textFill="WHITE" underline="true">
                            <font>
                               <Font size="18.0" />
                            </font>

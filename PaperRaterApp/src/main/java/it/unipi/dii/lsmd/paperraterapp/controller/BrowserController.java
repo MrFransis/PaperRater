@@ -285,15 +285,19 @@ public class BrowserController implements Initializable {
             case "Suggestion" -> {
                 switch (chooseTarget.getValue()) {
                     case "Users" -> {
-                        List<User> suggestedUser = neo4jManager.getSnapsOfSuggestedUsers(user, 20, 20);
+                        List<User> suggestedUser = neo4jManager.getSnapsOfSuggestedUsers(user, 4,
+                                4, 4*page, 4*page);
                         fillUsers(suggestedUser);
                     }
                     case "Papers" -> {
-                        List<Paper> suggestedPaper = neo4jManager.getSnapsOfSuggestedPapers(user, 20, 10);
+                        List<Paper> suggestedPaper = neo4jManager.getSnapsOfSuggestedPapers(user, 2,
+                                1, 2*page, 1*page);
                         fillPapers(suggestedPaper);
                     }
                     case "Reading lists" -> {
-                        List<Pair<String, ReadingList>> suggestedReadingLists = neo4jManager.getSnapsOfSuggestedReadingLists(user, 20, 20);
+                        List<Pair<String, ReadingList>> suggestedReadingLists =
+                                neo4jManager.getSnapsOfSuggestedReadingLists(user, 2, 2,
+                                        2*page, 2*page);
                         fillReadingLists(suggestedReadingLists);
                     }
                 }
