@@ -161,7 +161,7 @@
                         </HBox>
                         <HBox fx:id="paramContainer" alignment="CENTER" layoutX="368.0" layoutY="20.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar" visible="false">
                            <children>
-                              <ComboBox fx:id="chooseTarget" onAction="#firstSelection" prefHeight="25.0" prefWidth="169.0" promptText="Select target" styleClass="transparent">
+                              <ComboBox fx:id="chooseTarget" onAction="#firstSelection" prefHeight="25.0" prefWidth="169.0" promptText="Select Target" styleClass="transparent">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -173,7 +173,7 @@
                         </HBox>
                         <HBox fx:id="timeRangeContainer" alignment="CENTER" layoutX="468.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar" visible="false">
                            <children>
-                              <ComboBox fx:id="chooseTimeRange" onAction="#secondSelection" prefHeight="25.0" prefWidth="169.0" promptText="Select time range" styleClass="transparent">
+                              <ComboBox fx:id="chooseTimeRange" onAction="#secondSelection" prefHeight="25.0" prefWidth="169.0" promptText="Select period" styleClass="transparent">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
