@@ -153,15 +153,15 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar">
                            <children>
-                              <ComboBox fx:id="chooseSuggestion" onAction="#showSuggestion" prefHeight="25.0" prefWidth="169.0" promptText="Suggestion" styleClass="transparent" />
+                              <ComboBox fx:id="chooseQuery" onAction="#showOption" prefHeight="25.0" prefWidth="169.0" promptText="Special research" styleClass="transparent" />
                            </children>
                            <HBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
                         </HBox>
-                        <HBox alignment="CENTER" layoutX="368.0" layoutY="20.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar">
+                        <HBox fx:id="paramContainer" alignment="CENTER" layoutX="368.0" layoutY="20.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar" visible="false">
                            <children>
-                              <ComboBox fx:id="chooseAnalytics" onAction="#showAnalytics" prefHeight="25.0" prefWidth="169.0" promptText="Analytics" styleClass="transparent">
+                              <ComboBox fx:id="chooseTarget" onAction="#firstSelection" prefHeight="25.0" prefWidth="169.0" promptText="Select target" styleClass="transparent">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -171,9 +171,9 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
                         </HBox>
-                        <HBox alignment="CENTER" layoutX="468.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar">
+                        <HBox fx:id="timeRangeContainer" alignment="CENTER" layoutX="468.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar" visible="false">
                            <children>
-                              <ComboBox fx:id="chooseSummary" onAction="#showSummary" prefHeight="25.0" prefWidth="169.0" promptText="Summary" styleClass="transparent">
+                              <ComboBox fx:id="chooseTimeRange" onAction="#secondSelection" prefHeight="25.0" prefWidth="169.0" promptText="Select time range" styleClass="transparent">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>

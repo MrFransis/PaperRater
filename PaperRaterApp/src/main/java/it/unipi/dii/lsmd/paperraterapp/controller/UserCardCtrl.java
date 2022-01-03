@@ -46,7 +46,7 @@ public class UserCardCtrl implements Initializable {
                 "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
 
         // If user object is a snap, load the complete user object
-        if (user.getPassword().isEmpty())
+        if (user.getPassword() == null)
             user = mongoMan.getUserByUsername(user.getUsername());
 
         ctrl.setProfilePage(user);

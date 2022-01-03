@@ -8,7 +8,6 @@ import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,10 +32,7 @@ public class BrowserController implements Initializable {
 
     @FXML private TextField authorTf;
     @FXML private Button backBt;
-    @FXML private ComboBox<String> chooseAnalytics;
     @FXML private ComboBox<String> chooseCategory;
-    @FXML public ComboBox<String> chooseSuggestion;
-    @FXML private ComboBox<String> chooseSummary;
     @FXML private ComboBox<String> chooseType;
     @FXML private Button forwardBt;
     @FXML private DatePicker fromDate;
@@ -53,15 +49,31 @@ public class BrowserController implements Initializable {
     @FXML private Label logoutLabel;
     @FXML private CheckBox followsCheckBox;
     @FXML private HBox followsContainer;
+    @FXML private HBox paramContainer;
+    @FXML private HBox timeRangeContainer;
+    @FXML private ComboBox<String> chooseTarget;
+    @FXML private ComboBox<String> chooseQuery;
+    @FXML private ComboBox<String> chooseTimeRange;
 
     private MongoDBManager mongoManager;
     private Neo4jManager neo4jManager;
     private User user;
     private int page;
 
+    @Override
+    public void initialize (URL url, ResourceBundle resourceBundle) {
+        mongoManager = new MongoDBManager(MongoDriver.getInstance().openConnection());
+        neo4jManager = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
+        user = Session.getInstance().getLoggedUser();
+        loadComboBox();
+        hideFilterForm();
+        forwardBt.setOnMouseClicked(mouseEvent -> goForward());
+        backBt.setOnMouseClicked(mouseEvent -> goBack());
+        logoutLabel.setOnMouseClicked(mouseEvent -> logout(mouseEvent));
+    }
+
     @FXML
     void goToProfilePage(MouseEvent event) {
-        //Session.getInstance().setPreviousPageVisited("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml");
         ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
         ctrl.setProfilePage(user);
@@ -112,21 +124,6 @@ public class BrowserController implements Initializable {
     }
 
     @FXML
-    void showAnalytics(ActionEvent event) {
-
-    }
-
-    @FXML
-    void showSuggestion(ActionEvent event) {
-
-    }
-
-    @FXML
-    void showSummary(ActionEvent event) {
-
-    }
-
-    @FXML
     void startResearch() {
         forwardBt.setDisable(false);
         backBt.setDisable(true);
@@ -134,17 +131,85 @@ public class BrowserController implements Initializable {
         handleResearch();
     }
 
-    @Override
-    public void initialize (URL url, ResourceBundle resourceBundle) {
-        mongoManager = new MongoDBManager(MongoDriver.getInstance().openConnection());
-        neo4jManager = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
-        user = Session.getInstance().getLoggedUser();
-        loadComboBox();
-        hideFilterForm();
-        forwardBt.setOnMouseClicked(mouseEvent -> goForward());
-        backBt.setOnMouseClicked(mouseEvent -> goBack());
-        logoutLabel.setOnMouseClicked(mouseEvent -> logout(mouseEvent));
+    @FXML
+    void showOption() {
+        List<String> typeList = new ArrayList<>();
+        typeList.add("Papers");
+        typeList.add("Users");
+        typeList.add("Reading lists");
+        ObservableList<String> observableListType = FXCollections.observableList(typeList);
+        chooseTarget.getItems().clear();
+        chooseTarget.setItems(observableListType);
+        paramContainer.setVisible(true);
     }
+
+    @FXML
+    void firstSelection() {
+        switch (chooseQuery.getValue()) {
+            case "Suggestion" -> {
+                switch (chooseTarget.getValue()) {
+                    case "Users" -> {
+                        setGridUsers();
+                        List<User> suggestedUser = neo4jManager.getSnapsOfSuggestedUsers(user, 4, 4);
+                        int row = 0;
+                        int col = 0;
+                        for (User u : suggestedUser) {
+                            Pane card = loadUsersCard(u);
+                            cardsGrid.add(card, col, row);
+                            col++;
+                            if (col == 4) {
+                                col = 0;
+                                row++;
+                            }
+                        }
+                    }
+                    case "Papers" -> {
+                        setGridPapers();
+                        List<Paper> suggestedPaper = neo4jManager.getSnapsOfSuggestedPapers(user, 2, 1);
+                        int row = 0;
+                        for (Paper p : suggestedPaper) {
+                            Pane card = loadPapersCard(p);
+                            cardsGrid.add(card, 0, row);
+                            row++;
+                        }
+                    }
+                    case "Reading lists" -> {
+                        List<Pair<String, ReadingList>> suggestedReadingLists = neo4jManager.getSnapsOfSuggestedReadingLists(user, 2, 2);
+                        int row = 0;
+                        for (Pair<String, ReadingList> cardInfo : suggestedReadingLists) {
+                            Pane card = loadReadingListsCard(cardInfo.getValue(), cardInfo.getKey());
+                            cardsGrid.add(card, 0, row);
+                            row++;
+                        }
+                    }
+                }
+            }
+            case "Analytics" -> {
+
+            }
+            case "Summary" -> {
+                List<String> typeList = new ArrayList<>();
+                typeList.add("Week");
+                typeList.add("Month");
+                typeList.add("Year");
+                ObservableList<String> observableListType = FXCollections.observableList(typeList);
+                chooseTimeRange.getItems().clear();
+                chooseTimeRange.setItems(observableListType);
+                timeRangeContainer.setVisible(true);
+            }
+            default -> {
+
+            }
+        }
+
+    }
+
+    @FXML
+    void secondSelection() {
+
+    }
+
+
 
     private Pane loadUsersCard (User user) {
         Pane pane = null;
@@ -205,37 +270,12 @@ public class BrowserController implements Initializable {
     private void loadComboBox () {
         // load suggestion
         List<String> suggestionList = new ArrayList<>();
-        suggestionList.add("Suggested paper");
-        suggestionList.add("Suggested reading list");
-        suggestionList.add("Suggested user");
-        suggestionList.add("Browse Follower");
-        suggestionList.add("Browse Following User");
-        suggestionList.add("Browse Following Reading Lists");
+        suggestionList.add("Suggestion");
+        suggestionList.add("Analytics");
+        suggestionList.add("Summary");
         ObservableList<String> observableListSuggestion = FXCollections.observableList(suggestionList);
-        chooseSuggestion.getItems().clear();
-        chooseSuggestion.setItems(observableListSuggestion);
-
-        // load analytics
-        List<String> analyticsList = new ArrayList<>();
-        analyticsList.add("Most active users");
-        analyticsList.add("Most followed reading lists");
-        analyticsList.add("Most popular Users");
-        analyticsList.add("Most popular Papers");
-        analyticsList.add("Most popular Categories");
-        ObservableList<String> observableListAnalytics = FXCollections.observableList(analyticsList);
-        chooseAnalytics.getItems().clear();
-        chooseAnalytics.setItems(observableListAnalytics);
-
-        // load summary
-        List<String> summaryList = new ArrayList<>();
-        summaryList.add("Categories with more articles published");
-        summaryList.add("Categories with more likes");
-        summaryList.add("Categories with more comments");
-        summaryList.add("Papers with more likes");
-        summaryList.add("Papers with more comments");
-        ObservableList<String> observableListSummary = FXCollections.observableList(summaryList);
-        chooseSummary.getItems().clear();
-        chooseSummary.setItems(observableListSummary);
+        chooseQuery.getItems().clear();
+        chooseQuery.setItems(observableListSuggestion);
 
         // load type
         List<String> typeList = new ArrayList<>();
@@ -268,12 +308,7 @@ public class BrowserController implements Initializable {
 
     private void fillUsers(String keyword, boolean moderator) {
         // set new layout
-        cardsGrid.setHgap(20);
-        cardsGrid.setVgap(20);
-        cardsGrid.setPadding(new Insets(30,40,30,40));
-        ColumnConstraints constraints = new ColumnConstraints();
-        constraints.setPercentWidth(25);
-        cardsGrid.getColumnConstraints().add(constraints);
+        setGridUsers();
         // load users
         List<User> usersList = null;
         // check if you need follows
@@ -298,12 +333,7 @@ public class BrowserController implements Initializable {
     }
 
     private void fillPapers(String title, String author, String start_date, String end_date, String category) {
-        cardsGrid.setAlignment(Pos.CENTER);
-        cardsGrid.setVgap(40);
-        cardsGrid.setPadding(new Insets(30,40,30,100));
-        ColumnConstraints constraints = new ColumnConstraints();
-        constraints.setPercentWidth(100);
-        cardsGrid.getColumnConstraints().add(constraints);
+        setGridPapers();
         // load papers
         List<Paper> papersList = mongoManager.searchPapersByParameters(title, author, start_date, end_date, category,
                 3*page, 3);
@@ -318,20 +348,14 @@ public class BrowserController implements Initializable {
     }
 
     private void fillReadingLists(String keyword) {
-        // clean old settings
-        cardsGrid.setAlignment(Pos.CENTER);
-        cardsGrid.setVgap(20);
-        cardsGrid.setPadding(new Insets(30,40,30,160));
-        ColumnConstraints constraints = new ColumnConstraints();
-        constraints.setPercentWidth(100);
-        cardsGrid.getColumnConstraints().add(constraints);
+        setGridReadingList();
         // load papers
         List<Pair<String, ReadingList>> readingLists = null;
         if (followsCheckBox.isSelected())
-            readingLists = neo4jManager.getSnapsOfFollowedReadingListsByKeyword(keyword, user, 3*page, 3);
+            readingLists = neo4jManager.getSnapsOfFollowedReadingListsByKeyword(keyword, user, 4*page, 4);
         else
-            readingLists = mongoManager.getReadingListByKeywords(keyword, 3*page, 3);
-        if (readingLists.size() != 3)
+            readingLists = mongoManager.getReadingListByKeywords(keyword, 4*page, 4);
+        if (readingLists.size() != 4)
             forwardBt.setDisable(true);
         int row = 0;
         for (Pair<String, ReadingList> cardInfo : readingLists) {
@@ -368,8 +392,6 @@ public class BrowserController implements Initializable {
     }
 
     private void handleResearch() {
-        cardsGrid.getChildren().clear();
-        cardsGrid.getColumnConstraints().clear();
         switch (chooseType.getValue()) {
             case "Papers" -> {
                 // check the form values
@@ -463,5 +485,38 @@ public class BrowserController implements Initializable {
     private void logout(MouseEvent event) {
         Session.resetInstance();
         Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/login.fxml", event);
+    }
+
+    private void setGridUsers() {
+        cardsGrid.getChildren().clear();
+        cardsGrid.getColumnConstraints().clear();
+        cardsGrid.setHgap(20);
+        cardsGrid.setVgap(20);
+        cardsGrid.setPadding(new Insets(30,40,30,40));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(25);
+        cardsGrid.getColumnConstraints().add(constraints);
+    }
+
+    private void setGridPapers() {
+        cardsGrid.getChildren().clear();
+        cardsGrid.getColumnConstraints().clear();
+        cardsGrid.setAlignment(Pos.CENTER);
+        cardsGrid.setVgap(40);
+        cardsGrid.setPadding(new Insets(30,40,30,100));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(100);
+        cardsGrid.getColumnConstraints().add(constraints);
+    }
+
+    private void setGridReadingList() {
+        cardsGrid.getChildren().clear();
+        cardsGrid.getColumnConstraints().clear();
+        cardsGrid.setAlignment(Pos.CENTER);
+        cardsGrid.setVgap(20);
+        cardsGrid.setPadding(new Insets(30,40,30,160));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(100);
+        cardsGrid.getColumnConstraints().add(constraints);
     }
 }

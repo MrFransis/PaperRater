@@ -4,8 +4,6 @@ import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
-import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,8 +37,7 @@ public class LoginController {
             passwordTf.setText("");
             errorTf.setText("Username or password not valid.");
             System.out.println("Username or password not valid");
-        }
-        else {
+        } else {
             Session.getInstance().setLoggedUser(u);
             Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
         }
