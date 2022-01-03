@@ -20,10 +20,11 @@ def get_data(start_date):
     year, month, day = int(year), int(month), int(day)
     stop_date = date(year, month, day)
     curr_date = date.today()
-
+    curr_date = date(2020, 6, 3)
     df = pd.DataFrame(columns=('vixra_id', 'title', 'abstract', 'category', 'authors', 'published'))
 
     while curr_date >= stop_date:
+        print(curr_date)
         year = curr_date.year
         month = curr_date.month
         cd = str(year)[2:4].zfill(2) + str(month).zfill(2)
@@ -51,11 +52,15 @@ def get_data(start_date):
             for elem in a.find("p").find_all("a"):
                 authors.append(elem.text)
 
-            abstract = a.find_all("p", recursive=False)[1].find(text=True).strip()
-            # Avoid bad characters
-            abstract = abstract.encode('utf-8', 'replace').decode()
+            try:
+                abstract = a.find_all("p", recursive=False)[1].find(text=True).strip()
+                    # Avoid bad characters
+                abstract = abstract.encode('utf-8', 'replace').decode()
 
-            primary_category = a.find_all("p", recursive=False)[1].find("a").text
+                primary_category = a.find_all("p", recursive=False)[1].find("a").text
+
+            except IndexError:
+                continue
 
             contents = {'vixra_id': vixra_id,
                         'title': title,
@@ -76,7 +81,7 @@ def get_data(start_date):
 
 
 if __name__ == "__main__":
-    start_date = "2021-09-01"
+    start_date = "2011-01-01"
 
     data = pd.DataFrame()
 

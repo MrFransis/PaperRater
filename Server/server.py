@@ -8,6 +8,8 @@ import random
 import time
 from datetime import datetime, date, timedelta
 
+import getPapers
+
 
 class App(cmd.Cmd):
     intro = 'PaperRater Server launched. \n \nType help or ? to list commands.\n'
@@ -247,7 +249,7 @@ class App(cmd.Cmd):
         last_date_uploaded = newdate.strftime('%Y-%m-%d')
 
         # Import latest papers
-        #papers_path = getPapers.import_data(last_date_uploaded)
+        papers_path = getPapers.import_data(last_date_uploaded)
 
         papers_df = pd.read_json(papers_path, lines=True)
 
@@ -262,6 +264,7 @@ class App(cmd.Cmd):
 
         papers_col.insert_many(data_dict)
 
+        session = self.neo4j_driver.session()
         for index, row in papers_df.iterrows():
             query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id}) ")
             session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id']))
