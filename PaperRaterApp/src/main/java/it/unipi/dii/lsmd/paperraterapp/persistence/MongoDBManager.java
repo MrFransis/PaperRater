@@ -576,7 +576,7 @@ public class MongoDBManager {
      * @param number number of results to show
      * @return The list of the most common categories
      */
-    public List<String> summaryOfCategory (String start, String finish, int number){
+    public List<String> getCategoriesSummaryByNumberOfPaperPublished (String start, String finish, int number){
         List<String> mostCommonCategories = new ArrayList<>();
 
         Bson match = match(and(gte("published", start), lte("published", finish)));
@@ -592,6 +592,39 @@ public class MongoDBManager {
             mostCommonCategories.add(document.getString("category"));
         }
         return mostCommonCategories;
+    }
+    /**
+     * Browse the top categories with more comments
+     * @param period (all, month, week)
+     * @param top (positive integer)
+     * @return HashMap with the category and the number of comments
+     */
+    public List<Pair<String, Integer>> getCategoriesSummaryByComments(String period, int top) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDateTime startOfDay;
+        switch (period) {
+            case "all" -> startOfDay = LocalDateTime.MIN;
+            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
+            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
+            default -> {
+                System.err.println("ERROR: Wrong period.");
+                return null;
+            }
+        }
+        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        List<Pair<String, Integer>> results = new ArrayList<>();
+        Consumer<Document> rankCategories = doc ->
+                results.add(new Pair<>((String) doc.get("_id"), (Integer) doc.get("tots")));
+
+        Bson unwind = unwind("$comments");
+        Bson filter = match(gte("comments.timestamp", filterDate));
+        Bson group = group("$category", sum("tots", 1));
+        Bson sort = sort(Indexes.descending("tots"));
+        Bson limit = limit(top);
+        papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort, limit)).forEach(rankCategories);
+
+        return results;
     }
 
     /*Users with the highest number of categories in their reading lists  */
@@ -662,40 +695,6 @@ public class MongoDBManager {
         pipeline.add(limit(limitDoc));
 
         papersCollection.aggregate(pipeline).forEach(takeComments);
-        return results;
-    }
-
-    /**
-     * Browse the top categories with more comments
-     * @param period (all, month, week)
-     * @param top (positive integer)
-     * @return HashMap with the category and the number of comments
-     */
-    public List<Pair<String, Integer>> summaryCategoriesByComments(String period, int top) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime startOfDay;
-        switch (period) {
-            case "all" -> startOfDay = LocalDateTime.MIN;
-            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
-            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
-            default -> {
-                System.err.println("ERROR: Wrong period.");
-                return null;
-            }
-        }
-        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        List<Pair<String, Integer>> results = new ArrayList<>();
-        Consumer<Document> rankCategories = doc ->
-                results.add(new Pair<>((String) doc.get("_id"), (Integer) doc.get("tots")));
-
-        Bson unwind = unwind("$comments");
-        Bson filter = match(gte("comments.timestamp", filterDate));
-        Bson group = group("$category", sum("tots", 1));
-        Bson sort = sort(Indexes.descending("tots"));
-        Bson limit = limit(top);
-        papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort, limit)).forEach(rankCategories);
-
         return results;
     }
 
