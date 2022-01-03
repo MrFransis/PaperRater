@@ -18,10 +18,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.awt.Desktop;
+import java.net.URI;
 
 public class PaperPageController implements Initializable {
     private Paper paper;
@@ -29,6 +33,7 @@ public class PaperPageController implements Initializable {
     private MongoDBManager mongoMan;
     private Neo4jManager neoMan;
     private final int maxLength = 280;
+    private String linkPdf;
     @FXML private ImageView backIcon;
     @FXML private Text title;
     @FXML private Text id;
@@ -44,6 +49,7 @@ public class PaperPageController implements Initializable {
     @FXML private Text comNum;
     @FXML private ScrollPane scrollpane;
     @FXML private Button likebtn;
+    @FXML private Button webLink;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -52,6 +58,7 @@ public class PaperPageController implements Initializable {
         backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));
         addToReadingList.setOnMouseClicked(mouseEvent -> clickOnAddToReadingListBtn(mouseEvent));
         likebtn.setOnMouseClicked(mouseEvent -> clickLike(mouseEvent));
+        webLink.setOnMouseClicked(mouseEvent -> clickOpenPdf(mouseEvent));
         comment.setOnMouseClicked(mouseEvent -> clickOnAddCommentBtn(mouseEvent));
         scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
@@ -66,13 +73,15 @@ public class PaperPageController implements Initializable {
         title.setText(paper.getTitle());
 
         String validId;
-        if (!p.getArxivId().isEmpty()) {
+        if (!Objects.equals(p.getArxivId(), "nan")) {
             validId = p.getArxivId();
             id.setText("arXiv:" + validId);
+            linkPdf = "https://arXiv.org/pdf/" + validId + "v1.pdf";
         }
         else {
             validId = p.getVixraId();
             id.setText("viXra:" + validId);
+            linkPdf = "https://vixra.org/pdf/" + validId + "v1.pdf";
         }
         category.setText(paper.getCategory());
         authors.setText(paper.getAuthors().toString());
@@ -224,6 +233,18 @@ public class PaperPageController implements Initializable {
             neoMan.unlike(user, paper);
             likes.setText(Integer.toString(neoMan.getNumLikes(paper)));
             likebtn.setText("Like");
+        }
+    }
+
+    private void clickOpenPdf (MouseEvent mouseEvent){
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new URI(linkPdf));
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (URISyntaxException e1) {
+            e1.printStackTrace();
         }
     }
 }

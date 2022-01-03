@@ -10,6 +10,7 @@ module it.unipi.dii.lsmd.paperraterapp {
     requires xstream;
     requires com.google.gson;
     requires org.neo4j.driver;
+    requires java.desktop;
 
     opens it.unipi.dii.lsmd.paperraterapp to javafx.fxml;
     exports it.unipi.dii.lsmd.paperraterapp;

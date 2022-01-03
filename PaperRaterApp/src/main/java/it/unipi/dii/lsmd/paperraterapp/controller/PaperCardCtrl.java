@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
+import java.util.Objects;
+
 public class PaperCardCtrl {
     private Paper p;
     private MongoDBManager mongoMan;
@@ -35,7 +37,7 @@ public class PaperCardCtrl {
         this.p = p;
 
         String validId;
-        if (!p.getArxivId().isEmpty()) {
+        if (!Objects.equals(p.getArxivId(), "nan")) {
             validId = p.getArxivId();
             paperId.setText("arXiv:" + validId);
         }
