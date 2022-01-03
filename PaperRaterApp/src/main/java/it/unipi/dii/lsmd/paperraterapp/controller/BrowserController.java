@@ -100,6 +100,7 @@ public class BrowserController implements Initializable {
                 dateContainer.setVisible(true);
                 keywordContainer.setVisible(true);
                 categoryContainer.setVisible(true);
+                followsContainer.setVisible(false);
             }
             case "Users", "Reading lists" -> {
                 authorContainer.setVisible(false);
@@ -280,7 +281,7 @@ public class BrowserController implements Initializable {
     @FXML
     void secondSelection() {
         special = true;
-        forwardBt.setVisible(true);
+        forwardBt.setDisable(false);
         switch (chooseQuery.getValue()) {
             case "Suggestion" -> {
                 switch (chooseTarget.getValue()) {
@@ -288,6 +289,25 @@ public class BrowserController implements Initializable {
                         List<User> suggestedUser = neo4jManager.getSnapsOfSuggestedUsers(user, 4,
                                 4, 4*page, 4*page);
                         fillUsers(suggestedUser);
+                    }
+                    case "Papers" -> {
+                        List<Paper> suggestedPaper = neo4jManager.getSnapsOfSuggestedPapers(user, 2,
+                                1, 2*page, 1*page);
+                        fillPapers(suggestedPaper);
+                    }
+                    case "Reading lists" -> {
+                        List<Pair<String, ReadingList>> suggestedReadingLists =
+                                neo4jManager.getSnapsOfSuggestedReadingLists(user, 2, 2,
+                                        2*page, 2*page);
+                        fillReadingLists(suggestedReadingLists);
+                    }
+                }
+            }
+            case "Summary" -> {
+                switch (chooseTarget.getValue()) {
+                    case "Users" -> {
+                        //List<User> suggestedUser = mongoManager.
+                        //fillUsers(suggestedUser);
                     }
                     case "Papers" -> {
                         List<Paper> suggestedPaper = neo4jManager.getSnapsOfSuggestedPapers(user, 2,
@@ -473,7 +493,6 @@ public class BrowserController implements Initializable {
     private void goForward () {
         page++;
         backBt.setDisable(false);
-        handleResearch();
         if (special)
             secondSelection();
         else
