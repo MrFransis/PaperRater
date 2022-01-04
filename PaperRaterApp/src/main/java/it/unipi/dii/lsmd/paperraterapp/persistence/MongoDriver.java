@@ -61,8 +61,8 @@ public class MongoDriver {
 
         try
         {
-            String string = "mongodb://";
-            string += mongoUsername + ":" + mongoPassword + "@" + mongoFirstIp + ":" + mongoFirstPort + "," + mongoSecondIp + ":" + mongoSecondPort + "," + mongoThirdIp + ":" + mongoThirdPort;
+            String string = "mongodb://localhost:27017";
+            //string += mongoUsername + ":" + mongoPassword + "@" + mongoFirstIp + ":" + mongoFirstPort + "," + mongoSecondIp + ":" + mongoSecondPort + "," + mongoThirdIp + ":" + mongoThirdPort;
             ConnectionString connectionString = new ConnectionString(string);
 
             pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),

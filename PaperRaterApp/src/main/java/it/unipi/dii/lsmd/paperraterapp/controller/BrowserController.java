@@ -37,9 +37,9 @@ public class BrowserController implements Initializable {
     @FXML private ComboBox<String> chooseCategory;
     @FXML private ComboBox<String> chooseType;
     @FXML private Button forwardBt;
+    @FXML private Button specialSearchBt;
     @FXML private DatePicker fromDate;
     @FXML private TextField keywordTf;
-    @FXML private Label profileTf;
     @FXML private Button searchBt;
     @FXML private DatePicker toDate;
     @FXML private HBox authorContainer;
@@ -48,7 +48,6 @@ public class BrowserController implements Initializable {
     @FXML private HBox dateContainer;
     @FXML private Label errorTf;
     @FXML private GridPane cardsGrid;
-    @FXML private Label logoutLabel;
     @FXML private CheckBox followsCheckBox;
     @FXML private HBox followsContainer;
     @FXML private HBox paramContainer;
@@ -61,13 +60,15 @@ public class BrowserController implements Initializable {
     private Neo4jManager neo4jManager;
     private User user;
     private int page;
-    private boolean special;
+    private int special;
 
     @FXML
     void goToProfilePage(MouseEvent event) {
         ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
                 "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", event);
-        ctrl.setProfilePage(user);
+        if (ctrl != null) {
+            ctrl.setProfilePage(user);
+        }
     }
 
     @FXML
@@ -81,7 +82,7 @@ public class BrowserController implements Initializable {
         mongoManager = new MongoDBManager(MongoDriver.getInstance().openConnection());
         neo4jManager = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         user = Session.getInstance().getLoggedUser();
-        special = false;
+        special = 0;
         loadComboBox();
         hideFilterForm();
         forwardBt.setOnMouseClicked(mouseEvent -> goForward());
@@ -95,7 +96,7 @@ public class BrowserController implements Initializable {
         backBt.setDisable(true);
         forwardBt.setDisable(true);
         followsCheckBox.setSelected(false);
-        special = false;
+        special = 0;
         switch (chooseType.getValue()) {
             case "Papers" -> {
                 authorContainer.setVisible(true);
@@ -140,12 +141,13 @@ public class BrowserController implements Initializable {
         forwardBt.setDisable(false);
         backBt.setDisable(true);
         page = 0;
-        special = false;
+        special = 0;
+        specialSearchBt.setDisable(true);
         handleResearch();
     }
 
     private void handleResearch() {
-        special = false;
+        special = 0;
         switch (chooseType.getValue()) {
             case "Papers" -> {
                 // check the form values
@@ -185,7 +187,7 @@ public class BrowserController implements Initializable {
                     errorTf.setText("You have to specify an option.");
                     return;
                 }
-                List<User> usersList = null;
+                List<User> usersList;
                 // check if you need follows
                 if(followsCheckBox.isSelected())
                     usersList = neo4jManager.getSnapsOfFollowedUserByKeyword(user, keywordTf.getText(), 8, 8*page);
@@ -201,7 +203,7 @@ public class BrowserController implements Initializable {
                     return;
                 }
                 // load papers
-                List<Pair<String, ReadingList>> readingLists = null;
+                List<Pair<String, ReadingList>> readingLists;
                 if (followsCheckBox.isSelected())
                     readingLists = neo4jManager.getSnapsOfFollowedReadingListsByKeyword(keywordTf.getText(), user, 4*page, 4);
                 else
@@ -243,42 +245,44 @@ public class BrowserController implements Initializable {
     @FXML
     void showOption() {
         page = 0;
+        special = 1;
+        specialSearchBt.setDisable(false);
         switch (chooseQuery.getValue()) {
             case "Special research" -> {
                 cleanGrid();
                 paramContainer.setVisible(false);
                 timeRangeContainer.setVisible(false);
                 chooseTarget.getItems().clear();
-                chooseTimeRange.getItems().clear();
-                special = false;
-                return;
+                forwardBt.setDisable(true);
+                backBt.setDisable(true);
+                specialSearchBt.setDisable(true);
+                special = 0;
             }
             case "Suggestion" -> {
-                List<String> typeList = new ArrayList<>();
-                typeList.add("Papers");
-                typeList.add("Users");
-                typeList.add("Reading lists");
-                ObservableList<String> observableListType = FXCollections.observableList(typeList);
+                List<String> typeList1 = new ArrayList<>();
+                typeList1.add("Papers");
+                typeList1.add("Users");
+                typeList1.add("Reading lists");
+                ObservableList<String> observableListType1 = FXCollections.observableList(typeList1);
                 chooseTarget.getItems().clear();
-                chooseTarget.setItems(observableListType);
-                chooseTarget.setPromptText("Select target");
+                chooseTarget.setItems(observableListType1);
+                chooseTarget.setPromptText("Select option");
                 paramContainer.setVisible(true);
-                special = true;
+                timeRangeContainer.setVisible(false);
             }
             case "Analytics" -> {
-                // append extra
-                List<String> typeList = new ArrayList<>();
-                typeList.add("Most commented papers");  //?
-                typeList.add("Most liked papers");
-                typeList.add("Most followed users");
-                typeList.add("Most followed reading lists");    //?
-                typeList.add("Most versatile users");
-                ObservableList<String> observableListType = FXCollections.observableList(typeList);
+                List<String> typeList2 = new ArrayList<>();
+                typeList2.add("Most commented papers");
+                typeList2.add("Most liked papers");
+                typeList2.add("Most followed users");
+                typeList2.add("Most followed reading lists");
+                typeList2.add("Most versatile users");
+                ObservableList<String> observableListType2 = FXCollections.observableList(typeList2);
                 chooseTarget.getItems().clear();
-                chooseTarget.setItems(observableListType);
-                chooseTarget.setPromptText("Select ranking");
+                chooseTarget.setItems(observableListType2);
+                chooseTarget.setPromptText("Select option");
                 paramContainer.setVisible(true);
-                special = true;
+                timeRangeContainer.setVisible(true);
             }
             case "Summary" -> {
                 List<String> typeList = new ArrayList<>();
@@ -288,55 +292,25 @@ public class BrowserController implements Initializable {
                 ObservableList<String> observableListType = FXCollections.observableList(typeList);
                 chooseTarget.getItems().clear();
                 chooseTarget.setItems(observableListType);
-                chooseTarget.setPromptText("Select ranking");
                 paramContainer.setVisible(true);
-                special = true;
-                // table view
+                timeRangeContainer.setVisible(true);
             }
         }
     }
 
     @FXML
-    void firstSelection() {
+    void startSpecialSearch() {
+        cleanGrid();
+        forwardBt.setDisable(false);
+        searchBt.setDisable(true);
+        errorTf.setText("");
+        special = 1;
         switch (chooseQuery.getValue()) {
             case "Suggestion" -> {
-                secondSelection();
-            }
-            case "Summary", "Analytics" -> {
-                forwardBt.setDisable(false);
-                switch (chooseTarget.getValue()) {
-                    case "Most versatile users" -> {
-                        List<Pair<User, Integer>> users = mongoManager.getTopVersatileUsers(8*page, 8);
-                        fillUsers(users, "Follower");
-                    }
-                    case "Most followed users" -> {
-                        List<Pair<User, Integer>> users = neo4jManager.getMostFollowedUsers(8*page, 8);
-                        fillUsers(users, "Follower");
-                    }
-                    case "Most followed reading lists" -> {
-                        List<Pair<Pair<String, ReadingList>, Integer>> lists = neo4jManager.getMostFollowedReadingLists(4*page, 4);
-                        fillReadingLists(lists, "Follower");
-                    }
-                    default -> {
-                        List<String> typeList = new ArrayList<>();
-                        typeList.add("Week");
-                        typeList.add("Month");
-                        typeList.add("All");
-                        ObservableList<String> observableListType = FXCollections.observableList(typeList);
-                        chooseTimeRange.getItems().clear();
-                        chooseTimeRange.setItems(observableListType);
-                        timeRangeContainer.setVisible(true);
-                    }
+                if (chooseTarget.getValue() == null) {
+                    errorTf.setText("You have to select a valid option.");
+                    return;
                 }
-            }
-        }
-    }
-
-    @FXML
-    void secondSelection() {
-        special = true;
-        switch (chooseQuery.getValue()) {
-            case "Suggestion" -> {
                 switch (chooseTarget.getValue()) {
                     case "Users" -> {
                         List<User> suggestedUser = neo4jManager.getSnapsOfSuggestedUsers(user, 4,
@@ -345,7 +319,7 @@ public class BrowserController implements Initializable {
                     }
                     case "Papers" -> {
                         List<Paper> suggestedPaper = neo4jManager.getSnapsOfSuggestedPapers(user, 2,
-                                1, 2*page, 1*page);
+                                1, 2*page, page);
                         fillPapers(suggestedPaper);
                     }
                     case "Reading lists" -> {
@@ -358,33 +332,61 @@ public class BrowserController implements Initializable {
             }
             case "Summary" -> {
                 forwardBt.setDisable(true);
-                List<Pair<String, Integer>> list = null;
-                String period = chooseTimeRange.getValue().toLowerCase(Locale.ROOT);
-                switch (chooseTarget.getValue()) {
-                    case "Categories by likes" -> {
-                        list = neo4jManager.getCategoriesSummaryByLikes(period, 10);
-                        categoriesTableView(list, "Likes");
-                    }
-                    case "Categories by comments" -> {
-                        list = mongoManager.getCategoriesSummaryByComments(period, 10);
-                        categoriesTableView(list, "Comments");
-                    }
-                    case "Categories by number of papers published" -> {
-                        list = mongoManager.getCategoriesSummaryByNumberOfPaperPublished(period, 10);
-                        categoriesTableView(list, "Papers published");
+                if (chooseTimeRange.getValue() == null) {
+                    errorTf.setText("You have to select a valid option.");
+                } else if (chooseTarget.getValue() == null) {
+                    errorTf.setText("You have to select a valid option.");
+                    return;
+                } else {
+                    String period = chooseTimeRange.getValue().toLowerCase(Locale.ROOT);
+                    List<Pair<String, Integer>> list;
+                    switch (chooseTarget.getValue()) {
+                        case "Categories by likes" -> {
+                            list = neo4jManager.getCategoriesSummaryByLikes(period, 10);
+                            categoriesTableView(list, "Likes");
+                        }
+                        case "Categories by comments" -> {
+                            list = mongoManager.getCategoriesSummaryByComments(period, 10);
+                            categoriesTableView(list, "Comments");
+                        }
+                        case "Categories by number of papers published" -> {
+                            list = mongoManager.getCategoriesSummaryByNumberOfPaperPublished(period, 10);
+                            categoriesTableView(list, "Papers published");
+                        }
                     }
                 }
             }
             case "Analytics" -> {
-                String period = chooseTimeRange.getValue().toLowerCase(Locale.ROOT);
-                switch (chooseTarget.getValue()) {
-                    case "Most commented papers" -> {
-                        List<Pair<Paper, Integer>> papers = mongoManager.getMostCommentedPapers(period, 3*page, 3);
-                        fillPapers(papers, "Comments");
+                if (chooseTarget.getValue() == null) {
+                    errorTf.setText("You have to select a valid option.");
+                    return;
+                }
+                if (chooseTimeRange.getValue() == null) {
+                    switch (chooseTarget.getValue()) {
+                        case "Most versatile users" -> {
+                            List<Pair<User, Integer>> users = mongoManager.getTopVersatileUsers(8*page, 8);
+                            fillUsers(users, "Follower");
+                        }
+                        case "Most followed users" -> {
+                            List<Pair<User, Integer>> users = neo4jManager.getMostFollowedUsers(8*page, 8);
+                            fillUsers(users, "Follower");
+                        }
+                        case "Most followed reading lists" -> {
+                            List<Pair<Pair<String, ReadingList>, Integer>> lists = neo4jManager.getMostFollowedReadingLists(4*page, 4);
+                            fillReadingLists(lists, "Follower");
+                        }
                     }
-                    case "Most liked papers" -> {
-                        List<Pair<Paper, Integer>> papers = neo4jManager.getMostLikedPapers(period, 3*page, 3);
-                        fillPapers(papers, "Likes");
+                } else {
+                    String period = chooseTimeRange.getValue().toLowerCase(Locale.ROOT);
+                    switch (chooseTarget.getValue()) {
+                        case "Most commented papers" -> {
+                            List<Pair<Paper, Integer>> papers = mongoManager.getMostCommentedPapers(period, 3*page, 3);
+                            fillPapers(papers, "Comments");
+                        }
+                        case "Most liked papers" -> {
+                            List<Pair<Paper, Integer>> papers = neo4jManager.getMostLikedPapers(period, 3*page, 3);
+                            fillPapers(papers, "Likes");
+                        }
                     }
                 }
             }
@@ -458,6 +460,14 @@ public class BrowserController implements Initializable {
         ObservableList<String> observableListSuggestion = FXCollections.observableList(suggestionList);
         chooseQuery.getItems().clear();
         chooseQuery.setItems(observableListSuggestion);
+
+        List<String> timeRange = new ArrayList<>();
+        timeRange.add("Week");
+        timeRange.add("Month");
+        timeRange.add("All");
+        ObservableList<String> observableListTimeRange = FXCollections.observableList(timeRange);
+        chooseTimeRange.getItems().clear();
+        chooseTimeRange.setItems(observableListTimeRange);
 
         // load type
         List<String> typeList = new ArrayList<>();
@@ -604,21 +614,23 @@ public class BrowserController implements Initializable {
     private void goForward () {
         page++;
         backBt.setDisable(false);
-        if (special)
-            secondSelection();
-        else
-            handleResearch();
+        switch (special) {
+            case 0 -> handleResearch();
+            default -> startSpecialSearch();
+        }
     }
 
     private void goBack () {
         page--;
-        if (page == 0)
+        if (page <= 0) {
+            page = 0;
             backBt.setDisable(true);
+        }
         forwardBt.setDisable(false);
-        if (special)
-            secondSelection();
-        else
-            handleResearch();
+        switch (special) {
+            case 0 -> handleResearch();
+            default -> startSpecialSearch();
+        }
     }
 
     private void setGridUsers() {
