@@ -215,39 +215,6 @@ public class Neo4jManager {
     }
 
     /**
-     * It creates the relation user-[:HAS_COMMENTED]->paper
-     * @param user  Username of the target user
-     * @param paper  Paper Object
-     */
-    public void hasCommented(String user, Paper paper){
-        try (Session session = driver.session()){
-            session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User) WHERE u.username = $user " +
-                        "MATCH (p:Paper) WHERE (p.arxiv_id = $arxiv_id AND p.vixra_id =$vixra_id) " +
-                        "MERGE (u)-[:HAS_COMMENTED]->(p)", parameters("user", user, "arxiv_id", paper.getArxivId(), "vixra_id", paper.getVixraId() ));
-                return null; });
-        }catch (Exception ex) {
-            System.err.println(ex);
-        }
-    }
-
-    /**
-     * Delete the relation user-[:HAS_COMMENTED]->paper
-     * @param user  Username of the target user
-     * @param paper Paper object
-     */
-    public void deleteHasCommented(String user, Paper paper){
-        try (Session session = driver.session()){
-            session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User {username:$user})-[r:HAS_COMMENTED]->(p:Paper) WHERE p.arxiv_id = $arxiv_id AND p.vixra_id = $vixra_id " +
-                        "DELETE r", parameters("user", user, "arxiv_id", paper.getArxivId(), "vixra_id", paper.getVixraId()));
-                return null; });
-        }catch (Exception ex) {
-            System.err.println(ex);
-        }
-    }
-
-    /**
      * return the number of follower of a reading list
      * @param title the title of the reading list
      * @param owner the username of the owner

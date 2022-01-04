@@ -211,7 +211,6 @@ public class PaperPageController implements Initializable {
             Comment comment = new Comment(user.getUsername(), commentText.getText(), new Date());
             mongoMan.addComment(paper, comment);
             paper = mongoMan.getPaperById(paper);
-            neoMan.hasCommented(user.getUsername(), paper);
             setCommentBox();
             commentText.setText("");
 
