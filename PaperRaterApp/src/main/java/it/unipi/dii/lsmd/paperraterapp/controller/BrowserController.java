@@ -434,7 +434,7 @@ public class BrowserController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/commentcard.fxml"));
             pane = loader.load();
             CommentCtrl ctrl = loader.getController();
-            ctrl.setCommentCardfromBrowser(comment, paper);
+            ctrl.setCommentCard(comment, user, paper, true);
         }
         catch (Exception e) {
             e.printStackTrace();

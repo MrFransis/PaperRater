@@ -551,15 +551,42 @@ public class MongoDBManager {
         Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         Consumer<Document> convertInUser = doc -> {
             User user = gson.fromJson(gson.toJson(doc), User.class);
-            results.add(new Pair(user, doc.getInteger("totalCategory")));
+            results.add(new Pair(user, doc.getLong("totalCategory")));
         };
 
         Bson unwind1 = unwind("$readingLists");
         Bson unwind2 = unwind("$readingLists.papers");
         Bson groupMultiple = new Document("$group",
-                new Document("_id", new Document("username", "$username").append("category", "$readingLists.papers.category")));
-        Bson group = group("$_id.username", sum("totalCategory", 1));
-        Bson project = project(fields(excludeId(), computed("username", "$_id"), include("totalCategory")));
+                new Document("_id", new Document("username", "$username")
+                        .append("email", "$email")
+                        .append("password", "$password")
+                        .append("firstName", "$firstName")
+                        .append("lastName", "$lastName")
+                        .append("picture", "$picture")
+                        .append("age", "$age")
+                        .append("category", "$readingLists.papers.category")
+                ));
+        Bson group = new Document("$group",
+                new Document("_id",
+                        new Document("username", "$_id.username")
+                                .append("email", "$_id.email")
+                                .append("password", "$_id.password")
+                                .append("firstName", "$_id.firstName")
+                                .append("lastName", "$_id.lastName")
+                                .append("picture", "$_id.picture")
+                                .append("age", "$_id.age"))
+                        .append("totalCategory",
+                                new Document("$sum", 1L)));
+
+        Bson project = project(fields(excludeId(),
+                computed("username", "$_id.username"),
+                computed("email", "$_id.email"),
+                computed("password", "$_id.password"),
+                computed("firstName", "$_id.firstName"),
+                computed("lastName", "$_id.lastName"),
+                computed("picture", "$_id.picture"),
+                computed("age", "$_id.age"),
+                include("totalCategory")));
         Bson sort = sort(descending("totalCategory"));
         Bson limit = limit(number);
 

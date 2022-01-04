@@ -14,9 +14,9 @@
    <children>
       <VBox prefHeight="100.0" prefWidth="620.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="45.0" prefWidth="620.0">
+            <HBox alignment="CENTER" prefHeight="45.0" prefWidth="384.0">
                <children>
-                  <Label fx:id="readingListTitle" alignment="CENTER" contentDisplay="CENTER" prefHeight="45.0" prefWidth="432.0" stylesheets="@../style/main.css" text="Title" textAlignment="CENTER" underline="true" HBox.hgrow="ALWAYS">
+                  <Label fx:id="readingListTitle" prefHeight="45.0" prefWidth="432.0" style="-fx-line-spacing: 5;" stylesheets="@../style/main.css" text="Title" textAlignment="CENTER" underline="true" HBox.hgrow="ALWAYS">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -30,8 +30,23 @@
                         <String fx:value="dynamic-effect" />
                         <String fx:value="title" />
                      </styleClass>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
                   </Label>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                     <children>
+                        <Label fx:id="analyticLabelName" text="AnalyticLabelName" />
+                        <Text fx:id="analyticValue" strokeType="OUTSIDE" strokeWidth="0.0" text="AnalyticValue" />
+                     </children>
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                  </HBox>
                </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="467.0">
                <children>
@@ -47,6 +62,7 @@
                   </Text>
                </children>
             </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
          </children>
       </VBox>
    </children>

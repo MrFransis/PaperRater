@@ -157,7 +157,7 @@ public class ProfilePageController {
                     "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml"));
             pane = loader.load();
             ReadingListCardCtrl ctrl = loader.getController();
-            ctrl.setReadingListCard(r, owner);
+            ctrl.setReadingListCard(r, owner, null, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
