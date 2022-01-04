@@ -596,6 +596,33 @@ public class Neo4jManager {
     }
 
     /**
+     * Return a hashmap with the most popular user
+     * @param num num of rank
+     * @return pair (name, numFollower)
+     */
+    public List<Pair<Pair<String, ReadingList>, Integer>> getMostFollowedReadingLists (final int num) {
+        List<Pair<Pair<String, ReadingList>, Integer>> rank;
+        try (Session session = driver.session()) {
+            rank = session.readTransaction(tx -> {
+                Result result = tx.run("MATCH (target:ReadingList)<-[r:FOLLOWS]-(:User) " +
+                                "RETURN DISTINCT target.title AS Title, target.owner AS Owner, " +
+                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
+                        parameters("num", num));
+                List<Pair<Pair<String, ReadingList>, Integer>> popularReadingLists = new ArrayList<>();
+                while (result.hasNext()) {
+                    Record r = result.next();
+                    ReadingList snap = new ReadingList(r.get("Title").asString(), new ArrayList<>());
+
+                    popularReadingLists.add(new Pair(new Pair(r.get("Owner").asString(), snap)
+                            , r.get("numFollower").asInt()));
+                }
+                return popularReadingLists;
+            });
+        }
+        return rank;
+    }
+
+    /**
      * Function that returns a list of suggested papers snapshots for the logged user.
      * Suggestions are based on papers liked by followed users (first level) and papers liked by users
      * that are 2 FOLLOWS hops far from the logged user (second level).
