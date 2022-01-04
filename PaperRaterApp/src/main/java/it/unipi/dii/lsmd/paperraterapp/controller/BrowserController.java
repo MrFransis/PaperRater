@@ -203,7 +203,7 @@ public class BrowserController implements Initializable {
                 if (followsCheckBox.isSelected())
                     readingLists = neo4jManager.getSnapsOfFollowedReadingListsByKeyword(keywordTf.getText(), user, 4*page, 4);
                 else
-                    readingLists = mongoManager.getReadingListByKeywords(keywordTf.getText(), 4*page, 4);
+                    readingLists = mongoManager.getReadingListByKeyword(keywordTf.getText(), 4*page, 4);
                 fillReadingLists(readingLists);
             }
             case "Moderate comments" -> {
@@ -230,30 +230,68 @@ public class BrowserController implements Initializable {
                 List<User> usersList = mongoManager.getUsersByKeyword(keywordTf.getText(), true, page);
                 fillUsers(usersList);
             }
+            case "Bad Users" -> {
+                List<User> usersList = mongoManager.getBadUsers(8*page, 8);
+                fillUsers(usersList);
+            }
         }
     }
 
     // -------------------------------------------- SPECIAL RESEARCH --------------------------------------------
     @FXML
     void showOption() {
-        if (chooseQuery.getValue().equals("Special research")) {
-            cleanGrid();
-            paramContainer.setVisible(false);
-            timeRangeContainer.setVisible(false);
-            chooseTarget.getItems().clear();
-            chooseTimeRange.getItems().clear();
-            special = false;
-            return;
+        page = 0;
+        switch (chooseQuery.getValue()) {
+            case "Special research" -> {
+                cleanGrid();
+                paramContainer.setVisible(false);
+                timeRangeContainer.setVisible(false);
+                chooseTarget.getItems().clear();
+                chooseTimeRange.getItems().clear();
+                special = false;
+                return;
+            }
+            case "Suggestion" -> {
+                List<String> typeList = new ArrayList<>();
+                typeList.add("Papers");
+                typeList.add("Users");
+                typeList.add("Reading lists");
+                ObservableList<String> observableListType = FXCollections.observableList(typeList);
+                chooseTarget.getItems().clear();
+                chooseTarget.setItems(observableListType);
+                chooseTarget.setPromptText("Select target");
+                paramContainer.setVisible(true);
+                special = true;
+            }
+            case "Analytics" -> {
+                // append extra
+                List<String> typeList = new ArrayList<>();
+                typeList.add("Most commented papers");  //?
+                typeList.add("Most liked papers");
+                typeList.add("Most followed users");
+                typeList.add("Most followed reading lists");    //?
+                typeList.add("Most versatile users");   //?
+                ObservableList<String> observableListType = FXCollections.observableList(typeList);
+                chooseTarget.getItems().clear();
+                chooseTarget.setItems(observableListType);
+                chooseTarget.setPromptText("Select ranking");
+                paramContainer.setVisible(true);
+                special = true;
+            }
+            case "Summary" -> {
+                List<String> typeList = new ArrayList<>();
+                typeList.add("Categories by likes");
+                typeList.add("Categories by comments");
+                typeList.add("Categories by number of papers published");
+                ObservableList<String> observableListType = FXCollections.observableList(typeList);
+                chooseTarget.getItems().clear();
+                chooseTarget.setItems(observableListType);
+                chooseTarget.setPromptText("Select ranking");
+                paramContainer.setVisible(true);
+                special = true;
+                // table view
+            }
         }
-        List<String> typeList = new ArrayList<>();
-        typeList.add("Papers");
-        typeList.add("Users");
-        typeList.add("Reading lists");
-        ObservableList<String> observableListType = FXCollections.observableList(typeList);
-        chooseTarget.getItems().clear();
-        chooseTarget.setItems(observableListType);
-        paramContainer.setVisible(true);
-        special = true;
     }
 
     @FXML
@@ -262,14 +300,11 @@ public class BrowserController implements Initializable {
             case "Suggestion" -> {
                 secondSelection();
             }
-            case "Analytics" -> {
-
-            }
-            case "Summary" -> {
+            case "Summary", "Analytics" -> {
                 List<String> typeList = new ArrayList<>();
                 typeList.add("Week");
                 typeList.add("Month");
-                typeList.add("Year");
+                typeList.add("All-time");
                 ObservableList<String> observableListType = FXCollections.observableList(typeList);
                 chooseTimeRange.getItems().clear();
                 chooseTimeRange.setItems(observableListType);
@@ -322,6 +357,27 @@ public class BrowserController implements Initializable {
                     }
                 }
             }
+            //case "Analytics" -> {
+            //    forwardBt.setDisable(true);
+            //    switch (chooseTarget.getValue()) {
+            //        case "Most liked paper" -> {
+            //            List<Paper> rankPapers = neo4jManager.getSnapsOfMostLikedPapers(3);
+            //            fillPapers(rankPapers);
+            //        }
+            //        case "Most active users" -> {
+            //            List<User> rankUsers = neo4jManager.getSnapsOfMostActiveUsers(8);
+            //            fillUsers(rankUsers);
+            //        }
+            //        case "Most popular users" -> {
+            //            List<User> rankUsers = neo4jManager.getSnapsOfMostPopularUsers(8);
+            //            fillUsers(rankUsers);
+            //        }
+            //        case "Most popular reading lists" -> {
+            //            List<Pair<String, ReadingList>> rankReadingList = neo4jManager.getSnapsOfMostPopularReadingList(4);
+            //            fillReadingLists(rankReadingList);
+            //        }
+            //    }
+            //}
         }
     }
     // -------------------------------------------- UTILS --------------------------------------------
@@ -374,7 +430,7 @@ public class BrowserController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/commentcard.fxml"));
             pane = loader.load();
             CommentCtrl ctrl = loader.getController();
-            ctrl.setCommentCardfromBrowser(comment, paper);
+            ctrl.setCommentCard(comment, user, paper, true);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -387,7 +443,7 @@ public class BrowserController implements Initializable {
         List<String> suggestionList = new ArrayList<>();
         suggestionList.add("Special research");
         suggestionList.add("Suggestion");
-        suggestionList.add("Analytics");
+        suggestionList.add("Ranking");
         suggestionList.add("Summary");
         ObservableList<String> observableListSuggestion = FXCollections.observableList(suggestionList);
         chooseQuery.getItems().clear();
@@ -400,8 +456,10 @@ public class BrowserController implements Initializable {
         typeList.add("Reading lists");
         if (user.getType() > 0)
             typeList.add("Moderate comments");
-        if (user.getType() == 2)
+        if (user.getType() == 2) {
             typeList.add("Search moderator");
+            typeList.add("Bad Users");
+        }
         ObservableList<String> observableListType = FXCollections.observableList(typeList);
         chooseType.getItems().clear();
         chooseType.setItems(observableListType);
