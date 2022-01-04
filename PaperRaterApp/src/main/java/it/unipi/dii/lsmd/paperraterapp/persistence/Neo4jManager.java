@@ -248,40 +248,6 @@ public class Neo4jManager {
     }
 
     /**
-     * Add a paper in Neo4j databases
-     * @param p Object paper that will be added
-     * @return true if operation is successfully executed, false otherwise
-     */
-    public boolean addPaper(Paper p){
-        try (Session session = driver.session()){
-            session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MERGE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id})", parameters("arxiv_id", p.getArxivId(), "vixra_id", p.getVixraId()));
-                return null; });
-            return true;
-        }catch (Exception ex) {
-            System.err.println(ex);
-            return false;
-        }
-    }
-
-    /**
-     * Delete a paper in Neo4j databases
-     * @param p Object paper that will be added
-     * @return true if operation is successfully executed, false otherwise
-     */
-    public boolean deletePaper(Paper p){
-        try (Session session = driver.session()){
-            session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id}) DELETE p", parameters("arxiv_id", p.getArxivId(), "vixra_id", p.getVixraId()));
-                return null; });
-            return true;
-        }catch (Exception ex) {
-            System.err.println(ex);
-            return false;
-        }
-    }
-
-    /**
      * return the number of follower of a reading list
      * @param title the title of the reading list
      * @param owner the username of the owner
@@ -314,23 +280,6 @@ public class Neo4jManager {
             });
         }
         return numLikes;
-    }
-
-    /**
-     * return the number of comments of a papers
-     * @param id ID of a paper
-     * @return number of comments
-     */
-    public int getNumComments(final String id) {
-        int numComments;
-        try (Session session = driver.session()) {
-            numComments = session.writeTransaction((TransactionWork<Integer>) tx -> {
-                Result result = tx.run("MATCH (p:Paper)<-[r:HAS_COMMENTED]-() WHERE p.arxiv_id = $id OR p.vixra_id = $id " +
-                        "RETURN COUNT(r) AS numComments", parameters("id", id));
-                return result.next().get("numComments").asInt();
-            });
-        }
-        return numComments;
     }
 
     /**
@@ -527,7 +476,7 @@ public class Neo4jManager {
      * @param limit
      * @return List of Papers
      */
-    public List<Pair<Paper, Integer>> getPaperSummaryByLikes(String period, int limit) {
+    public List<Pair<Paper, Integer>> getMostLikedPapers(String period, int limit) {
         List<Pair<Paper, Integer>> topPapers = new ArrayList<>();
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
@@ -619,48 +568,12 @@ public class Neo4jManager {
         return results;
     }
 
-
-
-    //Users that commented the highest number of papers
-    /** DA TOGLIERE ???
-     * This function return Users that commented the highest number of papers
-     * @param number Number or results
-     * @return List of Users
-     */
-    public List<Pair<User, Integer>> getSnapsOfMostActiveUsers (int number)
-    {
-        List<Pair<User, Integer>> topUsers = new ArrayList<>();
-        try(Session session = driver.session()) {
-            session.readTransaction(tx -> {
-                Result result = tx.run("MATCH (u:User)-[l:HAS_COMMENTED]->(:Paper) " +
-                                "RETURN u.username AS Username, u.email AS Email, " +
-                                "COUNT(l) AS comments_count ORDER BY comments_count DESC " +
-                                "LIMIT $limit",
-                        parameters( "limit", number));
-
-                while(result.hasNext()){
-                    Record r = result.next();
-                    User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
-                            "","","","",-1, new ArrayList<>(), 0);
-
-                    topUsers.add(new Pair<>(snap, r.get("comments_count").asInt()));
-                }
-                return null;
-            });
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return topUsers;
-    }
-
     /**
      * Return a hashmap with the most popular user
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public List<Pair<User, Integer>> getSnapsOfMostFollowedUsers (final int num) {
+    public List<Pair<User, Integer>> getMostFollowedUsers (final int num) {
         List<Pair<User, Integer>> rank;
         try (Session session = driver.session()) {
             rank = session.readTransaction(tx -> {

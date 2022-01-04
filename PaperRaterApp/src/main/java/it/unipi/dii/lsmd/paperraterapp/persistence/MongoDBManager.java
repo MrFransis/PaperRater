@@ -609,6 +609,7 @@ public class MongoDBManager {
         return results;
     }
 
+    /*CESTINO FORSE*/
     /**
      * Method that returns users that with the highest number of comments in the specified period of time.
      * @param period (all, month, week)
@@ -651,7 +652,7 @@ public class MongoDBManager {
      * @param l (positive integer)
      * @return HashMap with the title and the number of comments
      */
-    public List<Pair<String, Integer>> getPapersSummaryByComments(String period, int l) {
+    public List<Pair<String, Integer>> getMostCommentedPapers(String period, int l) {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
