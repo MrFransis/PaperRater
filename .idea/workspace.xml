@@ -4,12 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="fill with statistics">
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="finish special query">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDriver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/config/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/config/config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/BrowserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/CommentCtrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/CommentCtrl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperCardCtrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperCardCtrl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperPageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/PaperPageController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ReadingListCardCtrl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDBManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDriver.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/MongoDriver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/Neo4jManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/persistence/Neo4jManager.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -244,14 +251,7 @@
       <workItem from="1641208155790" duration="6604000" />
       <workItem from="1641222611865" duration="11751000" />
       <workItem from="1641248391911" duration="3989000" />
-      <workItem from="1641289704629" duration="7652000" />
-    </task>
-    <task id="LOCAL-00017" summary="Resolve path 2.0">
-      <created>1638977864284</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1638977864284</updated>
+      <workItem from="1641289704629" duration="8675000" />
     </task>
     <task id="LOCAL-00018" summary="Create driver for MongoDB">
       <created>1639327313886</created>
@@ -589,7 +589,14 @@
       <option name="project" value="LOCAL" />
       <updated>1641296823672</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="finish special query">
+      <created>1641297480872</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1641297480872</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -632,7 +639,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="neo4j query" />
     <MESSAGE value="work no:&#10;- graphic design&#10;- browser navigation&#10;- backends useful query" />
     <MESSAGE value="working on the browser" />
     <MESSAGE value="users browse complete" />
@@ -657,7 +663,8 @@
     <MESSAGE value="working on special query" />
     <MESSAGE value="table view of categories" />
     <MESSAGE value="fill with statistics" />
-    <option name="LAST_COMMIT_MESSAGE" value="fill with statistics" />
+    <MESSAGE value="finish special query" />
+    <option name="LAST_COMMIT_MESSAGE" value="finish special query" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

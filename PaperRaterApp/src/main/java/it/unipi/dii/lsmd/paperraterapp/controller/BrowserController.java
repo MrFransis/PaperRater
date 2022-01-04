@@ -303,19 +303,31 @@ public class BrowserController implements Initializable {
                 secondSelection();
             }
             case "Summary", "Analytics" -> {
-                if (chooseTarget.getValue().equals("Most versatile users")) {
-                    List<Pair<User, Integer>> users = mongoManager.getTopVersatileUsers(8*page, 8);
-                    fillUsers(users, "Follower");
-                    return;
+                forwardBt.setDisable(false);
+                switch (chooseTarget.getValue()) {
+                    case "Most versatile users" -> {
+                        List<Pair<User, Integer>> users = mongoManager.getTopVersatileUsers(8*page, 8);
+                        fillUsers(users, "Follower");
+                    }
+                    case "Most followed users" -> {
+                        List<Pair<User, Integer>> users = neo4jManager.getMostFollowedUsers(8*page, 8);
+                        fillUsers(users, "Follower");
+                    }
+                    case "Most followed reading lists" -> {
+                        List<Pair<Pair<String, ReadingList>, Integer>> lists = neo4jManager.getMostFollowedReadingLists(4*page, 4);
+                        fillReadingLists(lists, "Follower");
+                    }
+                    default -> {
+                        List<String> typeList = new ArrayList<>();
+                        typeList.add("Week");
+                        typeList.add("Month");
+                        typeList.add("All");
+                        ObservableList<String> observableListType = FXCollections.observableList(typeList);
+                        chooseTimeRange.getItems().clear();
+                        chooseTimeRange.setItems(observableListType);
+                        timeRangeContainer.setVisible(true);
+                    }
                 }
-                List<String> typeList = new ArrayList<>();
-                typeList.add("Week");
-                typeList.add("Month");
-                typeList.add("All-time");
-                ObservableList<String> observableListType = FXCollections.observableList(typeList);
-                chooseTimeRange.getItems().clear();
-                chooseTimeRange.setItems(observableListType);
-                timeRangeContainer.setVisible(true);
             }
         }
     }
@@ -323,7 +335,6 @@ public class BrowserController implements Initializable {
     @FXML
     void secondSelection() {
         special = true;
-        forwardBt.setDisable(false);
         switch (chooseQuery.getValue()) {
             case "Suggestion" -> {
                 switch (chooseTarget.getValue()) {
@@ -356,7 +367,6 @@ public class BrowserController implements Initializable {
                     }
                     case "Categories by comments" -> {
                         list = mongoManager.getCategoriesSummaryByComments(period, 10);
-                        System.out.println(list);
                         categoriesTableView(list, "Comments");
                     }
                     case "Categories by number of papers published" -> {
@@ -375,13 +385,6 @@ public class BrowserController implements Initializable {
                     case "Most liked papers" -> {
                         List<Pair<Paper, Integer>> papers = neo4jManager.getMostLikedPapers(period, 3*page, 3);
                         fillPapers(papers, "Likes");
-                    }
-                    case "Most followed users" -> {
-                        List<Pair<User, Integer>> users = neo4jManager.getMostFollowedUsers(period, 8*page, 8);
-                        fillUsers(users, "Follower");
-                    }
-                    case "Most followed reading lists" -> {
-                        List<Pair<Pair<String, ReadingList>, Integer>> lists = neo4jManager.getMostFollowedReadingLists(period, 4*page, 4);
                     }
                 }
             }
@@ -450,7 +453,7 @@ public class BrowserController implements Initializable {
         List<String> suggestionList = new ArrayList<>();
         suggestionList.add("Special research");
         suggestionList.add("Suggestion");
-        suggestionList.add("Ranking");
+        suggestionList.add("Analytics");
         suggestionList.add("Summary");
         ObservableList<String> observableListSuggestion = FXCollections.observableList(suggestionList);
         chooseQuery.getItems().clear();
