@@ -15,9 +15,11 @@ class App(cmd.Cmd):
     intro = 'PaperRater Server launched. \n \nType help or ? to list commands.\n'
     prompt = '>'
     num_users = '1000'
-    #mongo_client = MongoClient('localhost', 27017)
+
     mongo_client = MongoClient('172.16.4.68', 27020, username='admin', password='paperRaterApp', w=3, readPreference='secondaryPreferred')
     neo4j_driver = GraphDatabase.driver("bolt://172.16.4.68:7687", auth=("neo4j", "paperRaterApp"))
+    #mongo_client = MongoClient('localhost', 27017)
+    #neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
 
 
     def do_initDB(self, arg):
@@ -80,7 +82,7 @@ class App(cmd.Cmd):
         print("Added users to database")
        
         ### Comments
-        for paper in papers_col.find():
+        for index, row in papers_df.iterrows():
             num_comments = int(random.random() * 10)
             comments = []
             for i in range(0, num_comments):
@@ -98,15 +100,15 @@ class App(cmd.Cmd):
                     "MERGE (a)-[r:HAS_COMMENTED]->(b)"
                 )
                 session.write_transaction(lambda tx: tx.run(query, username=rand_user,
-                                                            arxiv_id=paper['arxiv_id'], vixra_id=paper['vixra_id']))
+                                                            arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id']))
 
 
-            db.Papers.update_one({'_id': paper['_id']}, {'$set': {'comments': comments}})
+            db.Papers.update_one({"$and":[{'arxiv_id': row['arxiv_id']}, {'vixra_id': row['vixra_id']}]}, {'$set': {'comments': comments}})
 
         print("Added comments and has commented relationship to database")
 
         ### Reading Lists
-        for user in users_col.find():
+        for index, row in users_df.iterrows():
             num_reading_lists = int(random.random() * 6)
             reading_lists = []
 
@@ -138,7 +140,7 @@ class App(cmd.Cmd):
                          "WHERE a.username = $username "
                          "CREATE (b:ReadingList { owner: $username, title: $title}) ")
                 session.write_transaction(
-                    lambda tx: tx.run(query, username=user['username'], title=reading_list['title']))
+                    lambda tx: tx.run(query, username=row['username'], title=reading_list['title']))
 
                 n_follows = int(random.random() * 4)
                 for i in range(0, n_follows):
@@ -146,7 +148,7 @@ class App(cmd.Cmd):
                     while True:
                         rand_follower = users_df.sample()['username'].values[0]
                         # Users can not follow their Reading Lists
-                        if rand_follower != user['username']:
+                        if rand_follower != row['username']:
                             break
 
                     query = (
@@ -156,10 +158,10 @@ class App(cmd.Cmd):
                     )
                     reading_lists.append(reading_list)
                     session.write_transaction(lambda tx: tx.run(query, username1=rand_follower,
-                                                                username2=user['username'], title=reading_list['title']))
+                                                                username2=row['username'], title=reading_list['title']))
 
 
-            result = db.Users.update_one({'_id': user['_id']}, {'$set': {'readingLists': reading_lists}})
+            result = db.Users.update_one({'username': row['username']}, {'$set': {'readingLists': reading_lists}})
 
         print("Added Reading Lists and Follows")
 
@@ -219,7 +221,7 @@ class App(cmd.Cmd):
                 "username": username,
                 "email": username + "@gmail.com",
                 "password": username,
-                 "password": "admin",
+                "password": "admin",
                 "firstName": "",
                 "lastName": "",
                 "picture": "",
