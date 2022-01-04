@@ -15,18 +15,18 @@ class App(cmd.Cmd):
     intro = 'PaperRater Server launched. \n \nType help or ? to list commands.\n'
     prompt = '>'
     num_users = '1000'
-    mongo_client = MongoClient('localhost', 27017)
-    #mongo_client = MongoClient('172.16.4.68', 27020)
-    neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
+    #mongo_client = MongoClient('localhost', 27017)
+    mongo_client = MongoClient('172.16.4.68', 27020, username='admin', password='paperRaterApp', w=3, readPreference='secondaryPreferred')
+    neo4j_driver = GraphDatabase.driver("bolt://172.16.4.68:7687", auth=("neo4j", "paperRaterApp"))
 
 
     def do_initDB(self, arg):
         'Initialize database'
 
-        start_date = '2021-11-30'
+        start_date = '2012-01-01'
 
-        # papers_path = getPapers.import_data(start_date)
-        papers_path = './data/papers2021-11-30.json'
+        #papers_path = getPapers.import_data(start_date)
+        papers_path = './data/papers2012-01-01.json'
         # users_path = getUsers.import_data(num_users)
         users_path = './data/users.json'
 
@@ -41,7 +41,9 @@ class App(cmd.Cmd):
 
         # Drop old databases
         self.mongo_client.drop_database('PaperRater')
-        query = ("CREATE OR REPLACE DATABASE neo4j")
+
+        #query = ("CREATE OR REPLACE DATABASE neo4j")
+        query = ("MATCH (n) DETACH DELETE n")
         session.write_transaction(lambda tx: tx.run(query))
 
         # Create new databases

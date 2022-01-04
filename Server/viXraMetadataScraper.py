@@ -55,10 +55,13 @@ def get_data(start_date):
                 abstract = a.find_all("p", recursive=False)[1].find(text=True).strip()
                     # Avoid bad characters
                 abstract = abstract.encode('utf-8', 'replace').decode()
-
                 primary_category = a.find_all("p", recursive=False)[1].find("a").text
 
             except IndexError:
+                continue
+            except AttributeError:
+                continue
+            except ValueError:
                 continue
 
             contents = {'vixra_id': vixra_id,
