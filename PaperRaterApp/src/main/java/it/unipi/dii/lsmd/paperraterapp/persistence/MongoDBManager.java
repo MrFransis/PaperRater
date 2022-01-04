@@ -526,14 +526,17 @@ public class MongoDBManager {
      *
      * @return List of Users
      */
-    public List<User> getBadUsers() {
+    public List<User> getBadUsers(int skipDoc, int limitDoc) {
         List<User> results = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         Consumer<Document> convertInUser = doc -> {
             User user = gson.fromJson(gson.toJson(doc), User.class);
             results.add(user);
         };
-        usersCollection.find(gte("deletedComments", 1)).forEach(convertInUser);
+        Bson filter = match(gte("deletedComments", 1));
+        Bson skip = skip(skipDoc);
+        Bson limit = limit(limitDoc);
+        usersCollection.aggregate(Arrays.asList(filter, skip, limit)).forEach(convertInUser);
         return results;
     }
 
