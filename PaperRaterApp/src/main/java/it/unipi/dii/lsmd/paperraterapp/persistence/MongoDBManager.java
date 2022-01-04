@@ -680,13 +680,11 @@ public class MongoDBManager {
     /**
      * Method that returns papers with the highest number of comments in the specified period of time.
      * @param period (all, month, week)
-     * @param limitDoc First "number" papers
-     * @param skipDoc Skip papers
+     * @param skipDoc (positive integer)
+     * @param limitDoc (positive integer)
      * @return HashMap with the title and the number of comments
      */
     public List<Pair<Paper, Integer>> getMostCommentedPapers(String period, int skipDoc, int limitDoc) {
-        List<Pair<Paper, Integer>> results = new ArrayList<>();
-        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
@@ -700,9 +698,12 @@ public class MongoDBManager {
         }
         String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        Consumer<Document> rankPapers = doc -> {
+        List<Pair<Paper, Integer>> results = new ArrayList<>();
+        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        Consumer<Document> convertInPaper = doc -> {
+            System.out.println(doc);
             Paper paper = gson.fromJson(gson.toJson(doc), Paper.class);
-            results.add(new Pair<>(paper, (Integer) doc.get("tots")));
+            results.add(new Pair(paper, doc.getInteger("totalComments")));
         };
 
         Bson unwind = unwind("$comments");
@@ -712,25 +713,25 @@ public class MongoDBManager {
                         new Document("arxiv_id", "$arxiv_id")
                                 .append("vixra_id", "$vixra_id")
                                 .append("title", "$title")
-                                .append("_abstract", "_abstract")
+                                .append("_abstract", "$_abstract")
                                 .append("category", "$category")
                                 .append("authors", "$authors")
                                 .append("published", "$published"))
-                        .append("tots",
+                        .append("totalComments",
                                 new Document("$sum", 1)));
         Bson project = project(fields(excludeId(),
                 computed("arxiv_id", "$_id.arxiv_id"),
-                computed("vixra_id", "$_id.arxiv_id"),
+                computed("vixra_id", "$_id.vixra_id"),
                 computed("title", "$_id.title"),
                 computed("_abstract", "$_id._abstract"),
                 computed("category", "$_id.category"),
                 computed("authors", "$_id.authors"),
                 computed("published", "$_id.published"),
-                include("tots")));
-        Bson sort = sort(Indexes.descending("tots"));
+                include("totalComments")));
+        Bson sort = sort(Indexes.descending("totalComments"));
         Bson skip = skip(skipDoc);
         Bson limit = limit(limitDoc);
-        papersCollection.aggregate(Arrays.asList(unwind, filter, group, project, sort, skip, limit)).forEach(rankPapers);
+        papersCollection.aggregate(Arrays.asList(unwind, filter, group, project, sort, skip, limit)).forEach(convertInPaper);
 
         return results;
     }
