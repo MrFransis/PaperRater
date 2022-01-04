@@ -43,14 +43,16 @@
                               <Font size="14.0" />
                            </font>
                         </Text>
-                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="202.0" text="Email">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <VBox.margin>
-                              <Insets bottom="5.0" />
-                           </VBox.margin>
-                        </Label>
+                        <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                           <children>
+                              <Label fx:id="analyticLabelName" text="AnalyticLabelName" />
+                              <Text fx:id="analyticValue" strokeType="OUTSIDE" strokeWidth="0.0" text="AnalyticValue">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>

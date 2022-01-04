@@ -19,6 +19,8 @@ public class UserCardCtrl implements Initializable {
     @FXML private Circle imageProfile;
     @FXML private Label usernameLb;
     @FXML private Text emailTf;
+    @FXML private Label analyticLabelName;
+    @FXML private Text analyticValue;
 
     private User user;
     private MongoDBManager mongoMan;
@@ -28,7 +30,7 @@ public class UserCardCtrl implements Initializable {
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
     }
 
-    public void setParameters (User user) {
+    public void setParameters (User user, String analyticLabelName, int analyticValue) {
         this.user = user;
 
         usernameLb.setText(user.getUsername());
@@ -38,6 +40,15 @@ public class UserCardCtrl implements Initializable {
       /*  Image image = new Image(user.getPicture(),false);
         imageProfile.setFill(new ImagePattern(image));
         imageProfile.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));*/
+
+        if (analyticLabelName != null) {
+            this.analyticLabelName.setText(analyticLabelName);
+            this.analyticValue.setText(String.valueOf(analyticValue));
+        }
+        else {
+            this.analyticLabelName.setVisible(false);
+            this.analyticValue.setVisible(false);
+        }
     }
 
     @FXML

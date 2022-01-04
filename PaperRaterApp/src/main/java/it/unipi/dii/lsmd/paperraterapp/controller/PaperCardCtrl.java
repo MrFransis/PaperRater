@@ -23,7 +23,8 @@ public class PaperCardCtrl {
     @FXML private Label paperTitle;
     @FXML private Label paperAuthors;
     @FXML private Text paperCategory;
-    @FXML private Text paperLikes;
+    @FXML private Label analyticLabelName;
+    @FXML private Text analyticValue;
     @FXML private Button removeFromReadingListBtn;
 
     public void initialize () {
@@ -33,7 +34,8 @@ public class PaperCardCtrl {
         removeFromReadingListBtn.setOnMouseClicked(mouseEvent -> clickOnRemoveFromReadingListBtn(mouseEvent));
     }
 
-    public void setPaperCard (Paper p, boolean showDeleteBtn, ReadingListPageController readingListPageCtrl) {
+    public void setPaperCard (Paper p, boolean showDeleteBtn, ReadingListPageController readingListPageCtrl,
+                              String analyticLabelName, int analyticValue) {
         this.p = p;
 
         String validId;
@@ -61,6 +63,15 @@ public class PaperCardCtrl {
         }
         paperAuthors.setText(tmp);
         paperCategory.setText(p.getCategory());
+
+        if (analyticLabelName != null) {
+            this.analyticLabelName.setText(analyticLabelName);
+            this.analyticValue.setText(String.valueOf(analyticValue));
+        }
+        else {
+            this.analyticLabelName.setVisible(false);
+            this.analyticValue.setVisible(false);
+        }
 
         if (showDeleteBtn) {
             removeFromReadingListBtn.setVisible(true);

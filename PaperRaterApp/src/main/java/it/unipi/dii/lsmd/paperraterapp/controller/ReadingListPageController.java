@@ -106,7 +106,7 @@ public class ReadingListPageController {
             pane = loader.load();
             PaperCardCtrl ctrl = loader.getController();
             boolean showDeleteBtn = Session.getInstance().getLoggedUser().getUsername().equals(username.getText());
-            ctrl.setPaperCard(p, showDeleteBtn, this);
+            ctrl.setPaperCard(p, showDeleteBtn, this, null, 0);
 
         }
         catch (Exception e) {
