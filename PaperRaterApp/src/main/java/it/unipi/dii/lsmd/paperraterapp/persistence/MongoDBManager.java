@@ -523,7 +523,7 @@ public class MongoDBManager {
 
     /**
      * Method that returns a list of users whose comments have been deleted at least one time.
-     * It is used by admins to to ban users who have not respected application's policy.
+     * It is used by admins to ban users who have not respected application's policy.
      *
      * @return List of Users
      */

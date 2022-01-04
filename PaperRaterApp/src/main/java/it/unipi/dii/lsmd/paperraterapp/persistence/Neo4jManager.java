@@ -527,8 +527,8 @@ public class Neo4jManager {
      * @param limit
      * @return List of Papers
      */
-    public List<Paper> getPaperSummaryByLikes(String period, int limit) {
-        List<Paper> topPapers = new ArrayList<>();
+    public List<Pair<Paper, Integer>> getPaperSummaryByLikes(String period, int limit) {
+        List<Pair<Paper, Integer>> topPapers = new ArrayList<>();
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
@@ -566,7 +566,7 @@ public class Neo4jManager {
                                             r.get("Category").asString(),
                                             authors, null, new ArrayList<>());
 
-                    topPapers.add(snap);
+                    topPapers.add(new Pair(snap, r.get("like_count").asInt()));
                 }
                 return null;
             });
@@ -660,21 +660,21 @@ public class Neo4jManager {
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public List<User> getSnapsOfMostFollowedUsers (final int num) {
-        List<User> rank;
+    public List<Pair<User, Integer>> getSnapsOfMostFollowedUsers (final int num) {
+        List<Pair<User, Integer>> rank;
         try (Session session = driver.session()) {
             rank = session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
                                 "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
                                 "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
                         parameters("num", num));
-                List<User> popularUser = new ArrayList<>();
+                List<Pair<User, Integer>> popularUser = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
                     User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
                             "","","","",-1, new ArrayList<>(), 0);
 
-                    popularUser.add(snap);
+                    popularUser.add(new Pair(snap, r.get("numFollower").asInt()));
                 }
                 return popularUser;
             });
