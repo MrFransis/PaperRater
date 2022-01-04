@@ -94,15 +94,6 @@ class App(cmd.Cmd):
                            'timestamp': now.strftime("%Y-%m-%d %H:%M:%S")}
                 comments.append(comment)
 
-                query = (
-                    "MATCH (a:User), (b:Paper) "
-                    "WHERE a.username = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) "
-                    "MERGE (a)-[r:HAS_COMMENTED]->(b)"
-                )
-                session.write_transaction(lambda tx: tx.run(query, username=rand_user,
-                                                            arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id']))
-
-
             db.Papers.update_one({"$and":[{'arxiv_id': row['arxiv_id']}, {'vixra_id': row['vixra_id']}]}, {'$set': {'comments': comments}})
 
         print("Added comments and has commented relationship to database")
