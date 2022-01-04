@@ -476,7 +476,7 @@ public class Neo4jManager {
      * @param limit
      * @return List of Papers
      */
-    public List<Pair<Paper, Integer>> getMostLikedPapers(String period, int limit) {
+    public List<Pair<Paper, Integer>> getMostLikedPapers(String period, int skip, int limit) {
         List<Pair<Paper, Integer>> topPapers = new ArrayList<>();
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
@@ -498,8 +498,9 @@ public class Neo4jManager {
                                 "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title AS Title, " +
                                 "p.category AS Category, p.authors AS Authors, " +
                                 "COUNT(l) AS like_count ORDER BY like_count DESC " +
+                                "SKIP $skip " +
                                 "LIMIT $limit",
-                        parameters( "start_date", filterDate,"limit", limit));
+                        parameters( "start_date", filterDate,"skip", skip, "limit", limit));
 
                 while(result.hasNext()){
                     Record r = result.next();
@@ -528,59 +529,20 @@ public class Neo4jManager {
     }
 
     /**
-     * Method that returns categories with the highest number of likes in the specified period of time.
-     * @param period
-     * @return list of categories and the number of likes
-     */
-    public List<Pair<String, Integer>> getCategoriesSummaryByLikes(String period, int top) {
-        List<Pair<String, Integer>> results = new ArrayList<>();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime startOfDay;
-        switch (period) {
-            case "all" -> startOfDay = LocalDateTime.MIN;
-            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
-            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
-            default -> {
-                System.err.println("ERROR: Wrong period.");
-                return null;
-            }
-        }
-        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        try(Session session = driver.session()) {
-            session.readTransaction(tx -> {
-                Result result = tx.run( "MATCH (p:Paper)<-[l:LIKES]-(:User) " +
-                                        "WHERE p.published >= $start_date " +
-                                        "RETURN count(l) AS nLikes, p.category AS Category LIMIT $limit ",
-                        parameters( "start_date", filterDate, "limit", top));
-
-                while(result.hasNext()){
-                    Record r = result.next();
-                    results.add(new Pair(r.get("Category").asString(), r.get("nLikes").asInt()));
-                }
-                return null;
-            });
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return results;
-    }
-
-    /**
      * Return a hashmap with the most popular user
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public List<Pair<User, Integer>> getMostFollowedUsers (final int num) {
+    public List<Pair<User, Integer>> getMostFollowedUsers (int skip, int num) {
         List<Pair<User, Integer>> rank;
         try (Session session = driver.session()) {
             rank = session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
                                 "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
-                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
-                        parameters("num", num));
+                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC " +
+                                "SKIP $skip " +
+                                "LIMIT $num",
+                        parameters("skip", skip, "num", num));
                 List<Pair<User, Integer>> popularUser = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
@@ -600,14 +562,16 @@ public class Neo4jManager {
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public List<Pair<Pair<String, ReadingList>, Integer>> getMostFollowedReadingLists (final int num) {
+    public List<Pair<Pair<String, ReadingList>, Integer>> getMostFollowedReadingLists (int skip, final int num) {
         List<Pair<Pair<String, ReadingList>, Integer>> rank;
         try (Session session = driver.session()) {
             rank = session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:ReadingList)<-[r:FOLLOWS]-(:User) " +
                                 "RETURN DISTINCT target.title AS Title, target.owner AS Owner, " +
-                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
-                        parameters("num", num));
+                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC " +
+                                "SKIP $skip " +
+                                "LIMIT $num",
+                        parameters("skip", skip, "num", num));
                 List<Pair<Pair<String, ReadingList>, Integer>> popularReadingLists = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
@@ -775,5 +739,46 @@ public class Neo4jManager {
             e.printStackTrace();
         }
         return readingListsSnap;
+    }
+
+    /**
+     * Method that returns categories with the highest number of likes in the specified period of time.
+     * @param period
+     * @return list of categories and the number of likes
+     */
+    public List<Pair<String, Integer>> getCategoriesSummaryByLikes(String period, int top) {
+        List<Pair<String, Integer>> results = new ArrayList<>();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDateTime startOfDay;
+        switch (period) {
+            case "all" -> startOfDay = LocalDateTime.MIN;
+            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
+            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
+            default -> {
+                System.err.println("ERROR: Wrong period.");
+                return null;
+            }
+        }
+        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        try(Session session = driver.session()) {
+            session.readTransaction(tx -> {
+                Result result = tx.run( "MATCH (p:Paper)<-[l:LIKES]-(:User) " +
+                                "WHERE p.published >= $start_date " +
+                                "RETURN count(l) AS nLikes, p.category AS Category LIMIT $limit ",
+                        parameters( "start_date", filterDate, "limit", top));
+
+                while(result.hasNext()){
+                    Record r = result.next();
+                    results.add(new Pair(r.get("Category").asString(), r.get("nLikes").asInt()));
+                }
+                return null;
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return results;
     }
 }

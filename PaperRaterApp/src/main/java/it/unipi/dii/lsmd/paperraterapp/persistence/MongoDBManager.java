@@ -541,7 +541,7 @@ public class MongoDBManager {
     }
 
     /*Users with the highest number of categories in their reading lists  */
-    /** TO FIX
+    /**
      * Function that return a list of User with the highest number of categories reading lists
      * @param limitDoc First "number" users
      * @param skipDoc Skip users
@@ -598,7 +598,7 @@ public class MongoDBManager {
     }
 
     /**
-     * Braws all comments that has been written "numDays" ago
+     * Browse all comments that has been written "numDays" ago
      * @param start_date start date
      * @param start_date finish date
      * @param skipDoc how many comments skip
@@ -640,53 +640,14 @@ public class MongoDBManager {
         return results;
     }
 
-    /*CESTINO FORSE*/
-    /**
-     * Method that returns users that with the highest number of comments in the specified period of time.
-     * @param period (all, month, week)
-     * @param top (positive integer)
-     * @return HashMap with the title and the number of comments
-     */
-    public List<Pair<String, Integer>> getUsersSummaryByComments(String period, int top) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime startOfDay;
-        switch (period) {
-            case "all" -> startOfDay = LocalDateTime.MIN;
-            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
-            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
-            default -> {
-                System.err.println("ERROR: Wrong period.");
-                return null;
-            }
-        }
-        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        List<Pair<String, Integer>> results = new ArrayList<>();
-        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
-        Consumer<Document> convert = doc -> {
-            results.add(new Pair(doc.getString("username"), doc.getInteger("tots")));
-        };
-
-        Bson unwind = unwind("$comments");
-        Bson filter = match(gte("comments.timestamp", filterDate));
-        Bson group = group("$username", sum("tots", 1));
-        Bson sort = sort(Indexes.descending("tots"));
-        Bson limit = limit(top);
-        papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort, limit)).forEach(convert);
-
-        return results;
-    }
-
     /**
      * Method that returns papers with the highest number of comments in the specified period of time.
      * @param period (all, month, week)
-     * @param limitDoc First "number" papers
-     * @param skipDoc Skip papers
+     * @param skipDoc (positive integer)
+     * @param limitDoc (positive integer)
      * @return HashMap with the title and the number of comments
      */
     public List<Pair<Paper, Integer>> getMostCommentedPapers(String period, int skipDoc, int limitDoc) {
-        List<Pair<Paper, Integer>> results = new ArrayList<>();
-        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
@@ -700,9 +661,12 @@ public class MongoDBManager {
         }
         String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        Consumer<Document> rankPapers = doc -> {
+        List<Pair<Paper, Integer>> results = new ArrayList<>();
+        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        Consumer<Document> convertInPaper = doc -> {
+            System.out.println(doc);
             Paper paper = gson.fromJson(gson.toJson(doc), Paper.class);
-            results.add(new Pair<>(paper, (Integer) doc.get("tots")));
+            results.add(new Pair(paper, doc.getInteger("totalComments")));
         };
 
         Bson unwind = unwind("$comments");
@@ -712,57 +676,27 @@ public class MongoDBManager {
                         new Document("arxiv_id", "$arxiv_id")
                                 .append("vixra_id", "$vixra_id")
                                 .append("title", "$title")
-                                .append("_abstract", "_abstract")
+                                .append("_abstract", "$_abstract")
                                 .append("category", "$category")
                                 .append("authors", "$authors")
                                 .append("published", "$published"))
-                        .append("tots",
+                        .append("totalComments",
                                 new Document("$sum", 1)));
         Bson project = project(fields(excludeId(),
                 computed("arxiv_id", "$_id.arxiv_id"),
-                computed("vixra_id", "$_id.arxiv_id"),
+                computed("vixra_id", "$_id.vixra_id"),
                 computed("title", "$_id.title"),
                 computed("_abstract", "$_id._abstract"),
                 computed("category", "$_id.category"),
                 computed("authors", "$_id.authors"),
                 computed("published", "$_id.published"),
-                include("tots")));
-        Bson sort = sort(Indexes.descending("tots"));
+                include("totalComments")));
+        Bson sort = sort(Indexes.descending("totalComments"));
         Bson skip = skip(skipDoc);
         Bson limit = limit(limitDoc);
-        papersCollection.aggregate(Arrays.asList(unwind, filter, group, project, sort, skip, limit)).forEach(rankPapers);
+        papersCollection.aggregate(Arrays.asList(unwind, filter, group, project, sort, skip, limit)).forEach(convertInPaper);
 
         return results;
-    }
-
-    /**
-     * ???????????
-     * @return
-     */
-    public List<Pair<String, Integer>> getCategoriesSummaryByLikes(/*String option*/) {
-
-        List<Pair<String, Integer>> topCategories = new ArrayList<>();
-
-        Bson group = group("$category", sum("nPapers", 1));
-        Bson sort = sort(descending("nPapers"));
-        Bson project = project(fields(computed("category", "$_id"),
-                excludeId(), include("nPapers")));
-
-        try(MongoCursor<Document> cursor = papersCollection.aggregate(Arrays.asList(group, sort, project))
-                .iterator()) {
-            while(cursor.hasNext()) {
-                Document doc = cursor.next();
-                String category = doc.getString("category");
-                int nPapers = doc.getInteger("nPapers");
-                topCategories.add(new Pair<>(category, nPapers));
-            }
-        }
-        catch (Exception e) {
-            System.out.println("Error in getting number of papers by category");
-            e.printStackTrace();
-        }
-
-        return topCategories;
     }
 
     /*Weekly/Monthly/All time summary of the categories by number of papers Published */
@@ -837,15 +771,9 @@ public class MongoDBManager {
         return results;
     }
 
-
     public List<String> getCategories() {
         List<String> categoriesList = new ArrayList<>();
         papersCollection.distinct("category", String.class).into(categoriesList);
         return categoriesList;
-    }
-
-    public static void main(String[] args) {
-        MongoDBManager mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
-        System.out.println(mongoMan.getMostCommentedPapers("all", 10, 10));
     }
 }
