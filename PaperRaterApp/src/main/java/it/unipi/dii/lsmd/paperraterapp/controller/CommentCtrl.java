@@ -48,11 +48,14 @@ public class CommentCtrl {
         scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 
-    public void setCommentCard (Comment c, User user, Paper paper) {
+    public void setCommentCard (Comment c, User user, Paper paper, boolean browser) {
         this.c = c;
         this.paper = paper;
         this.user = user;
-        bin.setOnMouseClicked(mouseEvent -> clickOnBin(mouseEvent));
+        if (browser)
+            bin.setOnMouseClicked(mouseEvent -> clickOnBinBrowser(mouseEvent));
+        else
+            bin.setOnMouseClicked(mouseEvent -> clickOnBin(mouseEvent));
         if(Objects.equals(user.getUsername(), c.getUsername())) {
             bin.setVisible(true);
             modify.setVisible(true);
@@ -63,18 +66,6 @@ public class CommentCtrl {
                 bin.setVisible(false);
             modify.setVisible(false);
         }
-        username.setText(c.getUsername());
-        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-        timestamp.setText(formatter.format(c.getTimestamp()));
-        comment.setText(c.getText());
-    }
-
-    public void setCommentCardfromBrowser (Comment c, Paper paper) {
-        this.c = c;
-        this.paper = paper;
-        bin.setOnMouseClicked(mouseEvent -> clickOnBinBrowser(mouseEvent));
-        bin.setVisible(true);
-        modify.setVisible(false);
         username.setText(c.getUsername());
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         timestamp.setText(formatter.format(c.getTimestamp()));
