@@ -272,7 +272,7 @@ public class BrowserController implements Initializable {
                 typeList.add("Most liked papers");
                 typeList.add("Most followed users");
                 typeList.add("Most followed reading lists");    //?
-                typeList.add("Most versatile users");   //?
+                typeList.add("Most versatile users");
                 ObservableList<String> observableListType = FXCollections.observableList(typeList);
                 chooseTarget.getItems().clear();
                 chooseTarget.setItems(observableListType);
@@ -346,7 +346,7 @@ public class BrowserController implements Initializable {
                 String period = chooseTimeRange.getValue().toLowerCase(Locale.ROOT);
                 switch (chooseTarget.getValue()) {
                     case "Categories by likes" -> {
-                        //list = neo4jManager.getCategoriesSummaryByLikes(period, 10);
+                        list = neo4jManager.getCategoriesSummaryByLikes(period, 10);
                         categoriesTableView(list, "Likes");
                     }
                     case "Categories by comments" -> {
@@ -360,39 +360,38 @@ public class BrowserController implements Initializable {
                     }
                 }
             }
+            case "Analytics" -> {
+                String period = chooseTimeRange.getValue().toLowerCase(Locale.ROOT);
+                switch (chooseTarget.getValue()) {
+                    case "Most commented papers" -> {
+                        List<Pair<Paper, Integer>> papers = mongoManager.getMostCommentedPapers(period, 3*page, 3);
+                        fillPapers(papers, "Comments");
+                    }
+                    case "Most liked papers" -> {
 
-            //case "Analytics" -> {
-            //    forwardBt.setDisable(true);
-            //    switch (chooseTarget.getValue()) {
-            //        case "Most liked paper" -> {
-            //            List<Paper> rankPapers = neo4jManager.getSnapsOfMostLikedPapers(3);
-            //            fillPapers(rankPapers);
-            //        }
-            //        case "Most active users" -> {
-            //            List<User> rankUsers = neo4jManager.getSnapsOfMostActiveUsers(8);
-            //            fillUsers(rankUsers);
-            //        }
-            //        case "Most popular users" -> {
-            //            List<User> rankUsers = neo4jManager.getSnapsOfMostPopularUsers(8);
-            //            fillUsers(rankUsers);
-            //        }
-            //        case "Most popular reading lists" -> {
-            //            List<Pair<String, ReadingList>> rankReadingList = neo4jManager.getSnapsOfMostPopularReadingList(4);
-            //            fillReadingLists(rankReadingList);
-            //        }
-            //    }
-            //}
+                    }
+                    case "Most followed users" -> {
+
+                    }
+                    case "Most followed reading lists" -> {
+
+                    }
+                    case "Most versatile users" -> {
+
+                    }
+                }
+            }
         }
     }
     // -------------------------------------------- UTILS --------------------------------------------
 
-    private Pane loadUsersCard (User user) {
+    private Pane loadUsersCard (User user, String analytics, int value) {
         Pane pane = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/usercard.fxml"));
             pane = loader.load();
             UserCardCtrl ctrl = loader.getController();
-            ctrl.setParameters(user);
+            ctrl.setParameters(user, analytics, value);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -400,13 +399,13 @@ public class BrowserController implements Initializable {
         return pane;
     }
 
-    private Pane loadPapersCard (Paper paper) {
+    private Pane loadPapersCard (Paper paper, String analytics, int value) {
         Pane pane = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/papercard.fxml"));
             pane = loader.load();
             PaperCardCtrl ctrl = loader.getController();
-            ctrl.setPaperCard(paper, false, null);
+            ctrl.setPaperCard(paper, false, null, analytics, value);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -414,13 +413,13 @@ public class BrowserController implements Initializable {
         return pane;
     }
 
-    private Pane loadReadingListsCard (ReadingList readingList, String owner) {
+    private Pane loadReadingListsCard (ReadingList readingList, String owner, String analytics, int value) {
         Pane pane = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/layout/readinglistcard.fxml"));
             pane = loader.load();
             ReadingListCardCtrl ctrl = loader.getController();
-            ctrl.setReadingListCard(readingList, owner);
+            ctrl.setReadingListCard(readingList, owner, analytics, value);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -492,7 +491,25 @@ public class BrowserController implements Initializable {
         int row = 0;
         int col = 0;
         for (User u : usersList) {
-            Pane card = loadUsersCard(u);
+            Pane card = loadUsersCard(u, null, 0);
+            cardsGrid.add(card, col, row);
+            col++;
+            if (col == 4) {
+                col = 0;
+                row++;
+            }
+        }
+    }
+
+    private void fillUsers(List<Pair<User, Integer>> usersList, String label) {
+        // set new layout
+        setGridUsers();
+        if (usersList.size() != 8)
+            forwardBt.setDisable(true);
+        int row = 0;
+        int col = 0;
+        for (Pair<User, Integer> u : usersList) {
+            Pane card = loadUsersCard(u.getKey(), label, u.getValue());
             cardsGrid.add(card, col, row);
             col++;
             if (col == 4) {
@@ -508,7 +525,19 @@ public class BrowserController implements Initializable {
             forwardBt.setDisable(true);
         int row = 0;
         for (Paper p : papersList) {
-            Pane card = loadPapersCard(p);
+            Pane card = loadPapersCard(p, null, 0);
+            cardsGrid.add(card, 0, row);
+            row++;
+        }
+    }
+
+    private void fillPapers(List<Pair<Paper, Integer>> papersList, String label) {
+        setGridPapers();
+        if (papersList.size() != 3)
+            forwardBt.setDisable(true);
+        int row = 0;
+        for (Pair<Paper, Integer> p : papersList) {
+            Pane card = loadPapersCard(p.getKey(), label, p.getValue());
             cardsGrid.add(card, 0, row);
             row++;
         }
@@ -520,7 +549,20 @@ public class BrowserController implements Initializable {
             forwardBt.setDisable(true);
         int row = 0;
         for (Pair<String, ReadingList> cardInfo : readingLists) {
-            Pane card = loadReadingListsCard(cardInfo.getValue(), cardInfo.getKey());
+            Pane card = loadReadingListsCard(cardInfo.getValue(), cardInfo.getKey(), null, 0);
+            cardsGrid.add(card, 0, row);
+            row++;
+        }
+    }
+
+    private void fillReadingLists(List<Pair<Pair<String, ReadingList>, Integer>> readingLists, String label) {
+        setGridReadingList();
+        if (readingLists.size() != 4)
+            forwardBt.setDisable(true);
+        int row = 0;
+        for (Pair<Pair<String, ReadingList>, Integer> cardInfo : readingLists) {
+            Pane card = loadReadingListsCard(cardInfo.getKey().getValue(), cardInfo.getKey().getKey(),
+                    label, cardInfo.getValue());
             cardsGrid.add(card, 0, row);
             row++;
         }
