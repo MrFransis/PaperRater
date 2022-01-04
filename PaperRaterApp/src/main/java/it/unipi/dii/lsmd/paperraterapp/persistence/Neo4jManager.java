@@ -476,7 +476,7 @@ public class Neo4jManager {
      * @param limit
      * @return List of Papers
      */
-    public List<Pair<Paper, Integer>> getMostLikedPapers(String period, int limit) {
+    public List<Pair<Paper, Integer>> getMostLikedPapers(String period, int skip, int limit) {
         List<Pair<Paper, Integer>> topPapers = new ArrayList<>();
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
@@ -498,8 +498,9 @@ public class Neo4jManager {
                                 "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title AS Title, " +
                                 "p.category AS Category, p.authors AS Authors, " +
                                 "COUNT(l) AS like_count ORDER BY like_count DESC " +
+                                "SKIP $skip " +
                                 "LIMIT $limit",
-                        parameters( "start_date", filterDate,"limit", limit));
+                        parameters( "start_date", filterDate,"skip", skip, "limit", limit));
 
                 while(result.hasNext()){
                     Record r = result.next();
@@ -573,14 +574,16 @@ public class Neo4jManager {
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public List<Pair<User, Integer>> getMostFollowedUsers (final int num) {
+    public List<Pair<User, Integer>> getMostFollowedUsers (int skip, int num) {
         List<Pair<User, Integer>> rank;
         try (Session session = driver.session()) {
             rank = session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
                                 "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
-                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
-                        parameters("num", num));
+                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC " +
+                                "SKIP $skip " +
+                                "LIMIT $num",
+                        parameters("skip", skip, "num", num));
                 List<Pair<User, Integer>> popularUser = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
@@ -600,14 +603,16 @@ public class Neo4jManager {
      * @param num num of rank
      * @return pair (name, numFollower)
      */
-    public List<Pair<Pair<String, ReadingList>, Integer>> getMostFollowedReadingLists (final int num) {
+    public List<Pair<Pair<String, ReadingList>, Integer>> getMostFollowedReadingLists (int skip, final int num) {
         List<Pair<Pair<String, ReadingList>, Integer>> rank;
         try (Session session = driver.session()) {
             rank = session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:ReadingList)<-[r:FOLLOWS]-(:User) " +
                                 "RETURN DISTINCT target.title AS Title, target.owner AS Owner, " +
-                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC LIMIT $num",
-                        parameters("num", num));
+                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC " +
+                                "SKIP $skip " +
+                                "LIMIT $num",
+                        parameters("skip", skip, "num", num));
                 List<Pair<Pair<String, ReadingList>, Integer>> popularReadingLists = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
