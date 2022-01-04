@@ -529,47 +529,6 @@ public class Neo4jManager {
     }
 
     /**
-     * Method that returns categories with the highest number of likes in the specified period of time.
-     * @param period
-     * @return list of categories and the number of likes
-     */
-    public List<Pair<String, Integer>> getCategoriesSummaryByLikes(String period, int top) {
-        List<Pair<String, Integer>> results = new ArrayList<>();
-        LocalDateTime localDateTime = LocalDateTime.now();
-        LocalDateTime startOfDay;
-        switch (period) {
-            case "all" -> startOfDay = LocalDateTime.MIN;
-            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
-            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
-            default -> {
-                System.err.println("ERROR: Wrong period.");
-                return null;
-            }
-        }
-        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        try(Session session = driver.session()) {
-            session.readTransaction(tx -> {
-                Result result = tx.run( "MATCH (p:Paper)<-[l:LIKES]-(:User) " +
-                                        "WHERE p.published >= $start_date " +
-                                        "RETURN count(l) AS nLikes, p.category AS Category LIMIT $limit ",
-                        parameters( "start_date", filterDate, "limit", top));
-
-                while(result.hasNext()){
-                    Record r = result.next();
-                    results.add(new Pair(r.get("Category").asString(), r.get("nLikes").asInt()));
-                }
-                return null;
-            });
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return results;
-    }
-
-    /**
      * Return a hashmap with the most popular user
      * @param num num of rank
      * @return pair (name, numFollower)
@@ -780,5 +739,46 @@ public class Neo4jManager {
             e.printStackTrace();
         }
         return readingListsSnap;
+    }
+
+    /**
+     * Method that returns categories with the highest number of likes in the specified period of time.
+     * @param period
+     * @return list of categories and the number of likes
+     */
+    public List<Pair<String, Integer>> getCategoriesSummaryByLikes(String period, int top) {
+        List<Pair<String, Integer>> results = new ArrayList<>();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDateTime startOfDay;
+        switch (period) {
+            case "all" -> startOfDay = LocalDateTime.MIN;
+            case "month" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusMonths(1);
+            case "week" -> startOfDay = localDateTime.toLocalDate().atStartOfDay().minusWeeks(1);
+            default -> {
+                System.err.println("ERROR: Wrong period.");
+                return null;
+            }
+        }
+        String filterDate = startOfDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        try(Session session = driver.session()) {
+            session.readTransaction(tx -> {
+                Result result = tx.run( "MATCH (p:Paper)<-[l:LIKES]-(:User) " +
+                                "WHERE p.published >= $start_date " +
+                                "RETURN count(l) AS nLikes, p.category AS Category LIMIT $limit ",
+                        parameters( "start_date", filterDate, "limit", top));
+
+                while(result.hasNext()){
+                    Record r = result.next();
+                    results.add(new Pair(r.get("Category").asString(), r.get("nLikes").asInt()));
+                }
+                return null;
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return results;
     }
 }
