@@ -303,6 +303,11 @@ public class BrowserController implements Initializable {
                 secondSelection();
             }
             case "Summary", "Analytics" -> {
+                if (chooseTarget.getValue().equals("Most versatile users")) {
+                    List<Pair<User, Integer>> users = mongoManager.getTopVersatileUsers(8*page, 8);
+                    fillUsers(users, "Follower");
+                    return;
+                }
                 List<String> typeList = new ArrayList<>();
                 typeList.add("Week");
                 typeList.add("Month");
@@ -368,16 +373,15 @@ public class BrowserController implements Initializable {
                         fillPapers(papers, "Comments");
                     }
                     case "Most liked papers" -> {
-
+                        List<Pair<Paper, Integer>> papers = neo4jManager.getMostLikedPapers(period, 3*page, 3);
+                        fillPapers(papers, "Likes");
                     }
                     case "Most followed users" -> {
-
+                        List<Pair<User, Integer>> users = neo4jManager.getMostFollowedUsers(period, 8*page, 8);
+                        fillUsers(users, "Follower");
                     }
                     case "Most followed reading lists" -> {
-
-                    }
-                    case "Most versatile users" -> {
-
+                        List<Pair<Pair<String, ReadingList>, Integer>> lists = neo4jManager.getMostFollowedReadingLists(period, 4*page, 4);
                     }
                 }
             }
