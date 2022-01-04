@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -25,6 +26,7 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 
@@ -339,24 +341,26 @@ public class BrowserController implements Initializable {
                 }
             }
             case "Summary" -> {
+                forwardBt.setDisable(true);
+                List<Pair<String, Integer>> list = null;
+                String period = chooseTimeRange.getValue().toLowerCase(Locale.ROOT);
                 switch (chooseTarget.getValue()) {
-                    case "Users" -> {
-                        //List<User> suggestedUser = mongoManager.
-                        //fillUsers(suggestedUser);
+                    case "Categories by likes" -> {
+                        //list = neo4jManager.getCategoriesSummaryByLikes(period, 10);
+                        categoriesTableView(list, "Likes");
                     }
-                    case "Papers" -> {
-                        List<Paper> suggestedPaper = neo4jManager.getSnapsOfSuggestedPapers(user, 2,
-                                1, 2*page, 1*page);
-                        fillPapers(suggestedPaper);
+                    case "Categories by comments" -> {
+                        list = mongoManager.getCategoriesSummaryByComments(period, 10);
+                        System.out.println(list);
+                        categoriesTableView(list, "Comments");
                     }
-                    case "Reading lists" -> {
-                        List<Pair<String, ReadingList>> suggestedReadingLists =
-                                neo4jManager.getSnapsOfSuggestedReadingLists(user, 2, 2,
-                                        2*page, 2*page);
-                        fillReadingLists(suggestedReadingLists);
+                    case "Categories by number of papers published" -> {
+                        list = mongoManager.getCategoriesSummaryByNumberOfPaperPublished(period, 10);
+                        categoriesTableView(list, "Papers published");
                     }
                 }
             }
+
             //case "Analytics" -> {
             //    forwardBt.setDisable(true);
             //    switch (chooseTarget.getValue()) {
@@ -603,6 +607,29 @@ public class BrowserController implements Initializable {
         while (cardsGrid.getChildren().size() > 0) {
             cardsGrid.getChildren().remove(0);
         }
+    }
+
+    private void categoriesTableView(List<Pair<String, Integer>> list, String value) {
+        cleanGrid();
+        TableView table = new TableView();
+        TableColumn firstColumn = new TableColumn("Categories");
+        firstColumn.setCellValueFactory(new PropertyValueFactory<>("key"));
+        TableColumn secondColumn = new TableColumn(value);
+        secondColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
+        table.getColumns().addAll(firstColumn, secondColumn);
+
+        for(Pair<String, Integer> row : list) {
+            table.getItems().add(row);
+        }
+
+        cardsGrid.setAlignment(Pos.CENTER);
+        cardsGrid.setVgap(20);
+        cardsGrid.setPadding(new Insets(30,40,30,160));
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setPercentWidth(100);
+        cardsGrid.getColumnConstraints().add(constraints);
+
+        cardsGrid.add(table, 0, 0);
     }
 
 }
