@@ -401,7 +401,7 @@ public class Neo4jManager {
 
                 while (result.hasNext()) {
                     Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("Title").asString(), new ArrayList<>());
+                    ReadingList snap = new ReadingList(r.get("Title").asString(), null);
                     readingListsSnap.add(new Pair<>(r.get("username").asString(), snap));
                 }
                 return null;
@@ -426,7 +426,7 @@ public class Neo4jManager {
                 List<Pair<String, ReadingList>> resultsList = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("title").asString(), new ArrayList<>());
+                    ReadingList snap = new ReadingList(r.get("title").asString(), null);
                     resultsList.add(new Pair<>(r.get("username").asString(), snap));
                 }
                 return resultsList;
@@ -696,7 +696,7 @@ public class Neo4jManager {
 
                 while(result.hasNext()){
                     Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("Title").asString(), new ArrayList<>());
+                    ReadingList snap = new ReadingList(r.get("Title").asString(), null);
                     readingListsSnap.add(new Pair<>(r.get("Owner").asString(), snap));
                 }
 
