@@ -274,6 +274,7 @@ public class ProfilePageController {
 
     private void clickOnDeleteUserBtn(MouseEvent mouseEvent) {
         mongoMan.deleteUser(user);
+        neoMan.deleteUser(user);
         Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
     }
 
