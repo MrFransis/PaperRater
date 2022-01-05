@@ -16,7 +16,7 @@ public class Main extends Application {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("    PaperRater");
-            stage.getIcons().add(new Image(getClass().getResourceAsStream( "img/PRlogo.png")));
+            stage.getIcons().add(new Image(getClass().getResourceAsStream( "img/iconApp.png")));
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
