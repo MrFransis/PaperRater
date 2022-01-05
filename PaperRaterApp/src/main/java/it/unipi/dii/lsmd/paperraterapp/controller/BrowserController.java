@@ -381,7 +381,7 @@ public class BrowserController implements Initializable {
                     errorTf.setText("You have to select a valid option.");
                     return;
                 }
-                if (chooseTimeRange.getValue() == null) {
+                if (!timeRangeContainer.isVisible()) {
                     switch (chooseTarget.getValue()) {
                         case "Most versatile users" -> {
                             List<Pair<User, Integer>> users = mongoManager.getTopVersatileUsers(8*page, 8);
