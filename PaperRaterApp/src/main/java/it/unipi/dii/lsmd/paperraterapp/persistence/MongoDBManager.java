@@ -664,7 +664,6 @@ public class MongoDBManager {
         List<Pair<Paper, Integer>> results = new ArrayList<>();
         Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
         Consumer<Document> convertInPaper = doc -> {
-            System.out.println(doc);
             Paper paper = gson.fromJson(gson.toJson(doc), Paper.class);
             results.add(new Pair(paper, doc.getInteger("totalComments")));
         };

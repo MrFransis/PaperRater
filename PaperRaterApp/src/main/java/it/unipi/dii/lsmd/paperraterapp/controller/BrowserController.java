@@ -385,7 +385,7 @@ public class BrowserController implements Initializable {
                     switch (chooseTarget.getValue()) {
                         case "Most versatile users" -> {
                             List<Pair<User, Integer>> users = mongoManager.getTopVersatileUsers(8*page, 8);
-                            fillUsers(users, "Follower");
+                            fillUsers(users, "Categories saved");
                         }
                         case "Most followed users" -> {
                             List<Pair<User, Integer>> users = neo4jManager.getMostFollowedUsers(8*page, 8);
@@ -473,7 +473,6 @@ public class BrowserController implements Initializable {
     private void loadComboBox () {
         // load suggestion
         List<String> suggestionList = new ArrayList<>();
-        suggestionList.add("Special research");
         suggestionList.add("Suggestion");
         suggestionList.add("Analytics");
         suggestionList.add("Summary");
