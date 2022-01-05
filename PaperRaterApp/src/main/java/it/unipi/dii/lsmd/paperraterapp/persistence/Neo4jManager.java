@@ -713,7 +713,7 @@ public class Neo4jManager {
      * @param period
      * @return list of categories and the number of likes
      */
-    public List<Pair<String, Integer>> getCategoriesSummaryByLikes(String period, int top) {
+    public List<Pair<String, Integer>> getCategoriesSummaryByLikes(String period) {
         List<Pair<String, Integer>> results = new ArrayList<>();
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
@@ -732,8 +732,9 @@ public class Neo4jManager {
             session.readTransaction(tx -> {
                 Result result = tx.run( "MATCH (p:Paper)<-[l:LIKES]-(:User) " +
                                 "WHERE p.published >= $start_date " +
-                                "RETURN count(l) AS nLikes, p.category AS Category LIMIT $limit ",
-                        parameters( "start_date", filterDate, "limit", top));
+                                "RETURN count(l) AS nLikes, p.category AS Category " +
+                                "ORDER BY nLikes DESC",
+                        parameters( "start_date", filterDate));
 
                 while(result.hasNext()){
                     Record r = result.next();

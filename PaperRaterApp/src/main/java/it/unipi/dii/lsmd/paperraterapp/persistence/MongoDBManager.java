@@ -706,7 +706,7 @@ public class MongoDBManager {
      * @param number number of results to show
      * @return The list of the most common categories
      */
-    public List<Pair<String, Integer>> getCategoriesSummaryByNumberOfPaperPublished (String period, int number){
+    public List<Pair<String, Integer>> getCategoriesSummaryByNumberOfPaperPublished (String period){
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
@@ -726,9 +726,8 @@ public class MongoDBManager {
         Bson group = group("$category", sum("totalPaper", 1));
         Bson project = project(fields(excludeId(), computed("category", "$_id"), include("totalPaper")));
         Bson sort = sort(descending("totalPaper"));
-        Bson limit = limit(number);
 
-        List<Document> results = (List<Document>) papersCollection.aggregate(Arrays.asList(match, group, project, sort, limit)).into(new ArrayList<>());
+        List<Document> results = (List<Document>) papersCollection.aggregate(Arrays.asList(match, group, project, sort)).into(new ArrayList<>());
 
         for (Document document: results)
         {
@@ -743,7 +742,7 @@ public class MongoDBManager {
      * @param top (positive integer)
      * @return HashMap with the category and the number of comments
      */
-    public List<Pair<String, Integer>> getCategoriesSummaryByComments(String period, int top) {
+    public List<Pair<String, Integer>> getCategoriesSummaryByComments(String period) {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime startOfDay;
         switch (period) {
@@ -765,8 +764,7 @@ public class MongoDBManager {
         Bson filter = match(gte("comments.timestamp", filterDate));
         Bson group = group("$category", sum("tots", 1));
         Bson sort = sort(Indexes.descending("tots"));
-        Bson limit = limit(top);
-        papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort, limit)).forEach(rankCategories);
+        papersCollection.aggregate(Arrays.asList(unwind, filter, group, sort)).forEach(rankCategories);
 
         return results;
     }

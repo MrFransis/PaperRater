@@ -22,7 +22,7 @@
                   <Font size="14.0" />
                </font>
             </PasswordField>
-            <Button fx:id="loginButton" layoutX="40.0" layoutY="320.0" mnemonicParsing="false" onAction="#checkCredential" prefHeight="25.0" prefWidth="225.0" stylesheets="@../style/main.css" text="Login" textFill="WHITE">
+            <Button fx:id="loginButton" defaultButton="true" layoutX="40.0" layoutY="320.0" mnemonicParsing="false" onAction="#checkCredential" prefHeight="25.0" prefWidth="225.0" stylesheets="@../style/main.css" text="Login" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>

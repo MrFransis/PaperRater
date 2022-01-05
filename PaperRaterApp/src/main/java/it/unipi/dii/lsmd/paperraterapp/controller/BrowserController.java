@@ -242,33 +242,34 @@ public class BrowserController implements Initializable {
     }
 
     // -------------------------------------------- SPECIAL RESEARCH --------------------------------------------
+
+
     @FXML
     void showOption() {
         page = 0;
         special = 1;
-        specialSearchBt.setDisable(false);
+        cleanGrid();
+        paramContainer.setVisible(false);
+        timeRangeContainer.setVisible(false);
+        //chooseTarget.getItems().clear();
+        chooseTarget.setPromptText("Select option");
+        forwardBt.setDisable(true);
+        backBt.setDisable(true);
+        specialSearchBt.setDisable(true);
+        special = 0;
         switch (chooseQuery.getValue()) {
-            case "Special research" -> {
-                cleanGrid();
-                paramContainer.setVisible(false);
-                timeRangeContainer.setVisible(false);
-                chooseTarget.getItems().clear();
-                forwardBt.setDisable(true);
-                backBt.setDisable(true);
-                specialSearchBt.setDisable(true);
-                special = 0;
-            }
             case "Suggestion" -> {
                 List<String> typeList1 = new ArrayList<>();
                 typeList1.add("Papers");
                 typeList1.add("Users");
                 typeList1.add("Reading lists");
                 ObservableList<String> observableListType1 = FXCollections.observableList(typeList1);
-                chooseTarget.getItems().clear();
+                //chooseTarget.getItems().clear();
                 chooseTarget.setItems(observableListType1);
                 chooseTarget.setPromptText("Select option");
                 paramContainer.setVisible(true);
                 timeRangeContainer.setVisible(false);
+                chooseTarget.setDisable(false);
             }
             case "Analytics" -> {
                 List<String> typeList2 = new ArrayList<>();
@@ -278,11 +279,11 @@ public class BrowserController implements Initializable {
                 typeList2.add("Most followed reading lists");
                 typeList2.add("Most versatile users");
                 ObservableList<String> observableListType2 = FXCollections.observableList(typeList2);
-                chooseTarget.getItems().clear();
+                //chooseTarget.getItems().clear();
                 chooseTarget.setItems(observableListType2);
                 chooseTarget.setPromptText("Select option");
                 paramContainer.setVisible(true);
-                timeRangeContainer.setVisible(true);
+                chooseTarget.setDisable(false);
             }
             case "Summary" -> {
                 List<String> typeList = new ArrayList<>();
@@ -290,12 +291,31 @@ public class BrowserController implements Initializable {
                 typeList.add("Categories by comments");
                 typeList.add("Categories by number of papers published");
                 ObservableList<String> observableListType = FXCollections.observableList(typeList);
-                chooseTarget.getItems().clear();
+                //chooseTarget.getItems().clear();
                 chooseTarget.setItems(observableListType);
                 paramContainer.setVisible(true);
                 timeRangeContainer.setVisible(true);
+                chooseTarget.setDisable(false);
             }
         }
+    }
+
+    @FXML
+    void selectedOption() {
+        if (chooseTarget.getValue() != null) {
+            switch (chooseTarget.getValue()) {
+                case "Most versatile users", "Most followed users", "Most followed reading lists" -> {
+                    timeRangeContainer.setVisible(false);
+                    specialSearchBt.setDisable(false);
+                }
+                default -> timeRangeContainer.setVisible(true);
+            }
+        }
+    }
+
+    @FXML
+    void periodSelected() {
+        specialSearchBt.setDisable(false);
     }
 
     @FXML
@@ -342,15 +362,15 @@ public class BrowserController implements Initializable {
                     List<Pair<String, Integer>> list;
                     switch (chooseTarget.getValue()) {
                         case "Categories by likes" -> {
-                            list = neo4jManager.getCategoriesSummaryByLikes(period, 10);
+                            list = neo4jManager.getCategoriesSummaryByLikes(period);
                             categoriesTableView(list, "Likes");
                         }
                         case "Categories by comments" -> {
-                            list = mongoManager.getCategoriesSummaryByComments(period, 10);
+                            list = mongoManager.getCategoriesSummaryByComments(period);
                             categoriesTableView(list, "Comments");
                         }
                         case "Categories by number of papers published" -> {
-                            list = mongoManager.getCategoriesSummaryByNumberOfPaperPublished(period, 10);
+                            list = mongoManager.getCategoriesSummaryByNumberOfPaperPublished(period);
                             categoriesTableView(list, "Papers published");
                         }
                     }
@@ -682,7 +702,7 @@ public class BrowserController implements Initializable {
         for(Pair<String, Integer> row : list) {
             table.getItems().add(row);
         }
-
+        // append the table to a scrollable (???)
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(20);
         cardsGrid.setPadding(new Insets(30,40,30,160));

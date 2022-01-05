@@ -127,11 +127,14 @@
                         </CheckBox>
                      </children>
                   </HBox>
-                  <Button fx:id="searchBt" disable="true" mnemonicParsing="false" onAction="#startResearch" prefHeight="30.0" prefWidth="200.0" text="Search">
+                  <Button fx:id="searchBt" disable="true" mnemonicParsing="false" onAction="#startResearch" prefHeight="30.0" prefWidth="200.0" text="Search" textFill="WHITE">
                      <styleClass>
                         <String fx:value="search-button" />
                         <String fx:value="dynamic-button" />
-                     </styleClass></Button>
+                     </styleClass>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Button>
                   <Label fx:id="errorTf" alignment="CENTER" textAlignment="CENTER" textFill="RED">
                      <font>
                         <Font size="14.0" />
@@ -161,7 +164,7 @@
                         </HBox>
                         <HBox fx:id="paramContainer" alignment="CENTER" layoutX="368.0" layoutY="20.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar" visible="false">
                            <children>
-                              <ComboBox fx:id="chooseTarget" onAction="#firstSelection" prefHeight="25.0" prefWidth="169.0" promptText="Select Target" styleClass="transparent">
+                              <ComboBox fx:id="chooseTarget" onAction="#selectedOption" prefHeight="25.0" prefWidth="169.0" promptText="Select option" styleClass="transparent">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -173,7 +176,7 @@
                         </HBox>
                         <HBox fx:id="timeRangeContainer" alignment="CENTER" layoutX="468.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar" visible="false">
                            <children>
-                              <ComboBox fx:id="chooseTimeRange" onAction="#secondSelection" prefHeight="25.0" prefWidth="169.0" promptText="Select period" styleClass="transparent">
+                              <ComboBox fx:id="chooseTimeRange" onAction="#periodSelected" prefHeight="25.0" prefWidth="169.0" promptText="Select period" styleClass="transparent">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -183,6 +186,15 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
                         </HBox>
+                        <Button fx:id="specialSearchBt" disable="true" mnemonicParsing="false" onAction="#startSpecialSearch" text="View">
+                           <styleClass>
+                              <String fx:value="buttonlog" />
+                              <String fx:value="dynamic-button" />
+                           </styleClass>
+                           <HBox.margin>
+                              <Insets left="3.0" right="3.0" />
+                           </HBox.margin>
+                        </Button>
                         <Label fx:id="profileTf" onMouseClicked="#goToProfilePage" styleClass="dynamic-effect" text="My Profile" textAlignment="CENTER" textFill="WHITE" underline="true">
                            <font>
                               <Font size="18.0" />
