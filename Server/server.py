@@ -126,6 +126,7 @@ class App(cmd.Cmd):
                     papers.append(paper_to_add)
 
                 reading_list['papers'] = papers
+                reading_lists.append(reading_list)
 
                 query = ("MATCH (a:User) "
                          "WHERE a.username = $username "
@@ -134,7 +135,7 @@ class App(cmd.Cmd):
                     lambda tx: tx.run(query, username=row['username'], title=reading_list['title']))
 
                 n_follows = int(random.random() * 4)
-                for i in range(0, n_follows):
+                for k in range(0, n_follows):
 
                     while True:
                         rand_follower = users_df.sample()['username'].values[0]
@@ -147,7 +148,7 @@ class App(cmd.Cmd):
                             "WHERE a.username = $username1 AND (b.owner = $username2 AND b.title = $title) "
                             "CREATE (a)-[r:FOLLOWS]->(b)"
                     )
-                    reading_lists.append(reading_list)
+
                     session.write_transaction(lambda tx: tx.run(query, username1=rand_follower,
                                                                 username2=row['username'], title=reading_list['title']))
 
@@ -276,4 +277,3 @@ class App(cmd.Cmd):
 
 if __name__ == '__main__':
     App().cmdloop()
-
