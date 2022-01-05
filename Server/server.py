@@ -16,10 +16,10 @@ class App(cmd.Cmd):
     prompt = '>'
     num_users = '1000'
 
-    #mongo_client = MongoClient('172.16.4.68', 27020, username='admin', password='paperRaterApp', w=3, readPreference='secondaryPreferred')
-    #neo4j_driver = GraphDatabase.driver("bolt://172.16.4.68:7687", auth=("neo4j", "paperRaterApp"))
-    mongo_client = MongoClient('localhost', 27017)
-    neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
+    mongo_client = MongoClient('172.16.4.68', 27020, username='admin', password='paperRaterApp', w=3, readPreference='secondaryPreferred')
+    neo4j_driver = GraphDatabase.driver("bolt://172.16.4.68:7687", auth=("neo4j", "paperRaterApp"))
+    #mongo_client = MongoClient('localhost', 27017)
+    #neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
 
 
     def do_initDB(self, arg):
@@ -96,7 +96,7 @@ class App(cmd.Cmd):
 
             db.Papers.update_one({"$and":[{'arxiv_id': row['arxiv_id']}, {'vixra_id': row['vixra_id']}]}, {'$set': {'comments': comments}})
 
-        print("Added comments and has commented relationship to database")
+        print("Added comments to database")
 
         ### Reading Lists
         for index, row in users_df.iterrows():
