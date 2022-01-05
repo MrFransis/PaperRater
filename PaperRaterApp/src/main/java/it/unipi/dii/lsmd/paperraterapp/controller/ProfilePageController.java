@@ -46,6 +46,8 @@ public class ProfilePageController {
     @FXML
     private Text lastName;
     @FXML
+    private Text age;
+    @FXML
     private Text nFollower;
     @FXML
     private Text nFollowing;
@@ -87,6 +89,7 @@ public class ProfilePageController {
         email.setText(user.getEmail());
         firstName.setText(user.getFirstName());
         lastName.setText(user.getLastName());
+        age.setText(String.valueOf(user.getAge()));
         nFollower.setText(String.valueOf(neoMan.getNumFollowersUser(user.getUsername())));
         nFollowing.setText(String.valueOf(neoMan.getNumFollowingUser(user.getUsername())));
 
