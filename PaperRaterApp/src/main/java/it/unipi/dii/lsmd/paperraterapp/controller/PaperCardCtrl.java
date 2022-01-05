@@ -7,7 +7,9 @@ import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
@@ -94,19 +96,24 @@ public class PaperCardCtrl {
     }
 
     private void clickOnRemoveFromReadingListBtn(MouseEvent mouseEvent) {
-        // Get the reading list
-        ReadingList r = Session.getInstance().getPreviousPageReadingList().get(
-                Session.getInstance().getPreviousPageReadingList().size() - 1).getValue();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Remove Paper?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
 
-        mongoMan.removePaperFromReadingList(Session.getInstance().getLoggedUser().getUsername(),
-                r.getTitle(),
-                p);
+        if (alert.getResult() == ButtonType.YES) {
+            // Get the reading list
+            ReadingList r = Session.getInstance().getPreviousPageReadingList().get(
+                    Session.getInstance().getPreviousPageReadingList().size() - 1).getValue();
 
-        // Remove the paper from the local copy of the reading list
-        r.getPapers().remove(p);
+            mongoMan.removePaperFromReadingList(Session.getInstance().getLoggedUser().getUsername(),
+                    r.getTitle(),
+                    p);
 
-        // Refresh ReadingListPage
-        readingListPageCtrl.setReadingList(r,
-                Session.getInstance().getLoggedUser().getUsername());
+            // Remove the paper from the local copy of the reading list
+            r.getPapers().remove(p);
+
+            // Refresh ReadingListPage
+            readingListPageCtrl.setReadingList(r,
+                    Session.getInstance().getLoggedUser().getUsername());
+        }
     }
 }
