@@ -44,5 +44,5 @@ def import_data(start_date):
     return path
 
 if __name__ == "__main__":
-    start_date = "2021-11-30"
+    start_date = "2015-01-01"
     import_data(start_date)
