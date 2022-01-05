@@ -665,7 +665,7 @@ public class BrowserController implements Initializable {
     private void setGridPapers() {
         cleanGrid();
         cardsGrid.setAlignment(Pos.CENTER);
-        cardsGrid.setVgap(40);
+        cardsGrid.setVgap(25);
         cardsGrid.setPadding(new Insets(30,40,30,100));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
