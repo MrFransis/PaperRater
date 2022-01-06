@@ -89,7 +89,10 @@ public class ProfilePageController {
         email.setText(user.getEmail());
         firstName.setText(user.getFirstName());
         lastName.setText(user.getLastName());
-        age.setText(String.valueOf(user.getAge()));
+        if (user.getAge() != -1)
+            age.setText(String.valueOf(user.getAge()));
+        else
+            age.setText("");
         nFollower.setText(String.valueOf(neoMan.getNumFollowersUser(user.getUsername())));
         nFollowing.setText(String.valueOf(neoMan.getNumFollowingUser(user.getUsername())));
 
