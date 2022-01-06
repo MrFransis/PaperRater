@@ -73,7 +73,7 @@ public class PaperPageController implements Initializable {
         title.setText(paper.getTitle());
 
         String validId;
-        if (!Objects.equals(p.getArxivId(), "None")) {
+        if (!Objects.equals(p.getArxivId(), "nan")) {
             validId = p.getArxivId();
             id.setText("arXiv:" + validId);
             linkPdf = "https://arXiv.org/pdf/" + validId + "v1.pdf";
