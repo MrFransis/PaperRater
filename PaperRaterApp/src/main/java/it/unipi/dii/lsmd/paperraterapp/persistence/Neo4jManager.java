@@ -60,6 +60,21 @@ public class Neo4jManager {
         }
     }
 
+    public boolean updateUser(User u) {
+        try(Session session = driver.session()) {
+            session.writeTransaction((TransactionWork<Void>) tx -> {
+                tx.run("MATCH (u:User {username: $username}) SET u.email = $newEmail",
+                        parameters("username", u.getUsername(), "newEmail", u.getEmail()));
+                return null;
+            });
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * return the number of reading lists of the user
      * @param username username of the user

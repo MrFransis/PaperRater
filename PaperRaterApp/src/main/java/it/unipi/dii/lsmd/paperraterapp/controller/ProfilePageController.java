@@ -23,7 +23,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ProfilePageController {
@@ -207,15 +207,17 @@ public class ProfilePageController {
         lastName.setPromptText("Last Name");
         TextField age = new TextField(String.valueOf(Session.getInstance().getLoggedUser().getAge()));
         age.setPromptText("Age");
+        TextField email = new TextField(Session.getInstance().getLoggedUser().getEmail());
+        email.setPromptText("Email");
         PasswordField password = new PasswordField();
         password.setPromptText("Password");
 
-        dialogPane.setContent(new VBox(8, firstName, lastName, age, password));
+        dialogPane.setContent(new VBox(8, firstName, lastName, age, email, password));
         Platform.runLater(firstName::requestFocus);
         dialog.setResultConverter((ButtonType button) -> {
             if (button == ButtonType.OK) {
                 return new User(Session.getInstance().getLoggedUser().getUsername(),
-                        Session.getInstance().getLoggedUser().getEmail(),
+                        email.getText(),
                         Session.getInstance().getLoggedUser().getPassword(),
                         firstName.getText(),
                         lastName.getText(),
@@ -229,7 +231,10 @@ public class ProfilePageController {
         Optional<User> optionalResult = dialog.showAndWait();
         optionalResult.ifPresent((User u) -> {
             mongoMan.updateUser(u);
-
+            System.out.println(Session.getInstance().getLoggedUser().getEmail());
+            System.out.println(email.getText());
+            if(!Objects.equals(Session.getInstance().getLoggedUser().getEmail(), email.getText()))
+                neoMan.updateUser(u);
             // Refresh Page Content
             Session.getInstance().setLoggedUser(u);
             setProfilePage(u);

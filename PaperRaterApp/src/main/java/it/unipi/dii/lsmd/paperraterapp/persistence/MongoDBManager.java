@@ -125,6 +125,8 @@ public class MongoDBManager {
     public boolean updateUser (User u){
         try {
             Document doc = new Document().append("username", u.getUsername());
+            if (!u.getEmail().isEmpty())
+                doc.append("email", u.getEmail());
             if (!u.getPassword().isEmpty())
                 doc.append("password", u.getPassword());
             if (!u.getFirstName().isEmpty())
