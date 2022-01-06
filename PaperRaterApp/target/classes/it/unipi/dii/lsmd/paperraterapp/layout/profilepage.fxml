@@ -84,7 +84,7 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <VBox layoutX="143.0" layoutY="139.0" prefHeight="69.0" prefWidth="273.0">
+            <VBox layoutX="143.0" layoutY="139.0" prefHeight="69.0" prefWidth="273.0" style="-fx-spacing: 5;">
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
                      <children>
@@ -102,6 +102,12 @@
                      <children>
                         <Label text="Last Name:" />
                         <Text fx:id="lastName" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" wrappingWidth="179.07620239257812" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                     <children>
+                        <Label text="Age:" />
+                        <Text fx:id="age" strokeType="OUTSIDE" strokeWidth="0.0" text="age" wrappingWidth="179.07620239257812" />
                      </children>
                   </HBox>
                </children>
