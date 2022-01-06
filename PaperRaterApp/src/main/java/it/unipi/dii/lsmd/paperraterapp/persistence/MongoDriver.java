@@ -70,9 +70,9 @@ public class MongoDriver {
 
             MongoClientSettings clientSettings = MongoClientSettings.builder()
                     .applyConnectionString(connectionString)
-                    .readPreference(ReadPreference.secondaryPreferred())
+                    .readPreference(ReadPreference.primaryPreferred())
                     .retryWrites(true)
-                    .writeConcern(WriteConcern.W3)
+                    .writeConcern(WriteConcern.W1)
                     .codecRegistry(pojoCodecRegistry)
                     .build();
 
