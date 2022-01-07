@@ -49,7 +49,7 @@
                <children>
                   <HBox prefHeight="100.0" prefWidth="700.0">
                      <children>
-                        <Circle fill="DODGERBLUE" radius="80.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fx:id="profileImg" fill="DODGERBLUE" radius="80.0" stroke="BLACK" strokeType="INSIDE" />
                         <VBox alignment="TOP_CENTER" prefHeight="111.0" prefWidth="561.0">
                            <children>
                           <Label fx:id="username" alignment="CENTER" style="&#10;" text="Username" textAlignment="CENTER" textFill="#100000" wrapText="false">
@@ -214,12 +214,15 @@
                         </HBox>
                         <ScrollPane prefHeight="180.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
                           <content>
-                              <VBox fx:id="box" alignment="TOP_CENTER" spacing="5.0">
+                              <VBox fx:id="box" alignment="TOP_CENTER" prefHeight="195.0" prefWidth="693.0" spacing="5.0">
                                  <padding>
                                     <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                  </padding>
                               </VBox>
                           </content>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
                         </ScrollPane>
                      </children>
                      <VBox.margin>

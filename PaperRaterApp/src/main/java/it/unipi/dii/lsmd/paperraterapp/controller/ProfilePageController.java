@@ -108,7 +108,7 @@ public class ProfilePageController {
 
         if (!user.getPicture().isEmpty()) {
             Image image = null;
-            image = new Image(this.getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png").getPath(),false);
+            image = new Image("/it/unipi/dii/lsmd/paperraterapp/img/user.png", true);
             profileImg.setFill(new ImagePattern(image));
             profileImg.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));
         }
