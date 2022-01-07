@@ -13,14 +13,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -108,12 +106,9 @@ public class ProfilePageController {
 
         if (!user.getPicture().isEmpty()) {
             Image image = null;
-
             URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
             image = new Image(String.valueOf(url));
-
             profileImg.setFill(new ImagePattern(image));
-            profileImg.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));
         }
 
         if (neoMan.userAFollowsUserB(Session.getInstance().getLoggedUser().getUsername(), user.getUsername()))
