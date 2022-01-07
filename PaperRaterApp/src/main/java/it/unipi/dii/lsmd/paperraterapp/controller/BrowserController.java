@@ -609,7 +609,7 @@ public class BrowserController implements Initializable {
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(20);
         cardsGrid.setHgap(5);
-        cardsGrid.setPadding(new Insets(30,40,30,120));
+        cardsGrid.setPadding(new Insets(15,40,15,120));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
@@ -654,7 +654,7 @@ public class BrowserController implements Initializable {
         cleanGrid();
         cardsGrid.setHgap(20);
         cardsGrid.setVgap(20);
-        cardsGrid.setPadding(new Insets(30,40,30,40));
+        cardsGrid.setPadding(new Insets(15,40,15,40));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(25);
         cardsGrid.getColumnConstraints().add(constraints);
@@ -664,7 +664,7 @@ public class BrowserController implements Initializable {
         cleanGrid();
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(25);
-        cardsGrid.setPadding(new Insets(30,40,30,100));
+        cardsGrid.setPadding(new Insets(15,40,15,100));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
@@ -674,7 +674,7 @@ public class BrowserController implements Initializable {
         cleanGrid();
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(20);
-        cardsGrid.setPadding(new Insets(30,40,30,160));
+        cardsGrid.setPadding(new Insets(15,40,15,160));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);

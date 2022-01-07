@@ -13,11 +13,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="commentBox" maxHeight="800.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="110.0" prefWidth="600.0" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.CommentCtrl">
+<AnchorPane fx:id="commentBox" maxHeight="800.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.0" prefWidth="565.0" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.CommentCtrl">
    <children>
-      <VBox prefHeight="110.0" prefWidth="210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox prefHeight="110.0" prefWidth="565.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="590.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="555.0">
                <children>
                   <Label fx:id="username" alignment="CENTER" prefHeight="19.0" prefWidth="206.0" styleClass="dynamic-effect" text="Username">
                      <font>
@@ -35,7 +35,7 @@
                         <Insets right="80.0" />
                      </HBox.margin>
                   </Text>
-                  <ImageView fx:id="modify" fitHeight="30.0" fitWidth="30.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" styleClass="dynamic-button">
+                  <ImageView fx:id="modify" fitHeight="23.0" fitWidth="19.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" styleClass="dynamic-button">
                      <image>
                         <Image url="@../img/edit.png" />
                      </image>
@@ -46,7 +46,7 @@
                         <Insets right="20.0" />
                      </HBox.margin>
                   </ImageView>
-                  <ImageView fx:id="bin" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" styleClass="dynamic-button">
+                  <ImageView fx:id="bin" fitHeight="26.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true" styleClass="dynamic-button">
                      <image>
                         <Image url="@../img/bin.png" />
                      </image>
@@ -59,7 +59,7 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <ScrollPane fx:id="scrollpane" prefHeight="72.0" prefWidth="210.0">
+            <ScrollPane fx:id="scrollpane" prefHeight="69.0" prefWidth="515.0">
                <content>
                   <Text fx:id="comment" strokeType="OUTSIDE" strokeWidth="0.0" text="Comment" wrappingWidth="543.0">
                      <font>
