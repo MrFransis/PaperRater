@@ -15,7 +15,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -42,12 +41,13 @@ public class UserCardCtrl implements Initializable {
         emailTf.setText(user.getEmail());
 
         // set image
-    /*    Image image = null;
-
-        image = new Image(this.getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png").getFile(),false);
-
-        imageProfile.setFill(new ImagePattern(image));
-        imageProfile.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));*/
+        if (!user.getPicture().isEmpty()) {
+            Image image = null;
+            URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
+            image = new Image(String.valueOf(url));
+            imageProfile.setFill(new ImagePattern(image));
+            imageProfile.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));
+        }
 
         if (analyticLabelName != null) {
             this.analyticLabelName.setText(analyticLabelName);

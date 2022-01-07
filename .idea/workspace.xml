@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="restyle user page">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/resources/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.class" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/controller/ProfilePageController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml" afterDir="false" />
+    <list default="true" id="cacf9f0b-5afc-48e0-8d83-75ee5f3d7988" name="Changes" comment="fix back icon">
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/UserCardCtrl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/src/main/java/it/unipi/dii/lsmd/paperraterapp/controller/UserCardCtrl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/PaperRaterApp/target/classes/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -250,28 +247,7 @@
       <workItem from="1641313099988" duration="6636000" />
       <workItem from="1641390491247" duration="9620000" />
       <workItem from="1641509601399" duration="4358000" />
-      <workItem from="1641546817139" duration="7269000" />
-    </task>
-    <task id="LOCAL-00028" summary="work no:&#10;- graphic design&#10;- browser navigation&#10;- backends useful query">
-      <created>1640478242684</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1640478242684</updated>
-    </task>
-    <task id="LOCAL-00029" summary="working on the browser">
-      <created>1640515010800</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1640515010800</updated>
-    </task>
-    <task id="LOCAL-00030" summary="users browse complete">
-      <created>1640538971626</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1640538971626</updated>
+      <workItem from="1641546817139" duration="8277000" />
     </task>
     <task id="LOCAL-00031" summary="users browse complete">
       <created>1640539004260</created>
@@ -595,7 +571,28 @@
       <option name="project" value="LOCAL" />
       <updated>1641554569720</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="restyle user page">
+      <created>1641555829383</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1641555829383</updated>
+    </task>
+    <task id="LOCAL-00078" summary="restyle reading list page">
+      <created>1641556620413</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1641556620413</updated>
+    </task>
+    <task id="LOCAL-00079" summary="fix back icon">
+      <created>1641556804863</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1641556804863</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -638,8 +635,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="add error flag to login" />
-    <MESSAGE value="remove hashmap" />
     <MESSAGE value="fix user browse" />
     <MESSAGE value="fix in  general" />
     <MESSAGE value="browser paper complete" />
@@ -663,7 +658,9 @@
     <MESSAGE value="restyle of the paper page and comments cards" />
     <MESSAGE value="fix browser" />
     <MESSAGE value="restyle user page" />
-    <option name="LAST_COMMIT_MESSAGE" value="restyle user page" />
+    <MESSAGE value="restyle reading list page" />
+    <MESSAGE value="fix back icon" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix back icon" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

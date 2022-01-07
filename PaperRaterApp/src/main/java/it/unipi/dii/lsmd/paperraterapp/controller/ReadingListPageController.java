@@ -16,7 +16,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -40,7 +39,7 @@ public class ReadingListPageController {
     @FXML private Text mostCommonCategory;
     @FXML private Text numFollowers;
     @FXML private Text numPapers;
-    @FXML private ImageView backIcon;
+    @FXML private Button backIcon;
     @FXML private VBox papersBox;
     @FXML private Button deleteReadingListBtn;
     @FXML private Button followBtn;
