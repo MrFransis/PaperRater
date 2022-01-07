@@ -25,6 +25,10 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
@@ -105,15 +109,15 @@ public class ProfilePageController {
             nPapers += r.getPapers().size();
         nPapersSaved.setText(String.valueOf(nPapers));
 
-
         if (!user.getPicture().isEmpty()) {
             Image image = null;
-            image = new Image("/it/unipi/dii/lsmd/paperraterapp/img/user.png", true);
+
+            URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
+            image = new Image(String.valueOf(url));
+
             profileImg.setFill(new ImagePattern(image));
             profileImg.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));
         }
-
-
 
         if (neoMan.userAFollowsUserB(Session.getInstance().getLoggedUser().getUsername(), user.getUsername()))
             followBtn.setText("Unfollow");
