@@ -13,17 +13,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
@@ -39,7 +35,7 @@ public class ProfilePageController {
     @FXML
     private ImageView editIcon;
     @FXML
-    private Circle profileImg;
+    private ImageView profileImg;
     @FXML
     private Label username;
     @FXML
@@ -104,12 +100,10 @@ public class ProfilePageController {
             nPapers += r.getPapers().size();
         nPapersSaved.setText(String.valueOf(nPapers));
 
-        if (!user.getPicture().isEmpty()) {
-            Image image = null;
-            URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
-            image = new Image(String.valueOf(url));
-            profileImg.setFill(new ImagePattern(image));
-        }
+        //Image image = null;
+        //URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
+        //image = new Image(String.valueOf(url));
+        //profileImg.setFill(new ImagePattern(image));
 
         if (neoMan.userAFollowsUserB(Session.getInstance().getLoggedUser().getUsername(), user.getUsername()))
             followBtn.setText("Unfollow");
@@ -239,7 +233,6 @@ public class ProfilePageController {
                         Session.getInstance().getLoggedUser().getPassword(),
                         firstName.getText(),
                         lastName.getText(),
-                        Session.getInstance().getLoggedUser().getPicture(),
                         Integer.parseInt(age.getText()),
                         Session.getInstance().getLoggedUser().getReadingLists(),
                         Session.getInstance().getLoggedUser().getType());

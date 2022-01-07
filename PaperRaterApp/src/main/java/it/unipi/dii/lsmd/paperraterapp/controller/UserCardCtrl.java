@@ -7,12 +7,8 @@ import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -20,7 +16,7 @@ import java.util.ResourceBundle;
 
 public class UserCardCtrl implements Initializable {
 
-    @FXML private Circle imageProfile;
+    @FXML private ImageView imageProfile;
     @FXML private Label usernameLb;
     @FXML private Text emailTf;
     @FXML private Label analyticLabelName;
@@ -40,14 +36,10 @@ public class UserCardCtrl implements Initializable {
         usernameLb.setText(user.getUsername());
         emailTf.setText(user.getEmail());
 
-        // set image
-        if (!user.getPicture().isEmpty()) {
-            Image image = null;
-            URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
-            image = new Image(String.valueOf(url));
-            imageProfile.setFill(new ImagePattern(image));
-            imageProfile.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));
-        }
+        //Image image = null;
+        //URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
+        //image = new Image(String.valueOf(url));
+        //imageProfile.setFill(new ImagePattern(image));
 
         if (analyticLabelName != null) {
             this.analyticLabelName.setText(analyticLabelName);
