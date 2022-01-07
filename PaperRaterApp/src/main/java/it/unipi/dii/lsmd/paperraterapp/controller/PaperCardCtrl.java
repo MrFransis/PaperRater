@@ -92,7 +92,8 @@ public class PaperCardCtrl {
         // If paper object is a snapshot, load the complete paper object
         if (p.getAbstract() == null)
             p = mongoMan.getPaperById(p);
-        ctrl.setPaperPage(p);
+        if (ctrl != null)
+            ctrl.setPaperPage(p);
     }
 
     private void clickOnRemoveFromReadingListBtn(MouseEvent mouseEvent) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -13,143 +14,229 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="473.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ProfilePageController">
-  <children>
-      <HBox prefHeight="32.0" prefWidth="640.0" style="-fx-border-width: 1px; -fx-border-color: lightgrey;">
-         <children>
-            <ImageView fx:id="backIcon" fitHeight="36.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../img/back.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
-         </children>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-      </HBox>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="383.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
-      <children>
-        <Label fx:id="username" alignment="CENTER" layoutX="280.0" style="&#10;" text="Username" textAlignment="CENTER" textFill="#100000" wrapText="false">
-          <font>
-            <Font size="18.0" />
-          </font>
-        </Label>
-            <ImageView fx:id="profileImg" fitHeight="85.0" fitWidth="119.0" layoutX="148.0" layoutY="38.0" pickOnBounds="true" preserveRatio="true" styleClass="-fx-background-radius: 100;">
-                <Image url="@../img/user.png" />
-            </ImageView>
-            <HBox layoutX="252.0" layoutY="31.0" prefHeight="49.0" prefWidth="244.0" style="-fx-spacing: 10;">
+
+<AnchorPane prefHeight="600.0" prefWidth="750.0" styleClass="lite" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ProfilePageController">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="473.0" prefWidth="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="57.0" prefWidth="750.0">
                <children>
-                  <VBox alignment="CENTER" prefHeight="49.0" prefWidth="61.0">
-                     <children>
-                        <Text fx:id="nFollower" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollower" textAlignment="CENTER" wrappingWidth="70.66666666666674">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
+                  <Button mnemonicParsing="false" prefHeight="45.0" prefWidth="80.0">
+                     <graphic>
+                        <ImageView fx:id="backIcon" fitHeight="36.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/back.png" />
+                           </image>
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
-                        </Text>
-                        <Label text="Followers" textAlignment="CENTER" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                     <children>
-                        <Text fx:id="nFollowing" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollowing" textAlignment="CENTER" wrappingWidth="70.66666666666674">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Text>
-                        <Label text="Following" textAlignment="CENTER" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="49.0" prefWidth="89.0">
-                     <children>
-                        <Text fx:id="nPapersSaved" strokeType="OUTSIDE" strokeWidth="0.0" text="nPaperSaved" textAlignment="CENTER">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <Label text="Papers Saved" />
-                     </children>
-                  </VBox>
+                        </ImageView>
+                     </graphic>
+                     <styleClass>
+                        <String fx:value="buttonlog" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
             </HBox>
-            <Button fx:id="followBtn" layoutX="291.0" layoutY="89.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="169.0" text="Follow">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor></Button>
-            <VBox layoutX="143.0" layoutY="139.0" prefHeight="69.0" prefWidth="273.0" style="-fx-spacing: 5;">
+            <VBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                <children>
-                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                  <HBox prefHeight="100.0" prefWidth="700.0">
                      <children>
-                        <Label prefHeight="17.0" prefWidth="35.0" text="Email:" />
-                        <Text fx:id="email" strokeType="OUTSIDE" strokeWidth="0.0" text="email@gmail.com" wrappingWidth="235.99998474121094" />
+                        <ImageView fx:id="profileImg" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true" styleClass="-fx-background-radius: 100;">
+                            <Image url="@../img/user.png" />
+                        </ImageView>
+                        <VBox alignment="TOP_CENTER" prefHeight="111.0" prefWidth="561.0">
+                           <children>
+                          <Label fx:id="username" alignment="CENTER" style="&#10;" text="Username" textAlignment="CENTER" textFill="#100000" wrapText="false">
+                            <font>
+                              <Font name="System Bold" size="18.0" />
+                            </font>
+                                 <VBox.margin>
+                                    <Insets bottom="20.0" />
+                                 </VBox.margin>
+                          </Label>
+                              <HBox alignment="CENTER" prefHeight="49.0" prefWidth="244.0" style="-fx-spacing: 10;">
+                                 <children>
+                                    <VBox alignment="CENTER" prefHeight="49.0" prefWidth="61.0">
+                                       <children>
+                                          <Text fx:id="nFollower" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollower" textAlignment="CENTER" wrappingWidth="70.66666666666674">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Text>
+                                          <Label text="Followers" textAlignment="CENTER" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Text fx:id="nFollowing" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollowing" textAlignment="CENTER" wrappingWidth="70.66666666666674">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Text>
+                                          <Label text="Following" textAlignment="CENTER" />
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets left="50.0" right="50.0" />
+                                       </HBox.margin>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="49.0" prefWidth="89.0">
+                                       <children>
+                                          <Text fx:id="nPapersSaved" strokeType="OUTSIDE" strokeWidth="0.0" text="nPaperSaved" textAlignment="CENTER">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Text>
+                                          <Label text="Papers Saved" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Button fx:id="deleteUserBtn" mnemonicParsing="false" styleClass="buttonlog" text="Delete User">
+                                        <cursor>
+                                            <Cursor fx:constant="HAND" />
+                                        </cursor>
+                                       <HBox.margin>
+                                          <Insets left="20.0" right="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button fx:id="followBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="227.0" text="Follow">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                       <styleClass>
+                                          <String fx:value="buttonlog" />
+                                          <String fx:value="dynamic-button" />
+                                       </styleClass>
+                                       <HBox.margin>
+                                          <Insets right="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button fx:id="moderatorBtn" mnemonicParsing="false" styleClass="buttonlog" text="Elect Moderator">
+                                        <cursor>
+                                            <Cursor fx:constant="HAND" />
+                                        </cursor>
+                                    </Button>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="30.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT">
+                     <children>
+                        <VBox prefHeight="69.0" prefWidth="273.0" style="-fx-spacing: 5;">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                                 <children>
+                                    <Label prefHeight="17.0" prefWidth="35.0" text="Email:" />
+                                    <Text fx:id="email" strokeType="OUTSIDE" strokeWidth="0.0" text="email@gmail.com" wrappingWidth="235.99998474121094" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                                 <children>
+                                    <Label text="First Name:" />
+                                    <Text fx:id="firstName" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" wrappingWidth="179.07620239257812" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                                 <children>
+                                    <Label text="Last Name:" />
+                                    <Text fx:id="lastName" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" wrappingWidth="179.07620239257812" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                                 <children>
+                                    <Label text="Age:" />
+                                    <Text fx:id="age" strokeType="OUTSIDE" strokeWidth="0.0" text="age" wrappingWidth="179.07620239257812" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <ImageView fx:id="editIcon" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/edit.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </ImageView>
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                  <VBox prefHeight="256.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label text="First Name:" />
-                        <Text fx:id="firstName" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" wrappingWidth="179.07620239257812" />
+                        <HBox>
+                           <children>
+                              <Label fx:id="boxLabel" text="Reading Lists:">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets right="50.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Button fx:id="addReadingListBtn" mnemonicParsing="false" text="Add a Reading List">
+                                       <styleClass>
+                                          <String fx:value="buttonlog" />
+                                          <String fx:value="dynamic-button" />
+                                       </styleClass>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <ScrollPane prefHeight="180.0" prefWidth="700.0" VBox.vgrow="ALWAYS">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                                 <children>
+                                    <VBox fx:id="box" alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
                      </children>
-                  </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
-                     <children>
-                        <Label text="Last Name:" />
-                        <Text fx:id="lastName" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" wrappingWidth="179.07620239257812" />
-                     </children>
-                  </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
-                     <children>
-                        <Label text="Age:" />
-                        <Text fx:id="age" strokeType="OUTSIDE" strokeWidth="0.0" text="age" wrappingWidth="179.07620239257812" />
-                     </children>
-                  </HBox>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </VBox>
                </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="25.0" right="25.0" />
+               </VBox.margin>
             </VBox>
-            <ImageView fx:id="editIcon" fitHeight="36.0" fitWidth="57.0" layoutX="416.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../img/edit.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
-            <Label fx:id="boxLabel" layoutX="269.0" layoutY="217.0" text="Reading Lists">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <ScrollPane layoutX="143.0" layoutY="242.0" prefHeight="161.0" prefWidth="361.0">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0">
-                     <children>
-                        <VBox fx:id="box" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
-            <Button fx:id="addReadingListBtn" layoutX="267.0" layoutY="407.0" mnemonicParsing="false" text="Add a Reading List" />
-            <VBox alignment="TOP_CENTER" layoutX="510.0" layoutY="54.0" prefHeight="69.0" prefWidth="125.0" style="-fx-spacing: 10;">
-               <children>
-                  <Button fx:id="deleteUserBtn" mnemonicParsing="false" text="Delete User">
-                      <cursor>
-                          <Cursor fx:constant="HAND" />
-                      </cursor>
-                  </Button>
-                  <Button fx:id="moderatorBtn" mnemonicParsing="false" text="Elect Moderator">
-                      <cursor>
-                          <Cursor fx:constant="HAND" />
-                      </cursor>
-                  </Button>
-               </children>
-            </VBox>
-      </children>
-    </AnchorPane>
-  </children>
-</VBox>
+        </children>
+      </VBox>
+   </children>
+</AnchorPane>

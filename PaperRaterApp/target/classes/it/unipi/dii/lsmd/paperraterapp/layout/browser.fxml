@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="750.0" prefWidth="1315.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.BrowserController">
+<AnchorPane prefHeight="600.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.BrowserController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
@@ -26,12 +26,12 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="137.0" prefWidth="360.0">
                      <children>
-                        <ImageView fitHeight="150.0" fitWidth="273.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="102.0" fitWidth="211.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../img/PRlogo.png" />
                            </image>
                            <HBox.margin>
-                              <Insets bottom="50.0" />
+                              <Insets bottom="40.0" top="20.0" />
                            </HBox.margin>
                         </ImageView>
                      </children>
@@ -148,22 +148,22 @@
             </VBox>
          </left>
          <center>
-            <VBox prefHeight="65.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <VBox prefHeight="600.0" prefWidth="604.0" BorderPane.alignment="CENTER">
                <children>
                   <HBox alignment="CENTER" prefHeight="75.0" prefWidth="930.0" styleClass="dark">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                      <children>
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar">
+                        <HBox alignment="CENTER" prefHeight="55.0" prefWidth="190.0" styleClass="search-bar">
                            <children>
-                              <ComboBox fx:id="chooseQuery" onAction="#showOption" prefHeight="25.0" prefWidth="169.0" promptText="Special research" styleClass="transparent" />
+                              <ComboBox fx:id="chooseQuery" onAction="#showOption" prefHeight="29.0" prefWidth="157.0" promptText="Special research" styleClass="transparent" />
                            </children>
                            <HBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
                         </HBox>
-                        <HBox fx:id="paramContainer" alignment="CENTER" layoutX="368.0" layoutY="20.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar" visible="false">
+                        <HBox fx:id="paramContainer" alignment="CENTER" layoutX="368.0" layoutY="20.0" prefHeight="55.0" prefWidth="155.0" styleClass="search-bar" visible="false">
                            <children>
                               <ComboBox fx:id="chooseTarget" onAction="#selectedOption" prefHeight="25.0" prefWidth="169.0" promptText="Select option" styleClass="transparent">
                                  <HBox.margin>
@@ -175,7 +175,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
                         </HBox>
-                        <HBox fx:id="timeRangeContainer" alignment="CENTER" layoutX="468.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" styleClass="search-bar" visible="false">
+                        <HBox fx:id="timeRangeContainer" alignment="CENTER" layoutX="468.0" layoutY="10.0" prefHeight="55.0" prefWidth="155.0" styleClass="search-bar" visible="false">
                            <children>
                               <ComboBox fx:id="chooseTimeRange" onAction="#periodSelected" prefHeight="25.0" prefWidth="169.0" promptText="Select period" styleClass="transparent">
                                  <HBox.margin>
@@ -187,7 +187,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </HBox.margin>
                         </HBox>
-                        <Button fx:id="specialSearchBt" disable="true" mnemonicParsing="false" onAction="#startSpecialSearch" text="View">
+                        <Button fx:id="specialSearchBt" disable="true" mnemonicParsing="false" onAction="#startSpecialSearch" prefHeight="29.0" prefWidth="95.0" text="View">
                            <styleClass>
                               <String fx:value="buttonlog" />
                               <String fx:value="dynamic-button" />
@@ -196,26 +196,29 @@
                               <Insets left="3.0" right="3.0" />
                            </HBox.margin>
                         </Button>
-                        <Label fx:id="profileTf" onMouseClicked="#goToProfilePage" styleClass="dynamic-effect" text="My Profile" textAlignment="CENTER" textFill="WHITE" underline="true">
+                        <Label fx:id="profileTf" onMouseClicked="#goToProfilePage" prefHeight="20.0" prefWidth="101.0" styleClass="dynamic-effect" text="My Profile" textAlignment="CENTER" textFill="WHITE" underline="true">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="14.0" />
                            </font>
                            <HBox.margin>
-                              <Insets left="50.0" right="20.0" />
+                              <Insets left="30.0" />
                            </HBox.margin>
                         </Label>
-                        <Label fx:id="logoutLabel" onMouseClicked="#logout" styleClass="dynamic-effect" text="Logout" textAlignment="CENTER" textFill="WHITE" underline="true">
+                        <Label fx:id="logoutLabel" onMouseClicked="#logout" prefHeight="27.0" prefWidth="79.0" styleClass="dynamic-effect" text="Logout" textAlignment="CENTER" textFill="WHITE" underline="true">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="14.0" />
                            </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
                         </Label>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0">
+                  <HBox alignment="CENTER_LEFT" prefHeight="41.0" prefWidth="580.0">
                      <children>
-                        <Button fx:id="backBt" disable="true" mnemonicParsing="false">
+                        <Button fx:id="backBt" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0">
                            <graphic>
-                              <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">
                                  <image>
                                     <Image url="@../img/back.png" />
                                  </image>
@@ -228,9 +231,9 @@
                         </Button>
                         <HBox alignment="TOP_RIGHT" prefHeight="66.0" prefWidth="750.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Button fx:id="forwardBt" disable="true" mnemonicParsing="false">
+                              <Button fx:id="forwardBt" disable="true" minHeight="50.0" minWidth="50.0" mnemonicParsing="false">
                                  <graphic>
-                                    <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">
+                                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="transparent">
                                        <image>
                                           <Image url="@../img/forward.png" />
                                        </image>
@@ -242,13 +245,16 @@
                                  </styleClass>
                               </Button>
                            </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
                         </HBox>
                      </children>
                      <opaqueInsets>
                         <Insets left="30.0" right="30.0" />
                      </opaqueInsets>
                      <VBox.margin>
-                        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+                        <Insets left="30.0" right="30.0" top="20.0" />
                      </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="785.0" VBox.vgrow="ALWAYS">

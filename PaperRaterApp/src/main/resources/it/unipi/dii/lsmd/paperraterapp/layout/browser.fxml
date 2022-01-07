@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.BrowserController">
+<AnchorPane prefHeight="600.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.BrowserController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
@@ -245,6 +245,9 @@
                                  </styleClass>
                               </Button>
                            </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
                         </HBox>
                      </children>
                      <opaqueInsets>

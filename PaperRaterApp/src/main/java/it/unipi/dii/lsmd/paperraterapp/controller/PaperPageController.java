@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -38,7 +37,7 @@ public class PaperPageController implements Initializable {
     private Neo4jManager neoMan;
     private final int maxLength = 280;
     private String linkPdf;
-    @FXML private ImageView backIcon;
+    @FXML private Button backIcon;
     @FXML private Text title;
     @FXML private Text id;
     @FXML private Text category;
