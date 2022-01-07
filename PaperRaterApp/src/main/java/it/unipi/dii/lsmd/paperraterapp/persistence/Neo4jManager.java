@@ -149,7 +149,7 @@ public class Neo4jManager {
         boolean res = false;
         try(Session session = driver.session()) {
             res = session.readTransaction((TransactionWork<Boolean>) tx -> {
-                Result r = tx.run("MATCH (a:User{username:$user})-[r:FOLLOWS]->(b:ReadingList{title:$title, username:$owner }) " +
+                Result r = tx.run("MATCH (a:User{username:$user})-[r:FOLLOWS]->(b:ReadingList{title:$title, owner:$owner }) " +
                         "RETURN COUNT(*)", parameters("user", user, "title", readingList.getTitle(), "owner", owner));
                 Record record = r.next();
                 if (record.get(0).asInt() == 0)

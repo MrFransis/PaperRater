@@ -17,7 +17,6 @@ def import_data(num):
                 'password': result['login']['password'], # Add Encryption
                 'firstName': result['name']['first'],
                 'lastName': result['name']['last'],
-                'picture': result['picture']['medium'],
                 'age': result['dob']['age']
                 }
         df = df.append(user,  ignore_index=True)
