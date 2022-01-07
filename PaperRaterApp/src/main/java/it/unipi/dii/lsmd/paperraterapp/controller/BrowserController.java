@@ -293,6 +293,7 @@ public class BrowserController implements Initializable {
                 ObservableList<String> observableListType = FXCollections.observableList(typeList);
                 //chooseTarget.getItems().clear();
                 chooseTarget.setItems(observableListType);
+                chooseTarget.setPromptText("Select option");
                 paramContainer.setVisible(true);
                 timeRangeContainer.setVisible(true);
                 chooseTarget.setDisable(false);
@@ -304,13 +305,15 @@ public class BrowserController implements Initializable {
     void selectedOption() {
         if (chooseTarget.getValue() != null) {
             switch (chooseTarget.getValue()) {
-                case "Most versatile users", "Most followed users", "Most followed reading lists" -> {
+                case "Most versatile users", "Most followed users", "Most followed reading lists",
+                        "Papers", "Users", "Reading lists" -> {
                     timeRangeContainer.setVisible(false);
                     specialSearchBt.setDisable(false);
                 }
                 default -> timeRangeContainer.setVisible(true);
             }
         }
+
     }
 
     @FXML
@@ -695,6 +698,7 @@ public class BrowserController implements Initializable {
         TableColumn secondColumn = new TableColumn(value);
         secondColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         table.getColumns().addAll(firstColumn, secondColumn);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         for(Pair<String, Integer> row : list) {
             table.getItems().add(row);
@@ -702,7 +706,7 @@ public class BrowserController implements Initializable {
         // append the table to a scrollable (???)
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(20);
-        cardsGrid.setPadding(new Insets(30,40,30,160));
+        cardsGrid.setPadding(new Insets(30,40,30,120));
         ColumnConstraints constraints = new ColumnConstraints();
         constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
