@@ -200,10 +200,19 @@ public class ProfilePageController {
         if (tmp.equals("Follow")) {
             neoMan.followUser(Session.getInstance().getLoggedUser().getUsername(), user.getUsername());
             followBtn.setText("Unfollow");
+
+            // Update the n Follower label
+            int newNumFollower = Integer.parseInt(nFollower.getText()) + 1;
+            nFollower.setText(String.valueOf(newNumFollower));
         } else {
             neoMan.unfollowUser(Session.getInstance().getLoggedUser().getUsername(), user.getUsername());
             followBtn.setText("Follow");
+
+            // Update the n Follower label
+            int newNumFollower = Integer.parseInt(nFollower.getText()) - 1;
+            nFollower.setText(String.valueOf(newNumFollower));
         }
+
     }
 
     private void clickOnEditIcon(MouseEvent mouseEvent) {
