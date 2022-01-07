@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -13,48 +14,68 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="577.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ReadingListPageController">
+
+<AnchorPane prefHeight="603.0" prefWidth="795.0" style="-fx-text-fill: white;" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.ReadingListPageController">
    <children>
-      <HBox prefHeight="32.0" prefWidth="640.0" style="-fx-border-width: 1px; -fx-border-color: lightgrey;">
+      <VBox alignment="TOP_CENTER" prefHeight="577.0" prefWidth="908.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ImageView fx:id="backIcon" fitHeight="36.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../img/back.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
-         </children>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-      </HBox>
-      <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="549.0" prefWidth="908.0" VBox.vgrow="ALWAYS">
-         <children>
-            <HBox alignment="TOP_CENTER" layoutX="33.0" layoutY="3.0" prefHeight="36.0" prefWidth="845.0" spacing="10.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="57.0" prefWidth="750.0">
                <children>
-                  <Label fx:id="readingListTitle" alignment="TOP_RIGHT" prefHeight="27.0" prefWidth="212.0" style="&#10;" text="Reading List Title" textAlignment="CENTER" textFill="#100000" wrapText="false">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="29.0" style="&#10;" text="by" textAlignment="CENTER" textFill="#100000" wrapText="false">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="username" alignment="TOP_LEFT" prefHeight="27.0" prefWidth="148.0" style="&#10;" text="Username" textAlignment="CENTER" textFill="#100000" wrapText="false">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
+                  <Button fx:id="backIcon" mnemonicParsing="false" prefHeight="45.0" prefWidth="80.0">
+                     <graphic>
+                        <ImageView fitHeight="36.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/back.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </graphic>
+                     <styleClass>
+                        <String fx:value="buttonlog" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass>
                      <HBox.margin>
-                        <Insets right="10.0" />
+                        <Insets left="20.0" />
                      </HBox.margin>
-                  </Label>
-                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="176.0">
+                  </Button>
+               </children>
+            </HBox>
+            <HBox alignment="TOP_CENTER" prefHeight="36.0" prefWidth="845.0" spacing="10.0">
+               <children>
+                  <VBox>
                      <children>
-                        <Text fx:id="mostCommonCategory" strokeType="OUTSIDE" strokeWidth="0.0" text="MostCommonCategory">
+                        <Label fx:id="readingListTitle" prefHeight="30.0" prefWidth="248.0" style="&#10;" text="Reading List Title" textAlignment="CENTER" textFill="WHITE" wrapText="false">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="27.0" prefWidth="29.0" style="&#10;" text="by:" textAlignment="CENTER" textFill="GREY" wrapText="false">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="username" alignment="TOP_LEFT" prefHeight="27.0" prefWidth="217.0" style="&#10;" text="Username" textAlignment="CENTER" textFill="WHITE" wrapText="false">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="20.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="176.0" spacing="5.0">
+                     <children>
+                        <Text fx:id="mostCommonCategory" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="MostCommonCategory">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -62,40 +83,57 @@
                               <Insets />
                            </VBox.margin>
                         </Text>
-                        <Label text="Most Common Category" />
+                        <Label text="Most Common Category" textFill="GREY" />
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="55.0">
+                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="55.0" spacing="5.0">
                      <children>
-                        <Text fx:id="numFollowers" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollowers" textAlignment="CENTER" wrappingWidth="67.107421875">
+                        <Text fx:id="numFollowers" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="nFollowers" textAlignment="CENTER" wrappingWidth="67.107421875">
                            <font>
                               <Font name="System Bold" size="12.0" />
-                           </font></Text>
-                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="17.0" prefWidth="72.0" text="Followers" textAlignment="CENTER" />
+                           </font>
+                        </Text>
+                        <Label alignment="CENTER" contentDisplay="TOP" prefHeight="17.0" prefWidth="72.0" text="Followers" textAlignment="CENTER" textFill="GREY" />
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="49.0">
+                  <VBox alignment="CENTER" prefHeight="36.0" prefWidth="49.0" spacing="5.0">
                      <children>
-                        <Text fx:id="numPapers" strokeType="OUTSIDE" strokeWidth="0.0" text="nPapers">
+                        <Text fx:id="numPapers" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="nPapers">
                            <font>
                               <Font name="System Bold" size="12.0" />
-                           </font></Text>
-                        <Label text="Papers" />
+                           </font>
+                        </Text>
+                        <Label text="Papers" textFill="GREY" />
                      </children>
                   </VBox>
-                  <Button fx:id="followBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="64.0" text="Follow">
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="755.0">
+               <children>
+                  <Button fx:id="followBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Follow">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
+                     <styleClass>
+                        <String fx:value="buttonlog" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass>
                   </Button>
-                  <Button fx:id="deleteReadingListBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Delete">
+                  <Button fx:id="deleteReadingListBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Delete">
                      <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        <Insets bottom="5.0" left="5.0" right="120.0" top="5.0" />
                      </HBox.margin>
+                     <styleClass>
+                        <String fx:value="buttonlog" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass>
                   </Button>
                </children>
             </HBox>
-            <ScrollPane layoutX="34.0" layoutY="41.0" prefHeight="449.0" prefWidth="845.0">
+            <ScrollPane prefHeight="380.0" prefWidth="755.0">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
@@ -105,9 +143,9 @@
                </content>
             </ScrollPane>
          </children>
-         <VBox.margin>
-            <Insets top="10.0" />
-         </VBox.margin>
-      </AnchorPane>
+         <padding>
+            <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+         </padding>
+      </VBox>
    </children>
-</VBox>
+</AnchorPane>
