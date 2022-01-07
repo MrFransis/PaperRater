@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -49,7 +48,11 @@
                <children>
                   <HBox prefHeight="100.0" prefWidth="700.0">
                      <children>
-                        <Circle fx:id="profileImg" fill="DODGERBLUE" radius="80.0" stroke="BLACK" strokeType="INSIDE" />
+                        <ImageView fx:id="profileImg" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/user.png" />
+                           </image>
+                        </ImageView>
                         <VBox alignment="TOP_CENTER" prefHeight="111.0" prefWidth="561.0">
                            <children>
                           <Label fx:id="username" alignment="CENTER" style="&#10;" text="Username" textAlignment="CENTER" textFill="#100000" wrapText="false">
