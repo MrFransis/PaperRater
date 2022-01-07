@@ -109,15 +109,10 @@ public class ProfilePageController {
             nPapers += r.getPapers().size();
         nPapersSaved.setText(String.valueOf(nPapers));
 
-        if (!user.getPicture().isEmpty()) {
-            Image image = null;
-
-            URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
-            image = new Image(String.valueOf(url));
-
-            profileImg.setFill(new ImagePattern(image));
-            profileImg.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));
-        }
+        URL url = getClass().getResource("/it/unipi/dii/lsmd/paperraterapp/img/user.png");
+        Image image = new Image(String.valueOf(url));
+        profileImg.setFill(new ImagePattern(image));
+        profileImg.setEffect(new DropShadow(+25d, 0d, +2d, Color.ORANGE));
 
         if (neoMan.userAFollowsUserB(Session.getInstance().getLoggedUser().getUsername(), user.getUsername()))
             followBtn.setText("Unfollow");
@@ -247,7 +242,6 @@ public class ProfilePageController {
                         Session.getInstance().getLoggedUser().getPassword(),
                         firstName.getText(),
                         lastName.getText(),
-                        Session.getInstance().getLoggedUser().getPicture(),
                         Integer.parseInt(age.getText()),
                         Session.getInstance().getLoggedUser().getReadingLists(),
                         Session.getInstance().getLoggedUser().getType());

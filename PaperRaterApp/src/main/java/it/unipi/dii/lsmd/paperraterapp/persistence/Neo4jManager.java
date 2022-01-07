@@ -529,7 +529,7 @@ public class Neo4jManager {
                 while (result.hasNext()) {
                     Record r = result.next();
                     User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
-                            "","","","",-1, new ArrayList<>(), 0);
+                            "","","",-1, new ArrayList<>(), 0);
 
                     popularUser.add(new Pair(snap, r.get("numFollower").asInt()));
                 }
@@ -664,7 +664,7 @@ public class Neo4jManager {
                 while (result.hasNext()) {
                     Record r = result.next();
                     User snap = new User(r.get("Username").asString(), r.get("Email").asString(),
-                            "","","","",-1, new ArrayList<>(), 0);
+                            "","","",-1, new ArrayList<>(), 0);
 
                     usersSnap.add(snap);
                 }

@@ -83,8 +83,6 @@ public class MongoDBManager {
                 doc.append("firstName", u.getFirstName());
             if (u.getLastName() != null)
                 doc.append("lastName", u.getLastName());
-            if (u.getPicture() != null)
-                doc.append("picture", u.getPicture());
             if (u.getAge() != -1)
                 doc.append("age", u.getAge());
 
@@ -133,8 +131,6 @@ public class MongoDBManager {
                 doc.append("firstName", u.getFirstName());
             if (!u.getLastName().isEmpty())
                 doc.append("lastName", u.getLastName());
-            if (!u.getPicture().isEmpty())
-                doc.append("picture", u.getPicture());
             if (u.getAge() != -1)
                 doc.append("age", u.getAge());
             doc.append("type", u.getType());
@@ -704,7 +700,6 @@ public class MongoDBManager {
     /**
      * Function that return the top categories by the number of papers published
      * @param period initial date
-     * @param number number of results to show
      * @return The list of the most common categories
      */
     public List<Pair<String, Integer>> getCategoriesSummaryByNumberOfPaperPublished (String period){
@@ -740,7 +735,6 @@ public class MongoDBManager {
     /**
      * Browse the top categories with more comments
      * @param period (all, month, week)
-     * @param top (positive integer)
      * @return HashMap with the category and the number of comments
      */
     public List<Pair<String, Integer>> getCategoriesSummaryByComments(String period) {

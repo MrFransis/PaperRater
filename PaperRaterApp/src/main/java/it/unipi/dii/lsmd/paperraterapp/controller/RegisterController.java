@@ -46,7 +46,7 @@ public class RegisterController {
         }
 
         User newUser = new User(username, emailTf.getText(), passwordTf.getText(), firstNameTf.getText(),
-                                lastNameTf.getText(), "", Integer.parseInt(ageTf.getText()), new ArrayList<ReadingList>(),0);
+                                lastNameTf.getText(), Integer.parseInt(ageTf.getText()), new ArrayList<ReadingList>(),0);
 
         mongoMan.addUser(newUser);
         neoMan.addUser(newUser);

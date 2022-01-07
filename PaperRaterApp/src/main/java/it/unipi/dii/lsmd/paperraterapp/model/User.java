@@ -8,26 +8,23 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
-    private String picture;
     private int age;
     private List<ReadingList> readingLists;
     private int type;
 
-    public User(String username, String email, String password, String firstName, String lastName,
-                String picture, int age, List<ReadingList> readingLists, int type) {
+    public User(String username, String email, String password, String firstName, String lastName, int age, List<ReadingList> readingLists, int type) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.picture = picture;
         this.age = age;
         this.readingLists = readingLists;
         this.type = type;
     }
 
     public User(String username, String email) {
-        this(username, email, null, null, null, null, -1, null, -1);
+        this(username, email, null, null, null, -1, null, -1);
     }
 
     public String getUsername() {
@@ -48,10 +45,6 @@ public class User {
 
     public String getLastName() {
         return lastName;
-    }
-
-    public String getPicture() {
-        return picture;
     }
 
     public int getAge() {
@@ -84,10 +77,6 @@ public class User {
         this.lastName = lastName;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
     public void setAge(int age) {
         this.age = age;
     }
@@ -102,7 +91,6 @@ public class User {
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", picture='" + picture + '\'' +
                 ", age=" + age +
                 ", readingLists=" + readingLists +
                 '}';
