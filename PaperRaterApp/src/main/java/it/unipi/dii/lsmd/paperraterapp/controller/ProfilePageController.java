@@ -234,8 +234,6 @@ public class ProfilePageController {
         Optional<User> optionalResult = dialog.showAndWait();
         optionalResult.ifPresent((User u) -> {
             mongoMan.updateUser(u);
-            System.out.println(Session.getInstance().getLoggedUser().getEmail());
-            System.out.println(email.getText());
             if(!Objects.equals(Session.getInstance().getLoggedUser().getEmail(), email.getText()))
                 neoMan.updateUser(u);
             // Refresh Page Content
