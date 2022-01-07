@@ -127,9 +127,10 @@
                         </CheckBox>
                      </children>
                   </HBox>
-                  <Button fx:id="searchBt" disable="true" mnemonicParsing="false" onAction="#startResearch" prefHeight="30.0" prefWidth="200.0" text="Search" textFill="WHITE">
+                  <Button fx:id="searchBt" disable="true" mnemonicParsing="false" onAction="#startResearch" prefHeight="30.0" prefWidth="200.0" text="Search">
                      <styleClass>
                         <String fx:value="search-button" />
+                        <String fx:value="buttonlog" />
                         <String fx:value="dynamic-button" />
                      </styleClass>
                      <font>

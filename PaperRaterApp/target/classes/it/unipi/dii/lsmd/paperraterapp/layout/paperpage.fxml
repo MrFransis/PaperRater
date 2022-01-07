@@ -32,6 +32,8 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -45,95 +47,236 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="510.0" prefWidth="700.0" styleClass="dark" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.PaperPageController">
-    <children>
-        <HBox prefHeight="0.0" prefWidth="640.0" styleClass="lite">
-            <children>
-                <ImageView fx:id="backIcon" fitHeight="36.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../img/back.png" />
-                    </image>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </ImageView>
-            </children>
-        </HBox>
-        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="435.0" prefWidth="700.0" styleClass="dark" VBox.vgrow="ALWAYS">
-            <children>
-                <ScrollPane layoutX="467.0" layoutY="111.0" prefHeight="314.0" prefWidth="225.0">
+<AnchorPane prefHeight="650.0" prefWidth="815.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.PaperPageController">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="510.0" prefWidth="700.0" styleClass="dark" stylesheets="@../style/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <children>
+              <HBox prefHeight="56.0" prefWidth="799.0" styleClass="dark">
+                  <children>
+                  <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="80.0">
+                     <graphic>
+                            <ImageView fx:id="backIcon" fitHeight="36.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../img/back.png" />
+                                </image>
+                                <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                </cursor>
+                            </ImageView>
+                     </graphic>
+                     <styleClass>
+                        <String fx:value="dynamic-effect" />
+                        <String fx:value="buttonlog" />
+                     </styleClass>
+                  </Button>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="717.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label text="Id:" textFill="WHITE" />
+                            <Text fx:id="id" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="0000.00000" textAlignment="CENTER" wrappingWidth="105.00003051757812">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                  </HBox>
+                  </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+              </HBox>
+            <HBox alignment="CENTER" prefHeight="52.0" prefWidth="789.0">
+               <children>
+                      <Text fx:id="title" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" textAlignment="CENTER" wrappingWidth="787.0" HBox.hgrow="ALWAYS">
+                          <font>
+                              <Font name="System Bold" size="18.0" />
+                          </font>
+                     <HBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="82.0" prefWidth="777.0">
+               <children>
+                  <VBox prefHeight="60.0" prefWidth="405.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="405.0">
+                           <children>
+                                  <Label text="Category:" textFill="WHITE">
+                                      <font>
+                                          <Font name="System Bold" size="14.0" />
+                                      </font>
+                                 <HBox.margin>
+                                    <Insets right="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                                  <Text fx:id="category" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="category" wrappingWidth="299.0000305175781" HBox.hgrow="ALWAYS">
+                                      <font>
+                                          <Font size="14.0" />
+                                      </font>
+                              </Text>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="405.0">
+                           <children>
+                                  <Label text="Authors:" textFill="WHITE">
+                                      <font>
+                                          <Font name="System Bold" size="14.0" />
+                                      </font>
+                                 <HBox.margin>
+                                    <Insets right="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                                  <Text fx:id="authors" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Bob" wrappingWidth="324.0000305175781" HBox.hgrow="ALWAYS">
+                                      <font>
+                                          <Font size="14.0" />
+                                      </font>
+                              </Text>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="405.0">
+                           <children>
+                                  <Label text="Published:" textFill="WHITE">
+                                      <font>
+                                          <Font name="System Bold" size="14.0" />
+                                      </font>
+                                 <HBox.margin>
+                                    <Insets right="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                                  <Text fx:id="published" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="01-01-2020" wrappingWidth="149.00003051757812" HBox.hgrow="ALWAYS">
+                                      <font>
+                                          <Font size="14.0" />
+                                      </font>
+                              </Text>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="150.0">
+                     <children>
+                            <Text fx:id="likes" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="111" textAlignment="CENTER" wrappingWidth="75.00003051757812">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                        </Text>
+                            <Label text="Likes" textFill="WHITE">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="150.0">
+                     <children>
+                            <Text fx:id="comNum" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="111" textAlignment="CENTER" wrappingWidth="75.00003051757812">
+                                <font>
+                                    <Font size="14.0" />
+                                </font>
+                            </Text>
+                            <Label text="Comments" textFill="WHITE">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="15.0" right="15.0" />
+               </VBox.margin>
+            </HBox>
+            <VBox prefHeight="187.0" prefWidth="807.0">
+               <children>
+                      <Label text="Abstract:" textFill="WHITE">
+                          <font>
+                              <Font name="System Bold" size="15.0" />
+                          </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="30.0" />
+                     </VBox.margin>
+                  </Label>
+                      <ScrollPane fx:id="scrollpane" prefHeight="151.0" prefWidth="773.0">
+                          <content>
+                              <Text fx:id="abstractPaper" lineSpacing="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="749.13671875" />
+                          </content>
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                      </ScrollPane>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" prefHeight="44.0" prefWidth="807.0">
+               <children>
+                  <Button fx:id="webLink" mnemonicParsing="false" prefHeight="8.0" prefWidth="102.0" text="Open PDF">
+                     <styleClass>
+                        <String fx:value="buttonlog" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass>
+                  </Button>
+                      <Button fx:id="addToReadingList" mnemonicParsing="false" prefHeight="30.0" prefWidth="149.0" text="Add to Reading List">
+                     <HBox.margin>
+                        <Insets left="100.0" right="100.0" />
+                     </HBox.margin>
+                     <styleClass>
+                        <String fx:value="buttonlog" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass>
+                  </Button>
+                      <Button fx:id="likebtn" mnemonicParsing="false" text="Unlike">
+                     <styleClass>
+                        <String fx:value="buttonlog" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </HBox>
+                <ScrollPane prefHeight="200.0" prefWidth="807.0">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0">
-                            <children>
-                                <VBox fx:id="commentsBox" layoutX="-1.0" />
-                            </children>
-                        </AnchorPane>
+                          <VBox fx:id="commentsBox" alignment="TOP_CENTER" prefHeight="124.0" prefWidth="787.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
                     </content>
+               <padding>
+                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
                 </ScrollPane>
-                <Text fx:id="title" fill="WHITE" layoutX="8.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" textAlignment="CENTER" wrappingWidth="684.0">
-                    <font>
-                        <Font name="System Bold" size="16.0" />
-                    </font></Text>
-                <Label layoutX="15.0" layoutY="93.0" text="Category:" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font></Label>
-                <Label layoutX="16.0" layoutY="140.0" text="Authors:" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font></Label>
-                <Label layoutX="16.0" layoutY="117.0" text="Published:" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font></Label>
-                <Label layoutX="14.0" layoutY="216.0" text="Abstract:" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font></Label>
-                <Label layoutX="16.0" layoutY="442.0" text="Likes:" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font></Label>
-                <Label layoutX="469.0" layoutY="91.0" text="Comments:" textFill="WHITE">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font></Label>
-                <Text fx:id="id" fill="WHITE" layoutX="16.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0000.00000" wrappingWidth="149.00003051757812">
-                    <font>
-                        <Font size="14.0" />
-                    </font></Text>
-                <Text fx:id="category" fill="WHITE" layoutX="86.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="category" wrappingWidth="375.0000305175781">
-                    <font>
-                        <Font size="14.0" />
-                    </font></Text>
-                <Text fx:id="authors" fill="WHITE" layoutX="79.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bob" wrappingWidth="359.0000305175781">
-                    <font>
-                        <Font size="14.0" />
-                    </font></Text>
-                <Text fx:id="published" fill="WHITE" layoutX="87.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="01-01-2020" wrappingWidth="149.00003051757812">
-                    <font>
-                        <Font size="14.0" />
-                    </font></Text>
-                <Text fx:id="likes" fill="WHITE" layoutX="57.0" layoutY="457.0" strokeType="OUTSIDE" strokeWidth="0.0" text="111" wrappingWidth="75.00003051757812">
-                    <font>
-                        <Font size="14.0" />
-                    </font></Text>
-                <Button fx:id="addToReadingList" layoutX="304.0" layoutY="435.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="149.0" styleClass="buttonlog" text="Add to Reading List" />
-                <ScrollPane fx:id="scrollpane" layoutX="13.0" layoutY="236.0" prefHeight="189.0" prefWidth="440.0">
-                    <content>
-                        <Text fx:id="abstractPaper" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="423.13671875" />
-                    </content>
-                </ScrollPane>
-                <Button fx:id="comment" layoutX="608.0" layoutY="436.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="84.0" styleClass="buttonlog" text="Comment" />
-                <TextField fx:id="commentText" layoutX="473.0" layoutY="439.0" prefHeight="25.0" prefWidth="128.0" />
-                <Button fx:id="likebtn" layoutX="223.0" layoutY="435.0" mnemonicParsing="false" styleClass="buttonlog" />
-                <Text fx:id="comNum" fill="WHITE" layoutX="550.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="111" wrappingWidth="75.00003051757812">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Text>
-            <Button fx:id="webLink" layoutX="336.0" layoutY="78.0" mnemonicParsing="false" prefHeight="8.0" prefWidth="102.0" styleClass="buttonlog" text="Open PDF" />
-            </children>
-        </AnchorPane>
-    </children>
-</VBox>
+            <HBox prefHeight="39.0" prefWidth="800.0">
+               <children>
+                      <TextField fx:id="commentText" prefHeight="30.0" prefWidth="700.0" promptText="Write your opinion...">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                      <Button fx:id="comment" mnemonicParsing="false" prefHeight="30.0" prefWidth="84.0" text="Comment">
+                     <styleClass>
+                        <String fx:value="buttonlog" />
+                        <String fx:value="dynamic-button" />
+                     </styleClass>
+                  </Button>
+               </children>
+            </HBox>
+          </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

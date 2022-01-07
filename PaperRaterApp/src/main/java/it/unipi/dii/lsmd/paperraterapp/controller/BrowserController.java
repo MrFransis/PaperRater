@@ -605,28 +605,26 @@ public class BrowserController implements Initializable {
     }
 
     private void fillComments(String start_date, String end_date) {
+        cleanGrid();
         cardsGrid.setAlignment(Pos.CENTER);
         cardsGrid.setVgap(20);
         cardsGrid.setHgap(5);
-        cardsGrid.setPadding(new Insets(30,40,30,40));
+        cardsGrid.setPadding(new Insets(30,40,30,120));
         ColumnConstraints constraints = new ColumnConstraints();
-        constraints.setPercentWidth(25);
+        constraints.setPercentWidth(100);
         cardsGrid.getColumnConstraints().add(constraints);
 
         // load papers
-        List<Pair<Paper, Comment>> commentsList = mongoManager.searchLastComments(start_date, end_date, 16*page, 16);
-        if (commentsList.size() != 16)
+        List<Pair<Paper, Comment>> commentsList = mongoManager.searchLastComments(start_date, end_date, 4*page, 4);
+        if (commentsList.size() != 4)
             forwardBt.setDisable(true);
         int row = 0;
-        int col = 0;
         for (Pair<Paper, Comment> cardInfo : commentsList) {
             Pane card = loadCommentCard(cardInfo.getValue(), cardInfo.getKey());
-            cardsGrid.add(card, col, row);
+            cardsGrid.add(card, 0, row);
             row++;
-            if(row == 4){
+            if(row == 4)
                 row = 0;
-                col++;
-            }
         }
     }
 

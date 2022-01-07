@@ -1,20 +1,20 @@
 .dark {
-    -fx-background-color:  #3700B3;
+    -fx-background-color:  #334553;
 }
 
 .lite {
-    -fx-background-color:  #6200EE;
+    -fx-background-color:  #0c819c;
 }
 
 .login {
-    -fx-background-color:  #6200EE;
-    -fx-border-color:  transparent transparent white transparent;
-    -fx-text-fill: white;
+    -fx-background-color:  #0c819c;
+    -fx-border-color:  transparent transparent #c5d8e1 transparent;
+    -fx-text-fill: #c5d8e1;
 }
 
 .buttonlog {
-    -fx-background-color:  #03DAC5;
-    -fx-text-fill: white;
+    -fx-background-color:  #703770;
+    -fx-text-fill: #c5d8e1;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 40;
@@ -31,7 +31,7 @@
 }
 
 .search-button {
-    -fx-background-color: #03DAC5;
+    -fx-background-color: #703770;
     -fx-background-radius: 30;
     -fx-font-size: 14px;
 }

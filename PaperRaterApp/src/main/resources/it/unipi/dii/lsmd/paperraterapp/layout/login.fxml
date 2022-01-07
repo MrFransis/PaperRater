@@ -43,7 +43,7 @@
             </Label>
          </children>
       </AnchorPane>
-      <Label layoutX="14.0" layoutY="168.0" style="-fx-background-color: #3700B3;" text="Welcome to PaperRater" textFill="WHITE">
+      <Label layoutX="14.0" layoutY="168.0" text="Welcome to PaperRater" textFill="WHITE">
          <font>
             <Font size="36.0" />
          </font>

@@ -10,6 +10,9 @@ import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -18,14 +21,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.*;
-import java.awt.Desktop;
-import java.net.URI;
 
 public class PaperPageController implements Initializable {
     private Paper paper;
@@ -53,6 +57,7 @@ public class PaperPageController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        commentsBox.setSpacing(10);
         neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         mongoMan = new MongoDBManager(MongoDriver.getInstance().openConnection());
         backIcon.setOnMouseClicked(mouseEvent -> clickOnBackIcon(mouseEvent));
@@ -103,11 +108,11 @@ public class PaperPageController implements Initializable {
             Iterator<Comment> it = paper.getComments().iterator();
 
             while(it.hasNext()) {
-                VBox row = new VBox();
+                //VBox row = new VBox();
                 Comment c = it.next();
                 Pane p = loadCommentCard(c, paper);
-                row.getChildren().addAll(p);
-                commentsBox.getChildren().add(row);
+                //row.getChildren().add(p);
+                commentsBox.getChildren().add(p);
                 numComment++;
             }
         }

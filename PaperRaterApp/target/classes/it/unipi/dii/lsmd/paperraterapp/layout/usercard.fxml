@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="240.0" prefWidth="250.0" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.UserCardCtrl">
+<AnchorPane prefHeight="203.0" prefWidth="188.0" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unipi.dii.lsmd.paperraterapp.controller.UserCardCtrl">
    <styleClass>
       <String fx:value="lite" />
       <String fx:value="card" />
@@ -30,7 +30,7 @@
                   <Insets bottom="5.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <Circle fx:id="imageProfile" fill="ORANGE" radius="80.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="imageProfile" fill="ORANGE" radius="60.0" stroke="BLACK" strokeType="INSIDE" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="67.0" prefWidth="110.0" HBox.hgrow="ALWAYS">
@@ -38,15 +38,11 @@
                         <Insets bottom="5.0" left="2.0" top="5.0" />
                      </HBox.margin>
                      <children>
-                        <Text fx:id="emailTf" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" textAlignment="CENTER" wrappingWidth="189.0448989868164">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Text>
-                        <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-spacing: 5;">
+                        <Text fx:id="emailTf" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" textAlignment="CENTER" wrappingWidth="162.0448989868164" />
+                        <HBox alignment="TOP_CENTER" prefHeight="17.0" prefWidth="172.0" style="-fx-spacing: 5;">
                            <children>
-                              <Label fx:id="analyticLabelName" text="AnalyticLabelName" />
-                              <Text fx:id="analyticValue" strokeType="OUTSIDE" strokeWidth="0.0" text="AnalyticValue">
+                              <Label fx:id="analyticLabelName" prefHeight="17.0" prefWidth="92.0" text="categories saved" />
+                              <Text fx:id="analyticValue" strokeType="OUTSIDE" strokeWidth="0.0" text="Value" wrappingWidth="36.484375">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
