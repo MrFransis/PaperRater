@@ -16,19 +16,19 @@ class App(cmd.Cmd):
     prompt = '>'
     num_users = '1000'
 
-    mongo_client = MongoClient('172.16.4.68', 27020, username='admin', password='paperRaterApp', w=3, readPreference='secondaryPreferred')
-    neo4j_driver = GraphDatabase.driver("bolt://172.16.4.68:7687", auth=("neo4j", "paperRaterApp"))
-    #mongo_client = MongoClient('localhost', 27017)
-    #neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
+    #mongo_client = MongoClient('172.16.4.68', 27020, username='admin', password='paperRaterApp', w=3, readPreference='secondaryPreferred')
+    #neo4j_driver = GraphDatabase.driver("bolt://172.16.4.68:7687", auth=("neo4j", "paperRaterApp"))
+    mongo_client = MongoClient('localhost', 27017)
+    neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
 
 
     def do_initDB(self, arg):
         'Initialize database'
 
-        start_date = '2012-01-01'
+        start_date = '2015-01-01'
 
         #papers_path = getPapers.import_data(start_date)
-        papers_path = './data/papers2012-01-01.json'
+        papers_path = './data/papers2015-01-01.json'
         # users_path = getUsers.import_data(num_users)
         users_path = './data/users.json'
 

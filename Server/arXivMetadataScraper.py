@@ -22,7 +22,6 @@ def get_data_by_category(category, start_date):
     )
 
     for result in search.results():
-
         """
         ArXiv API does not support temporal queries, so the loop is stopped when the published date of
         the last paper retrieved is older than the start_date
@@ -80,5 +79,5 @@ def get_data(start_date):
 
 
 if __name__ == "__main__":
-    start_date = "2021-11-23"
+    start_date = "2015-01-01"
     get_data(start_date)

@@ -148,7 +148,7 @@ public class ReadingListPageController {
     }
 
     private void clickOnDeleteBtn (MouseEvent mouseEvent) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete Reading List?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete Reading List?", ButtonType.YES, ButtonType.NO);
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {

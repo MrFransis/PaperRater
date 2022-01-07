@@ -23,7 +23,6 @@ def get_data(start_date):
     df = pd.DataFrame(columns=('vixra_id', 'title', 'abstract', 'category', 'authors', 'published'))
 
     while curr_date >= stop_date:
-        print(curr_date)
         year = curr_date.year
         month = curr_date.month
         cd = str(year)[2:4].zfill(2) + str(month).zfill(2)
@@ -83,7 +82,7 @@ def get_data(start_date):
 
 
 if __name__ == "__main__":
-    start_date = "2011-01-01"
+    start_date = "2015-01-01"
 
     data = pd.DataFrame()
 
