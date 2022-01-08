@@ -48,12 +48,12 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <Label layoutX="26.0" layoutY="222.0" prefHeight="27.0" prefWidth="352.0" text="The first social where the culture come" textFill="WHITE">
+      <Label layoutX="26.0" layoutY="222.0" prefHeight="27.0" prefWidth="352.0" text="The first social network" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="26.0" layoutY="250.0" prefHeight="27.0" prefWidth="352.0" text="before the people" textFill="WHITE">
+      <Label layoutX="26.0" layoutY="250.0" prefHeight="27.0" prefWidth="352.0" text="where culture meets people" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
