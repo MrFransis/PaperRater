@@ -71,9 +71,6 @@
                                              <font>
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
-                                             <cursor>
-                                                <Cursor fx:constant="HAND" />
-                                             </cursor>
                                           </Text>
                                           <Label text="Followers" textAlignment="CENTER" />
                                        </children>
@@ -84,9 +81,6 @@
                                              <font>
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
-                                             <cursor>
-                                                <Cursor fx:constant="HAND" />
-                                             </cursor>
                                           </Text>
                                           <Label text="Following" textAlignment="CENTER" />
                                        </children>

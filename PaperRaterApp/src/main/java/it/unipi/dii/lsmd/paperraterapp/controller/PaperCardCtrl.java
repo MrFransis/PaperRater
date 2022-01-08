@@ -41,7 +41,7 @@ public class PaperCardCtrl {
         this.p = p;
 
         String validId;
-        if (!Objects.equals(p.getArxivId(), "nan")) {
+        if (p.getArxivId() != null) {
             validId = p.getArxivId();
             paperId.setText("arXiv:" + validId);
         }
