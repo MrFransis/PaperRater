@@ -91,7 +91,7 @@ public class PaperPageController implements Initializable {
         authors.setText(paper.getAuthors().toString());
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         published.setText(formatter.format(paper.getPublished()));
-        abstractPaper.setText(paper.getAbstract());
+        abstractPaper.setText(paper.getAbstract().replace("\n", " "));
         if(neoMan.userLikePaper(user.getUsername(), paper))
             likebtn.setText("Unlike");
         else
@@ -222,7 +222,7 @@ public class PaperPageController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information Dialog");
             alert.setHeaderText(null);
-            alert.setContentText("Insert a commnet!");
+            alert.setContentText("Insert a comment!");
             alert.showAndWait();
         }
     }
