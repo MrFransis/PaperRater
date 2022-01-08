@@ -258,7 +258,7 @@ public class BrowserController implements Initializable {
         specialSearchBt.setDisable(true);
         special = 0;
         switch (chooseQuery.getValue()) {
-            case "Suggestion" -> {
+            case "Suggestions" -> {
                 List<String> typeList1 = new ArrayList<>();
                 typeList1.add("Papers");
                 typeList1.add("Users");
@@ -326,7 +326,7 @@ public class BrowserController implements Initializable {
         errorTf.setText("");
         special = 1;
         switch (chooseQuery.getValue()) {
-            case "Suggestion" -> {
+            case "Suggestions" -> {
                 if (chooseTarget.getValue() == null) {
                     errorTf.setText("You have to select a valid option.");
                     return;
@@ -339,7 +339,7 @@ public class BrowserController implements Initializable {
                     }
                     case "Papers" -> {
                         List<Paper> suggestedPaper = neo4jManager.getSnapsOfSuggestedPapers(user, 2,
-                                1, 2*page, page);
+                                1, 2*page, 1*page);
                         fillPapers(suggestedPaper);
                     }
                     case "Reading lists" -> {
@@ -473,7 +473,7 @@ public class BrowserController implements Initializable {
     private void loadComboBox () {
         // load suggestion
         List<String> suggestionList = new ArrayList<>();
-        suggestionList.add("Suggestion");
+        suggestionList.add("Suggestions");
         suggestionList.add("Analytics");
         suggestionList.add("Summary");
         ObservableList<String> observableListSuggestion = FXCollections.observableList(suggestionList);

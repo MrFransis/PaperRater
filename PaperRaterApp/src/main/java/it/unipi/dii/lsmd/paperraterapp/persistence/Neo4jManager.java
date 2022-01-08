@@ -588,7 +588,7 @@ public class Neo4jManager {
                                 "WHERE NOT EXISTS((me)-[:LIKES]->(target)) " +
                                 "RETURN target.arxiv_id AS ArxivId, target.vixra_id AS VixraId, target.title as Title, " +
                                 "target.category AS Category, target.authors AS Authors, COUNT(*) AS nOccurences " +
-                                "ORDER BY nOccurences DESC " +
+                                "ORDER BY nOccurences DESC, Title " +
                                 "SKIP $skipFirstLevel " +
                                 "LIMIT $firstlevel " +
                                 "UNION " +
@@ -596,7 +596,7 @@ public class Neo4jManager {
                                 "WHERE NOT EXISTS((me)-[:LIKES]->(target)) " +
                                 "RETURN target.arxiv_id AS ArxivId, target.vixra_id AS VixraId, target.title as Title, " +
                                 "target.category AS Category, target.authors AS Authors, COUNT(*) AS nOccurences " +
-                                "ORDER BY nOccurences DESC " +
+                                "ORDER BY nOccurences DESC, Title " +
                                 "SKIP $skipSecondLevel " +
                                 "LIMIT $secondLevel",
                         parameters("username", u.getUsername(), "firstlevel", numberFirstLv, "secondLevel", numberSecondLv, "skipFirstLevel", skipFirstLv, "skipSecondLevel", skipSecondLv));
@@ -648,7 +648,7 @@ public class Neo4jManager {
                                 "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target)) " +
                                 "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
                                 "COUNT(DISTINCT r) as numFollower " +
-                                "ORDER BY numFollower DESC " +
+                                "ORDER BY numFollower DESC, Username " +
                                 "SKIP $skipFirstLevel " +
                                 "LIMIT $firstLevel " +
                                 "UNION " +
@@ -657,7 +657,7 @@ public class Neo4jManager {
                                 "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target)) " +
                                 "RETURN target.username AS Username, target.email AS Email, " +
                                 "COUNT(DISTINCT r) as numFollower " +
-                                "ORDER BY numFollower DESC " +
+                                "ORDER BY numFollower DESC, Username " +
                                 "SKIP $skipSecondLevel " +
                                 "LIMIT $secondLevel",
                         parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv,  "skipFirstLevel", skipFirstLv, "skipSecondLevel", skipSecondLv));
@@ -695,7 +695,7 @@ public class Neo4jManager {
                                 "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
                                 "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target)) " +
                                 "RETURN target.owner AS Owner, target.title AS Title, numFollower + follow AS followers " +
-                                "ORDER BY followers DESC " +
+                                "ORDER BY followers DESC, Title " +
                                 "SKIP $skipFirstLevel " +
                                 "LIMIT $firstLevel " +
                                 "UNION " +
@@ -704,7 +704,7 @@ public class Neo4jManager {
                                 "COUNT(DISTINCT r) AS numFollower, COUNT(DISTINCT u) AS follow " +
                                 "WHERE NOT EXISTS((me)-[:FOLLOWS]->(target))" +
                                 "RETURN target.owner AS Owner, target.title AS Title, numFollower + follow AS followers " +
-                                "ORDER BY followers DESC " +
+                                "ORDER BY followers DESC, Title " +
                                 "SKIP $skipSecondLevel " +
                                 "LIMIT $secondLevel",
                         parameters("username", u.getUsername(), "firstLevel", numberFirstLv, "secondLevel", numberSecondLv, "skipFirstLevel", skipFirstLv, "skipSecondLevel", skipSecondLv));
