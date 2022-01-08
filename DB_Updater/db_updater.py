@@ -55,18 +55,43 @@ class App(cmd.Cmd):
         papers_col = db["Papers"]
 
         # abstract is a Java 8 keyword
-        papers_df = papers_df.rename(columns={"abstract": "_abstract"})
+        arxiv_df = pd.read_json(papers_path, lines=True)
+        arxiv_df = arxiv_df.rename(columns={"abstract": "_abstract"})
+        arxiv_df = arxiv_df.drop(columns={"vixra_id"})
 
-        data_dict = papers_df.to_dict("records")
+        vixra_df = pd.read_json(papers_path, lines=True)
+        vixra_df = vixra_df.rename(columns={"abstract": "_abstract"})
+        vixra_df = vixra_df.drop(columns={"arxiv_id"})
 
-        papers_col.insert_many(data_dict)
+        arxiv_df = arxiv_df[arxiv_df['arxiv_id'].notna()]
+        vixra_df = vixra_df[vixra_df['vixra_id'].notna()]
+
+        arxiv_df['arxiv_id'] = arxiv_df['arxiv_id'].map(str)
+        vixra_df['vixra_id'] = vixra_df['vixra_id'].map(str)
+
+        arxiv_dict = arxiv_df.to_dict("records")
+        vixra_dict = vixra_df.to_dict("records")
+
+        papers_col.insert_many(arxiv_dict)
+        papers_col.insert_many(vixra_dict)
 
         for index, row in papers_df.iterrows():
-            query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id, title: $title, category: $category,"
-                     " authors: $authors, published: $published}) ")
-            session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id'],
-                                                        title=row['title'],category=row['category'], authors=row['authors'],
-                                                        published=row['published']))
+            if row['arxiv_id'] != "nan":
+                query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, title: $title, category: $category,"
+                         " authors: $authors, published: $published}) ")
+
+                session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'],
+                                                            title=row['title'],category=row['category'], authors=row['authors'],
+                                                            published=row['published']))
+            else:
+                query = (
+                    "CREATE (p:Paper { vixra_id: $vixra_id, title: $title, category: $category,"
+                    " authors: $authors, published: $published}) ")
+
+                session.write_transaction(lambda tx: tx.run(query, vixra_id=row['vixra_id'],
+                                                            title=row['title'], category=row['category'],
+                                                            authors=row['authors'],
+                                                            published=row['published']))
 
         print("Added papers to databases")
 
@@ -94,7 +119,7 @@ class App(cmd.Cmd):
                            'timestamp': now.strftime("%Y-%m-%d %H:%M:%S")}
                 comments.append(comment)
 
-            db.Papers.update_one({"$and":[{'arxiv_id': row['arxiv_id']}, {'vixra_id': row['vixra_id']}]}, {'$set': {'comments': comments}})
+            db.Papers.update_one({"$or":[{'arxiv_id': row['arxiv_id']}, {'vixra_id': row['vixra_id']}]}, {'$set': {'comments': comments}})
 
         print("Added comments to database")
 
@@ -114,14 +139,16 @@ class App(cmd.Cmd):
                 # Select a random number of papers to add to the reading list
                 for j in range(0, num_papers_in_reading_list):
                     random_paper = papers_df.sample()
+                    paper_to_add = {}
+                    if random_paper['arxiv_id'].values[0] == "nan":
+                        paper_to_add['vixra_id'] = random_paper['vixra_id'].values[0]
+                    else:
+                        paper_to_add['arxiv_id'] = random_paper['arxiv_id'].values[0]
 
-                    paper_to_add = {'arxiv_id': random_paper['arxiv_id'].values[0],
-                                    'vixra_id': random_paper['vixra_id'].values[0],
-                                    'title': random_paper['title'].values[0],
-                                    'published': random_paper['published'].values[0],
-                                    'authors': random_paper['authors'].values[0],
-                                    'category': random_paper['category'].values[0]
-                                    }
+                    paper_to_add['title'] = random_paper['title'].values[0]
+                    paper_to_add['published'] = random_paper['published'].values[0]
+                    paper_to_add['authors'] = random_paper['authors'].values[0]
+                    paper_to_add['category'] = random_paper['category'].values[0]
 
                     papers.append(paper_to_add)
 
@@ -176,7 +203,7 @@ class App(cmd.Cmd):
 
             query = (
                     "MATCH (a:User), (b:Paper) "
-                    "WHERE a.username = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) "
+                    "WHERE a.username = $username AND (b.arxiv_id = $arxiv_id OR b.vixra_id = $vixra_id) "
                     "CREATE (a)-[r:LIKES]->(b)"
             )
 
@@ -259,13 +286,18 @@ class App(cmd.Cmd):
 
         data_dict = papers_df.to_dict("records")
 
-        papers_col.insert_many(data_dict)
+        #papers_col.insert_many(data_dict)
 
+        """
         session = self.neo4j_driver.session()
         for index, row in papers_df.iterrows():
-            query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id}) ")
-            session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id']))
-
+            query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, vixra_id: $vixra_id, title: $title, category: $category,"
+                     " authors: $authors, published: $published}) ")
+            session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'], vixra_id=row['vixra_id'],
+                                                        title=row['title'], category=row['category'],
+                                                        authors=row['authors'],
+                                                        published=row['published']))
+        """
         print("Added papers to databases")
 
     def do_exit(self, arg):
