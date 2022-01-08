@@ -211,7 +211,7 @@ public class PaperPageController implements Initializable {
     }
 
     private void clickOnAddCommentBtn (MouseEvent mouseEvent){
-        if((!commentText.getText().isEmpty()) || (commentText.getText().length() <= maxLength)){
+        if((!commentText.getText().isEmpty()) && (commentText.getText().length() <= maxLength)){
             Comment comment = new Comment(user.getUsername(), commentText.getText(), new Date());
             mongoMan.addComment(paper, comment);
             paper = mongoMan.getPaperById(paper);
@@ -222,7 +222,7 @@ public class PaperPageController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Information Dialog");
             alert.setHeaderText(null);
-            alert.setContentText("Insert a comment!");
+            alert.setContentText("Enter a comment of up to 280 characters!");
             alert.showAndWait();
         }
     }
