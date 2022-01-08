@@ -66,8 +66,8 @@ public class ReadingListPageController {
         numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getTitle(), owner)));
         numPapers.setText(String.valueOf(readingList.getPapers().size()));
 
+        papersBox.getChildren().clear();
         if (!readingList.getPapers().isEmpty()) {
-            papersBox.getChildren().clear();
             Iterator<Paper> it = readingList.getPapers().iterator();
 
             while(it.hasNext()) {
