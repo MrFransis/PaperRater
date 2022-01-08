@@ -92,7 +92,6 @@ public class MongoDBManager {
             return true;
 
         } catch (Exception e) {
-            System.out.println("Error in adding a new user");
             e.printStackTrace();
             return false;
         }
@@ -108,9 +107,9 @@ public class MongoDBManager {
             usersCollection.deleteOne(eq("username", u.getUsername()));
             return true;
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            System.err.println("Error in delete user");
+            e.printStackTrace();
             return false;
         }
     }
@@ -383,16 +382,21 @@ public class MongoDBManager {
      * @return true if it removes the reading list, otherwise it returns false
      */
     public boolean deleteReadingList(String username, String title){
-        Bson filter = new Document().append("username", username);
-        Bson fields = new Document().append("readingLists", new Document("title", title));
-        Bson update = new Document("$pull", fields);
-        UpdateResult updateResult = usersCollection.updateOne(filter, update);
-        if (updateResult.getModifiedCount() == 0){
-            System.err.println("ERROR: can not delete the reading list " + title);
+        try {
+            Bson filter = new Document().append("username", username);
+            Bson fields = new Document().append("readingLists", new Document("title", title));
+            Bson update = new Document("$pull", fields);
+            UpdateResult updateResult = usersCollection.updateOne(filter, update);
+            if (updateResult.getModifiedCount() == 0) {
+                System.err.println("ERROR: can not delete the reading list " + title);
+                return false;
+            } else {
+                return true;
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
             return false;
-        } else {
-            System.out.println("Reading list " + title + " has been deleted");
-            return true;
         }
     }
 

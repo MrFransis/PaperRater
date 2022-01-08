@@ -152,8 +152,16 @@ public class ReadingListPageController {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
-            mongoMan.deleteReadingList(username.getText(), readingList.getTitle());
-            neoMan.deleteReadingList(readingList.getTitle(), username.getText());
+            if (!mongoMan.deleteReadingList(username.getText(), readingList.getTitle())) {
+                Utils.error();
+                return;
+            }
+
+            if (!neoMan.deleteReadingList(readingList.getTitle(), username.getText())) {
+                mongoMan.deleteReadingList(username.getText(), readingList.getTitle());
+                Utils.error();
+                return;
+            }
 
             User owner = Session.getInstance().getPreviousPageUsers().get(Session.getInstance().getPreviousPageUsers().size()-1);
             owner.getReadingLists().remove(readingList);

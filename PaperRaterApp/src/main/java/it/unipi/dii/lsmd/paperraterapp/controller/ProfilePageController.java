@@ -241,9 +241,17 @@ public class ProfilePageController {
         });
         Optional<User> optionalResult = dialog.showAndWait();
         optionalResult.ifPresent((User u) -> {
-            mongoMan.updateUser(u);
+            if (!mongoMan.updateUser(u)) {
+                Utils.error();
+                return;
+            }
             if(!Objects.equals(Session.getInstance().getLoggedUser().getEmail(), email.getText()))
-                neoMan.updateUser(u);
+                if (!neoMan.updateUser(u)) {
+                    // Restore previous information if errors occur
+                    mongoMan.updateUser(Session.getInstance().getLoggedUser());
+                    Utils.error();
+                    return;
+                }
             // Refresh Page Content
             Session.getInstance().setLoggedUser(u);
             setProfilePage(u);
@@ -290,8 +298,15 @@ public class ProfilePageController {
     }
 
     private void clickOnDeleteUserBtn(MouseEvent mouseEvent) {
-        mongoMan.deleteUser(user);
-        neoMan.deleteUser(user);
+        if (!mongoMan.deleteUser(user)) {
+            Utils.error();
+            return;
+        }
+        if (!neoMan.deleteUser(user)) {
+            mongoMan.addUser(user);
+            Utils.error();
+            return;
+        }
         Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", mouseEvent);
     }
 

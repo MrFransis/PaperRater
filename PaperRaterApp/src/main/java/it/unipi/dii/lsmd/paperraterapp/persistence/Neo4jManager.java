@@ -26,18 +26,21 @@ public class Neo4jManager {
      * Function that add the info of a new user to GraphDB
      * @param u new User
      */
-    public void addUser(User u) {
+    public boolean addUser(User u) {
+        boolean res = false;
         try(Session session = driver.session()) {
-            session.writeTransaction((TransactionWork<Void>) tx -> {
+            res = session.writeTransaction((TransactionWork<Boolean>) tx -> {
                 tx.run("CREATE (u:User {username: $username})",
                         parameters("username", u.getUsername()));
 
-                return null;
+                return true;
             });
         }
         catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return res;
     }
 
     /**
@@ -294,15 +297,21 @@ public class Neo4jManager {
      * @param title title of the reading list
      * @param owner owner of the reading list
      */
-    public void deleteReadingList (final String title, final String owner) {
+    public boolean deleteReadingList (final String title, final String owner) {
+        boolean res = false;
         try (Session session = driver.session()){
-            session.writeTransaction((TransactionWork<Void>) tx -> {
+            res = session.writeTransaction((TransactionWork<Boolean>) tx -> {
                 tx.run("MATCH (r:ReadingList {title: $title, owner: owner}) " +
                                 "DETACH DELETE r",
                         parameters("title", title, "owner", owner));
-                return null;
+                return true;
             });
         }
+        catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return res;
     }
 
     /**

@@ -10,9 +10,7 @@ import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
 import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.util.ArrayList;
 
@@ -37,7 +35,6 @@ public class RegisterController {
 
     @FXML
     void checkForm(ActionEvent event) {
-        System.out.println("LOG: test credential");
         String username = usernameTf.getText();
 
         if (mongoMan.getUserByUsername(username) != null) {
@@ -48,12 +45,20 @@ public class RegisterController {
         User newUser = new User(username, emailTf.getText(), passwordTf.getText(), firstNameTf.getText(),
                                 lastNameTf.getText(), Integer.parseInt(ageTf.getText()), new ArrayList<ReadingList>(),0);
 
-        mongoMan.addUser(newUser);
-        neoMan.addUser(newUser);
+        if (!mongoMan.addUser(newUser)) {
+            Utils.error();
+            return;
+        }
+        if (!neoMan.addUser(newUser)) {
+            mongoMan.deleteUser(newUser);
+            Utils.error();
+            return;
+        }
 
         Session.getInstance().setLoggedUser(newUser);
         Utils.changeScene("/it/unipi/dii/lsmd/paperraterapp/layout/browser.fxml", event);
     }
+
 
     /**
      * If the user click the button register this function
