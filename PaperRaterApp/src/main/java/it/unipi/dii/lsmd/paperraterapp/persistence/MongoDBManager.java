@@ -152,7 +152,6 @@ public class MongoDBManager {
     public User getUserByUsername (String username) {
         Document result = (Document) usersCollection.find((eq("username", username))).first();
         if (result == null) {
-            System.out.println("User " + username + " do not found.");
             return null;
         }
 
@@ -565,7 +564,6 @@ public class MongoDBManager {
                         .append("password", "$password")
                         .append("firstName", "$firstName")
                         .append("lastName", "$lastName")
-                        .append("picture", "$picture")
                         .append("age", "$age")
                         .append("category", "$readingLists.papers.category")
                 ));
@@ -576,7 +574,6 @@ public class MongoDBManager {
                                 .append("password", "$_id.password")
                                 .append("firstName", "$_id.firstName")
                                 .append("lastName", "$_id.lastName")
-                                .append("picture", "$_id.picture")
                                 .append("age", "$_id.age"))
                         .append("totalCategory",
                                 new Document("$sum", 1)));
@@ -587,7 +584,6 @@ public class MongoDBManager {
                 computed("password", "$_id.password"),
                 computed("firstName", "$_id.firstName"),
                 computed("lastName", "$_id.lastName"),
-                computed("picture", "$_id.picture"),
                 computed("age", "$_id.age"),
                 include("totalCategory")));
         Bson sort = sort(descending("totalCategory"));
