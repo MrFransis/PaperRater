@@ -153,12 +153,13 @@ public class ReadingListPageController {
 
         if (alert.getResult() == ButtonType.YES) {
             if (!mongoMan.deleteReadingList(username.getText(), readingList.getTitle())) {
+                System.out.println("mongo");
                 Utils.error();
                 return;
             }
 
             if (!neoMan.deleteReadingList(readingList.getTitle(), username.getText())) {
-                mongoMan.deleteReadingList(username.getText(), readingList.getTitle());
+                mongoMan.createReadingList(Session.getInstance().getLoggedUser(), readingList.getTitle());
                 Utils.error();
                 return;
             }

@@ -30,8 +30,8 @@ public class Neo4jManager {
         boolean res = false;
         try(Session session = driver.session()) {
             res = session.writeTransaction((TransactionWork<Boolean>) tx -> {
-                tx.run("CREATE (u:User {username: $username})",
-                        parameters("username", u.getUsername()));
+                tx.run("CREATE (u:User {username: $username, email: $email})",
+                        parameters("username", u.getUsername(), "email", u.getEmail()));
 
                 return true;
             });
@@ -76,23 +76,6 @@ public class Neo4jManager {
             e.printStackTrace();
             return false;
         }
-    }
-
-    /**
-     * return the number of reading lists of the user
-     * @param username username of the user
-     * @return number of reading list
-     */
-    public int getNumReadingList(final String username) {
-        int numReadingList;
-        try (Session session = driver.session()) {
-            numReadingList = session.writeTransaction((TransactionWork<Integer>) tx -> {
-                Result result = tx.run("MATCH (:User {username: $username})-[r:OWNS]->() " +
-                        "RETURN count(r) AS numReadingList", parameters("username", username));
-                return result.next().get("numReadingList").asInt();
-            });
-        }
-        return numReadingList;
     }
 
     /**
@@ -277,10 +260,7 @@ public class Neo4jManager {
     public boolean createReadingList (final String title, final String owner) {
         try (Session session = driver.session()){
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (owner:User {username: $owner}) " +
-                                "MERGE (r:ReadingList {title: $title, owner: owner}) " +
-                                "MERGE (owner)-[p:OWNS]->(r) " +
-                                "ON CREATE SET p.date = datetime()"
+                tx.run("CREATE (:ReadingList {title: $title, owner: $owner})"
                         , parameters("title", title, "owner", owner));
                 return null;
             });
@@ -301,7 +281,7 @@ public class Neo4jManager {
         boolean res = false;
         try (Session session = driver.session()){
             res = session.writeTransaction((TransactionWork<Boolean>) tx -> {
-                tx.run("MATCH (r:ReadingList {title: $title, owner: owner}) " +
+                tx.run("MATCH (r:ReadingList {title: $title, owner: $owner}) " +
                                 "DETACH DELETE r",
                         parameters("title", title, "owner", owner));
                 return true;

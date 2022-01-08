@@ -272,8 +272,6 @@ public class ProfilePageController {
 
         // Add new Reading List to DB
         boolean res = mongoMan.createReadingList(Session.getInstance().getLoggedUser(), td.getEditor().getText());
-        neoMan.createReadingList(Session.getInstance().getLoggedUser().getUsername(), td.getEditor().getText());
-
         if (!res) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("There is already a Reading List with this Title");
@@ -281,7 +279,7 @@ public class ProfilePageController {
             return;
         }
 
-        res = neoMan.createReadingList(Session.getInstance().getLoggedUser().getUsername(), td.getEditor().getText());
+        res = neoMan.createReadingList(td.getEditor().getText(), Session.getInstance().getLoggedUser().getUsername());
         if (!res) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Error in Adding Reading List");
