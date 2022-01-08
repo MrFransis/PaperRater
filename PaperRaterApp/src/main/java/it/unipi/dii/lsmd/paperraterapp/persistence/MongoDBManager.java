@@ -13,10 +13,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import it.unipi.dii.lsmd.paperraterapp.model.Comment;
-import it.unipi.dii.lsmd.paperraterapp.model.Paper;
-import it.unipi.dii.lsmd.paperraterapp.model.ReadingList;
-import it.unipi.dii.lsmd.paperraterapp.model.User;
+import it.unipi.dii.lsmd.paperraterapp.model.*;
 import javafx.util.Pair;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -172,7 +169,7 @@ public class MongoDBManager {
                     .append("text", comment.getText())
                     .append("timestamp", dateFormat.format(comment.getTimestamp()));
 
-            Bson find = and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()));
+            Bson find = or(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()));
             Bson update = Updates.addToSet("comments", doc);
             papersCollection.updateOne(find, update);
             return true;
@@ -186,28 +183,6 @@ public class MongoDBManager {
     }
 
     /**
-     * Method that returns the number of comment made by an user
-     * @param paper Paper object
-     * @param user User object
-     * @return  true if operation is successfully executed, false otherwise
-     */
-    public int numUserComments (Paper paper, User user) {
-        Bson match = match(and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId())));
-        Bson unwind = unwind("$comments");
-        Bson match2 = match(eq("comments.username", user.getUsername()));
-        Bson group = group("comments.username",
-                sum("sum", 1));
-
-        Document doc = (Document) papersCollection.aggregate(
-                Arrays.asList(match, unwind, match2, group)).first();
-        if (doc == null)
-            return 0;
-        else{
-            return doc.getInteger("sum");
-        }
-    }
-
-    /**
      * Method that updates the list of comments of a paper
      * @param p Paper Object
      * @param comments List of the comments
@@ -217,7 +192,7 @@ public class MongoDBManager {
         try{
             Bson update = new Document("comments", comments);
             Bson updateOperation = new Document("$set", update);
-            if(!p.getArxivId().isEmpty())
+            if(p.getArxivId() != null)
                 papersCollection.updateOne(new Document("arxiv_id", p.getArxivId()), updateOperation);
             else
                 papersCollection.updateOne(new Document("vixra_id", p.getVixraId()), updateOperation);
@@ -268,7 +243,8 @@ public class MongoDBManager {
             n++;
         }
         comments.remove(d);
-        incrementDeletedCommentsCounter(comment.getUsername());
+        if (Session.getInstance().getLoggedUser().getType() > 0)
+            incrementDeletedCommentsCounter(comment.getUsername());
         updateComments(paper, comments);
     }
 
@@ -287,7 +263,7 @@ public class MongoDBManager {
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
 
             Document myDoc = (Document) papersCollection.find(
-                    and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()))).first();
+                    or(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()))).first();
             p = gson.fromJson(gson.toJson(myDoc), Paper.class);
             return p;
         }
@@ -407,11 +383,16 @@ public class MongoDBManager {
      * @return true if the operation is successfully executed, false otherwise
      */
     public UpdateResult addPaperToReadingList(String user, String title, Paper p) {
-        Document paperReduced = new Document("arxiv_id", p.getArxivId())
-                .append("vixra_id", p.getVixraId())
-                .append("title", p.getTitle())
+        Document paperReduced;
+        if (p.getArxivId() != null)
+            paperReduced = new Document("arxiv_id", p.getArxivId());
+        else
+            paperReduced = new Document("vixra_id", p.getVixraId());
+
+        paperReduced.append("title", p.getTitle())
                 .append("authors", p.getAuthors())
                 .append("category", p.getCategory());
+
         Bson find = and(eq("username", user),
                 eq("readingLists.title", title));
         Bson update = Updates.addToSet("readingLists.$.papers", paperReduced);
