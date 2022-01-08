@@ -17,17 +17,19 @@ class App(cmd.Cmd):
     num_users = '1000'
     start_date = '2015-01-01'
 
-    mongo_client = MongoClient('172.16.4.68', 27020, username='admin', password='paperRaterApp', w=3, readPreference='secondaryPreferred')
-    neo4j_driver = GraphDatabase.driver("bolt://172.16.4.68:7687", auth=("neo4j", "paperRaterApp"))
-    #mongo_client = MongoClient('localhost', 27017)
-    #neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
+    #mongo_client = MongoClient('172.16.4.68', 27020, username='admin', password='paperRaterApp', w=3, readPreference='secondaryPreferred')
+    #neo4j_driver = GraphDatabase.driver("bolt://172.16.4.68:7687", auth=("neo4j", "paperRaterApp"))
+    mongo_client = MongoClient('localhost', 27017)
+    neo4j_driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "root"))
 
 
     def do_initDB(self, arg):
         'Initialize database'
 
-        #papers_path = getPapers.import_data(self.start_date)
-        papers_path = './data/papers2015-01-01.json'
+        # Import data
+        # papers_path = getPapers.import_data(self.start_date)
+        #papers_path = './data/papers2015-01-01.json'
+        papers_path = './data/papers2021-11-30.json'
         # users_path = getUsers.import_data(num_users)
         users_path = './data/users.json'
 
@@ -36,63 +38,21 @@ class App(cmd.Cmd):
         users_df = pd.read_json(users_path, lines=True)
         papers_df = pd.read_json(papers_path, lines=True)
 
-        # Converts IDs to str
-        papers_df['arxiv_id'] = papers_df['arxiv_id'].map(str)
-        papers_df['vixra_id'] = papers_df['vixra_id'].map(str)
-
         # Drop old databases
         self.mongo_client.drop_database('PaperRater')
-
-        #query = ("CREATE OR REPLACE DATABASE neo4j")
         query = ("MATCH (n) DETACH DELETE n")
         session.write_transaction(lambda tx: tx.run(query))
 
         # Create new databases
         db = self.mongo_client["PaperRater"]
+        ### Neo4j database needs to be created
 
         ### Papers
-        papers_col = db["Papers"]
+        self.insert_papers(papers_df)
 
-        # abstract is a Java 8 keyword
-        arxiv_df = pd.read_json(papers_path, lines=True)
-        arxiv_df = arxiv_df.rename(columns={"abstract": "_abstract"})
-        arxiv_df = arxiv_df.drop(columns={"vixra_id"})
-
-        vixra_df = pd.read_json(papers_path, lines=True)
-        vixra_df = vixra_df.rename(columns={"abstract": "_abstract"})
-        vixra_df = vixra_df.drop(columns={"arxiv_id"})
-
-        arxiv_df = arxiv_df[arxiv_df['arxiv_id'].notna()]
-        vixra_df = vixra_df[vixra_df['vixra_id'].notna()]
-
-        arxiv_df['arxiv_id'] = arxiv_df['arxiv_id'].map(str)
-        vixra_df['vixra_id'] = vixra_df['vixra_id'].map(str)
-
-        arxiv_dict = arxiv_df.to_dict("records")
-        vixra_dict = vixra_df.to_dict("records")
-
-        papers_col.insert_many(arxiv_dict)
-        papers_col.insert_many(vixra_dict)
-
-        for index, row in papers_df.iterrows():
-            if row['arxiv_id'] != "nan":
-                query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, title: $title, category: $category,"
-                         " authors: $authors, published: $published}) ")
-
-                session.write_transaction(lambda tx: tx.run(query, arxiv_id=row['arxiv_id'],
-                                                            title=row['title'],category=row['category'], authors=row['authors'],
-                                                            published=row['published']))
-            else:
-                query = (
-                    "CREATE (p:Paper { vixra_id: $vixra_id, title: $title, category: $category,"
-                    " authors: $authors, published: $published}) ")
-
-                session.write_transaction(lambda tx: tx.run(query, vixra_id=row['vixra_id'],
-                                                            title=row['title'], category=row['category'],
-                                                            authors=row['authors'],
-                                                            published=row['published']))
-
-        print("Added papers to databases")
+        # Converts IDs to str
+        papers_df['arxiv_id'] = papers_df['arxiv_id'].map(str)
+        papers_df['vixra_id'] = papers_df['vixra_id'].map(str)
 
         ### Users
         users_col = db["Users"]
@@ -179,7 +139,7 @@ class App(cmd.Cmd):
                                                                 username2=row['username'], title=reading_list['title']))
 
 
-            result = db.Users.update_one({'username': row['username']}, {'$set': {'readingLists': reading_lists}})
+            db.Users.update_one({'username': row['username']}, {'$set': {'readingLists': reading_lists}})
 
         print("Added Reading Lists and Follows")
 
@@ -213,8 +173,9 @@ class App(cmd.Cmd):
                                                             arxiv_id=rand_paper['arxiv_id'].values[0],
                                                             vixra_id=rand_paper['vixra_id'].values[0]))
 
-
         print("Added User Follows and Likes")
+
+        ### Special Users
 
         admin = {
             "username": "admin",
@@ -275,35 +236,48 @@ class App(cmd.Cmd):
         print("Last update: ", last_date_uploaded)
         papers_path = getPapers.import_data(last_date_uploaded)
 
-        papers_col = db["Papers"]
 
         papers_df = pd.read_json(papers_path, lines=True)
 
+        insert_papers(papers_df)
+
+
+    def do_exit(self, arg):
+        'Exit PaperRater DB_Updater'
+        self.mongo_client.close()
+        self.neo4j_driver.close()
+        sys.exit()
+
+    def insert_papers(self, papers_df):
+        db = self.mongo_client["PaperRater"]
+        papers_col = db["Papers"]
+
         # abstract is a Java 8 keyword
-        arxiv_df = pd.read_json(papers_path, lines=True)
-        arxiv_df = arxiv_df.rename(columns={"abstract": "_abstract"})
+        papers_df = papers_df.rename(columns={"abstract": "_abstract"})
+
+        # Split the dataframe in order not to insert "nan" values in mongodb
+        arxiv_df = papers_df
         arxiv_df = arxiv_df.drop(columns={"vixra_id"})
-
-        vixra_df = pd.read_json(papers_path, lines=True)
-        vixra_df = vixra_df.rename(columns={"abstract": "_abstract"})
-        vixra_df = vixra_df.drop(columns={"arxiv_id"})
-
-        arxiv_df = arxiv_df[arxiv_df['arxiv_id'].notna()]
-        vixra_df = vixra_df[vixra_df['vixra_id'].notna()]
-
+        arxiv_df.dropna(subset=["arxiv_id"], inplace=True)
         arxiv_df['arxiv_id'] = arxiv_df['arxiv_id'].map(str)
-        vixra_df['vixra_id'] = vixra_df['vixra_id'].map(str)
-
         arxiv_dict = arxiv_df.to_dict("records")
+
+        vixra_df = papers_df
+        vixra_df = vixra_df.drop(columns={"arxiv_id"})
+        vixra_df.dropna(subset=["vixra_id"], inplace=True)
+        vixra_df['vixra_id'] = vixra_df['vixra_id'].map(str)
         vixra_dict = vixra_df.to_dict("records")
 
-        # MongoDB
+        # Converts IDs to str
+        papers_df['arxiv_id'] = papers_df['arxiv_id'].map(str)
+        papers_df['vixra_id'] = papers_df['vixra_id'].map(str)
+
         papers_col.insert_many(arxiv_dict)
         papers_col.insert_many(vixra_dict)
 
-        # Neo4j
         session = self.neo4j_driver.session()
         for index, row in papers_df.iterrows():
+            # Split the dataframe in order not to insert "nan" values in neo4j
             if row['arxiv_id'] != "nan":
                 query = ("CREATE (p:Paper { arxiv_id: $arxiv_id, title: $title, category: $category,"
                          " authors: $authors, published: $published}) ")
@@ -323,12 +297,6 @@ class App(cmd.Cmd):
                                                             published=row['published']))
 
         print("Added papers to databases")
-
-    def do_exit(self, arg):
-        'Exit PaperRater DB_Updater'
-        self.mongo_client.close()
-        self.neo4j_driver.close()
-        sys.exit()
 
 
 if __name__ == '__main__':
