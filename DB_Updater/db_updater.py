@@ -12,7 +12,7 @@ import getPapers
 
 
 class App(cmd.Cmd):
-    intro = 'PaperRater Server launched. \n \nType help or ? to list commands.\n'
+    intro = 'PaperRater DB_Updater launched. \n \nType help or ? to list commands.\n'
     prompt = '>'
     num_users = '1000'
 
@@ -269,7 +269,7 @@ class App(cmd.Cmd):
         print("Added papers to databases")
 
     def do_exit(self, arg):
-        'Exit PaperRater Server'
+        'Exit PaperRater DB_Updater'
         self.mongo_client.close()
         self.neo4j_driver.close()
         sys.exit()
