@@ -34,6 +34,10 @@
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
+                           <styleClass>
+                              <String fx:value="buttonlog" />
+                              <String fx:value="dynamic-button" />
+                           </styleClass>
                         </Button>
                      </children>
                   </HBox>
