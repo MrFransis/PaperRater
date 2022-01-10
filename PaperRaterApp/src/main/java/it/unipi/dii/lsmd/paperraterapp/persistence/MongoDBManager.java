@@ -101,6 +101,9 @@ public class MongoDBManager {
      */
     public boolean deleteUser(User u) {
         try {
+            Bson find = eq("comments.username", u.getUsername());
+            Bson update = Updates.set("comments.$.username", "Deleted user");
+            papersCollection.updateMany(find, update);
             usersCollection.deleteOne(eq("username", u.getUsername()));
             return true;
         }
@@ -670,7 +673,7 @@ public class MongoDBManager {
                 computed("authors", "$_id.authors"),
                 computed("published", "$_id.published"),
                 include("totalComments")));
-        Bson sort = sort(Indexes.descending("totalComments"));
+        Bson sort = sort(Indexes.descending("totalComments", "published"));
         Bson skip = skip(skipDoc);
         Bson limit = limit(limitDoc);
         papersCollection.aggregate(Arrays.asList(unwind, filter, group, project, sort, skip, limit)).forEach(convertInPaper);

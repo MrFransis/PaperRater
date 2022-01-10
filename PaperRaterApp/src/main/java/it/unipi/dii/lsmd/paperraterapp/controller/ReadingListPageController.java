@@ -63,6 +63,8 @@ public class ReadingListPageController {
         readingListTitle.setText(readingList.getTitle());
         if (!readingList.getPapers().isEmpty())
             mostCommonCategory.setText(getMostCommonCategory(readingList.getPapers()));
+        else
+            mostCommonCategory.setText("N/A");
         numFollowers.setText(String.valueOf(neoMan.getNumFollowersReadingList(readingList.getTitle(), owner)));
         numPapers.setText(String.valueOf(readingList.getPapers().size()));
 

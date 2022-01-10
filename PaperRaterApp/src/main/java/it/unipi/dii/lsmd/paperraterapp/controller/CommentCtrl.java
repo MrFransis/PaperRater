@@ -67,6 +67,8 @@ public class CommentCtrl {
                 bin.setVisible(false);
             modify.setVisible(false);
         }
+        if (c.getUsername().equals("Deleted user"))
+            username.setDisable(true);
         username.setText(c.getUsername());
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         timestamp.setText(formatter.format(c.getTimestamp()));
@@ -112,9 +114,11 @@ public class CommentCtrl {
     }
 
     private void clickOnUsername(MouseEvent mouseEvent){
-        User u = mongoMan.getUserByUsername(c.getUsername());
-        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
-                "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", mouseEvent);
-        ctrl.setProfilePage(u);
+        if(!c.getUsername().equals("Deleted user")) {
+            User u = mongoMan.getUserByUsername(c.getUsername());
+            ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
+                    "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", mouseEvent);
+            ctrl.setProfilePage(u);
+        }
     }
 }

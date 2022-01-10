@@ -88,7 +88,7 @@ public class PaperCardCtrl {
                 "/it/unipi/dii/lsmd/paperraterapp/layout/paperpage.fxml", mouseEvent);
 
         // If paper object is a snapshot, load the complete paper object
-        if (p.getAbstract() == null || p.getAbstract().isEmpty())
+        if (p.getComments() == null || p.getAbstract().isEmpty())
             p = mongoMan.getPaperById(p);
         if (ctrl != null)
             ctrl.setPaperPage(p);

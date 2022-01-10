@@ -89,7 +89,7 @@ public class PaperPageController implements Initializable {
             linkPdf = "https://vixra.org/pdf/" + validId + "v1.pdf";
         }
         category.setText(paper.getCategory());
-        authors.setText(paper.getAuthors().toString());
+        authors.setText((paper.getAuthors().subList(0,6)).toString());
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         published.setText(formatter.format(paper.getPublished()));
         abstractPaper.setText(paper.getAbstract().replace("\n", " "));
