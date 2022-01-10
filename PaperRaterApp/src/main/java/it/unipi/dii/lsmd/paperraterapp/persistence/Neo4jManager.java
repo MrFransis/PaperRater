@@ -557,7 +557,7 @@ public class Neo4jManager {
                 List<Pair<Pair<String, ReadingList>, Integer>> popularReadingLists = new ArrayList<>();
                 while (result.hasNext()) {
                     Record r = result.next();
-                    ReadingList snap = new ReadingList(r.get("Title").asString(), new ArrayList<>());
+                    ReadingList snap = new ReadingList(r.get("Title").asString(), null);
 
                     popularReadingLists.add(new Pair(new Pair(r.get("Owner").asString(), snap)
                             , r.get("numFollower").asInt()));

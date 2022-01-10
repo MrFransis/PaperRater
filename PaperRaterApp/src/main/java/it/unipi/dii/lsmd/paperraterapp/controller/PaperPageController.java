@@ -68,7 +68,8 @@ public class PaperPageController implements Initializable {
     }
 
     public void setPaperPage (Paper p) {
-        this.paper = mongoMan.getPaperById(p);
+        //this.paper = mongoMan.getPaperById(p);
+        this.paper = p;
         this.user = Session.getInstance().getLoggedUser();
 
         // Push
@@ -125,7 +126,7 @@ public class PaperPageController implements Initializable {
             pane = loader.load();
             CommentCtrl ctrl = loader.getController();
             ctrl.textProperty().bindBidirectional(comNum.textProperty());
-            ctrl.setCommentCard(c, user, p, false);
+            ctrl.setCommentCard(c, p, false);
 
         }
         catch (Exception e) {
@@ -147,7 +148,7 @@ public class PaperPageController implements Initializable {
                     "/it/unipi/dii/lsmd/paperraterapp/layout/readinglistpage.fxml", mouseEvent);
 
             // Get Previous Page Reading List info
-            Pair<String, ReadingList> p = Session.getInstance().getPreviousPageReadingList().get(
+            Pair<String, ReadingList> p = Session.getInstance().getPreviousPageReadingList().remove(
                     Session.getInstance().getPreviousPageReadingList().size() - 1);
 
             ctrl.setReadingList(p.getValue(), p.getKey());

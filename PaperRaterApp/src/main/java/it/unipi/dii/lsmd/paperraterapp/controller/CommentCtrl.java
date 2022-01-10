@@ -2,11 +2,13 @@ package it.unipi.dii.lsmd.paperraterapp.controller;
 
 import it.unipi.dii.lsmd.paperraterapp.model.Comment;
 import it.unipi.dii.lsmd.paperraterapp.model.Paper;
+import it.unipi.dii.lsmd.paperraterapp.model.Session;
 import it.unipi.dii.lsmd.paperraterapp.model.User;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDBManager;
 import it.unipi.dii.lsmd.paperraterapp.persistence.MongoDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jDriver;
 import it.unipi.dii.lsmd.paperraterapp.persistence.Neo4jManager;
+import it.unipi.dii.lsmd.paperraterapp.utils.Utils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -28,7 +30,6 @@ import java.util.Optional;
 public class CommentCtrl {
     private Comment c;
     private Paper paper;
-    private User user;
     private MongoDBManager mongoMan;
     private Neo4jManager neoMan;
     private StringProperty text = new SimpleStringProperty();
@@ -46,21 +47,21 @@ public class CommentCtrl {
         neoMan = new Neo4jManager(Neo4jDriver.getInstance().openConnection());
         modify.setOnMouseClicked(mouseEvent -> clickOnModify(mouseEvent));
         scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        username.setOnMouseClicked(mouseEvent -> clickOnUsername(mouseEvent));
     }
 
-    public void setCommentCard (Comment c, User user, Paper paper, boolean browser) {
+    public void setCommentCard (Comment c, Paper paper, boolean browser) {
         this.c = c;
         this.paper = paper;
-        this.user = user;
         if (browser)
             bin.setOnMouseClicked(mouseEvent -> clickOnBinBrowser(mouseEvent));
         else
             bin.setOnMouseClicked(mouseEvent -> clickOnBin(mouseEvent));
-        if(Objects.equals(user.getUsername(), c.getUsername())) {
+        if(Objects.equals(Session.getInstance().getLoggedUser().getUsername(), c.getUsername())) {
             bin.setVisible(true);
             modify.setVisible(true);
         } else {
-            if(user.getType() > 0) //If the user is a moderator/admin can delete other comments
+            if(Session.getInstance().getLoggedUser().getType() > 0) //If the user is a moderator/admin can delete other comments
                 bin.setVisible(true);
             else
                 bin.setVisible(false);
@@ -108,5 +109,12 @@ public class CommentCtrl {
         if (result.isPresent()){
             mongoMan.updateComment(paper, c);
         }
+    }
+
+    private void clickOnUsername(MouseEvent mouseEvent){
+        User u = mongoMan.getUserByUsername(c.getUsername());
+        ProfilePageController ctrl = (ProfilePageController) Utils.changeScene(
+                "/it/unipi/dii/lsmd/paperraterapp/layout/profilepage.fxml", mouseEvent);
+        ctrl.setProfilePage(u);
     }
 }
