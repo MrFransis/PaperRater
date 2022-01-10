@@ -615,7 +615,7 @@ public class MongoDBManager {
             pipeline.add(Aggregates.match(gte("comments.timestamp", start_date)));
         if(!end_date.isEmpty())
             pipeline.add(Aggregates.match(lte("comments.timestamp", end_date)));
-        pipeline.add(sort(ascending("comments.timestamp")));
+        pipeline.add(sort(ascending("comments.timestamp", "comments.username")));
         pipeline.add(skip(skipDoc));
         pipeline.add(limit(limitDoc));
 
