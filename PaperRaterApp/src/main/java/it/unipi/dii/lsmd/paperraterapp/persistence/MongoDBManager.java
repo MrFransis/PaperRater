@@ -169,7 +169,7 @@ public class MongoDBManager {
                     .append("text", comment.getText())
                     .append("timestamp", dateFormat.format(comment.getTimestamp()));
 
-            Bson find = or(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()));
+            Bson find = and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()));
             Bson update = Updates.addToSet("comments", doc);
             papersCollection.updateOne(find, update);
             return true;
@@ -261,9 +261,8 @@ public class MongoDBManager {
         try {
             Paper p = null;
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss").create();
-
             Document myDoc = (Document) papersCollection.find(
-                    or(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()))).first();
+                    and(eq("arxiv_id", paper.getArxivId()), eq("vixra_id", paper.getVixraId()))).first();
             p = gson.fromJson(gson.toJson(myDoc), Paper.class);
             return p;
         }
@@ -539,6 +538,7 @@ public class MongoDBManager {
 
         Bson unwind1 = unwind("$readingLists");
         Bson unwind2 = unwind("$readingLists.papers");
+        // Distinct occurrences
         Bson groupMultiple = new Document("$group",
                 new Document("_id", new Document("username", "$username")
                         .append("email", "$email")
@@ -548,6 +548,7 @@ public class MongoDBManager {
                         .append("age", "$age")
                         .append("category", "$readingLists.papers.category")
                 ));
+        // Sum all occurrences
         Bson group = new Document("$group",
                 new Document("_id",
                         new Document("username", "$_id.username")

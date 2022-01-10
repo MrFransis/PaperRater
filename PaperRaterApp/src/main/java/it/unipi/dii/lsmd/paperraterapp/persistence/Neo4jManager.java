@@ -183,7 +183,7 @@ public class Neo4jManager {
         try(Session session = driver.session()) {
             session.writeTransaction((TransactionWork<Void>) tx -> {
                 tx.run("MATCH (a:User), (b:Paper) " +
-                                "WHERE a.username = $username AND (b.arxiv_id = $arxiv_id AND b.vixra_id = $vixra_id) " +
+                                "WHERE a.username = $username AND (b.arxiv_id = $arxiv_id OR b.vixra_id = $vixra_id) " +
                                 "MERGE (a)-[r:LIKES]->(b)",
                         parameters("username", u.getUsername(),
                                 "arxiv_id", p.getArxivId(),
@@ -199,8 +199,8 @@ public class Neo4jManager {
     public boolean unlike(User u, Paper p) {
         try (Session session = driver.session()) {
             session.writeTransaction((TransactionWork<Void>) tx -> {
-                tx.run("MATCH (u:User{username:$username})-[r:LIKES]->" +
-                                "(p:Paper{arxiv_id:$arxiv_id,vixra_id:$vixra_id}) " +
+                tx.run("MATCH (u:User{username:$username})-[r:LIKES]->(p:Paper) " +
+                                "WHERE p.arxiv_id = $arxiv_id OR p.vixra_id = $vixra_id" +
                                 " DELETE r",
                         parameters("username", u.getUsername(),
                                 "arxiv_id", p.getArxivId(),
@@ -242,7 +242,7 @@ public class Neo4jManager {
         int numLikes;
         try (Session session = driver.session()) {
             numLikes = session.writeTransaction((TransactionWork<Integer>) tx -> {
-                Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-() WHERE p.arxiv_id = $arxiv_id AND p.vixra_id = $vixra_id " +
+                Result result = tx.run("MATCH (p:Paper)<-[r:LIKES]-() WHERE p.arxiv_id = $arxiv_id OR p.vixra_id = $vixra_id " +
                         "RETURN COUNT(r) AS numLikes", parameters("arxiv_id", paper.getArxivId(), "vixra_id", paper.getVixraId()));
                 return result.next().get("numLikes").asInt();
             });
@@ -469,7 +469,8 @@ public class Neo4jManager {
                                 "WHERE p.published >= $start_date " +
                                 "RETURN p.arxiv_id AS ArxivId, p.vixra_id AS VixraId, p.title AS Title, " +
                                 "p.category AS Category, p.authors AS Authors, " +
-                                "COUNT(l) AS like_count ORDER BY like_count DESC " +
+                                "COUNT(l) AS like_count " +
+                                "ORDER BY like_count DESC, Title " +
                                 "SKIP $skip " +
                                 "LIMIT $limit",
                         parameters( "start_date", filterDate,"skip", skip, "limit", limit));
@@ -481,8 +482,15 @@ public class Neo4jManager {
                     for (Object o : r.get("Authors").asList())
                         authors.add(o.toString());
 
-                    Paper snap = new Paper( r.get("ArxivId").asString(),
-                                            r.get("VixraId").asString(),
+                    String arxiv_id = null;
+                    String vixra_id = null;
+                    if(r.get("ArxivId").isNull())
+                        vixra_id = r.get("VixraId").asString();
+                    else
+                        arxiv_id = r.get("ArxivId").asString();
+
+                    Paper snap = new Paper( arxiv_id,
+                                            vixra_id,
                                             r.get("Title").asString(),
                                             "",
                                             r.get("Category").asString(),
@@ -511,7 +519,8 @@ public class Neo4jManager {
             rank = session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:User)<-[r:FOLLOWS]-(:User) " +
                                 "RETURN DISTINCT target.username AS Username, target.email AS Email, " +
-                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC " +
+                                "COUNT(DISTINCT r) as numFollower " +
+                                "ORDER BY numFollower DESC, Username " +
                                 "SKIP $skip " +
                                 "LIMIT $num",
                         parameters("skip", skip, "num", num));
@@ -540,7 +549,8 @@ public class Neo4jManager {
             rank = session.readTransaction(tx -> {
                 Result result = tx.run("MATCH (target:ReadingList)<-[r:FOLLOWS]-(:User) " +
                                 "RETURN DISTINCT target.title AS Title, target.owner AS Owner, " +
-                                "COUNT(DISTINCT r) as numFollower ORDER BY numFollower DESC " +
+                                "COUNT(DISTINCT r) as numFollower " +
+                                "ORDER BY numFollower DESC, Owner " +
                                 "SKIP $skip " +
                                 "LIMIT $num",
                         parameters("skip", skip, "num", num));
@@ -597,8 +607,15 @@ public class Neo4jManager {
                     for (Object o : r.get("Authors").asList())
                         authors.add(o.toString());
 
-                    Paper snap = new Paper( r.get("ArxivId").asString(),
-                            r.get("VixraId").asString(),
+                    String arxiv_id = null;
+                    String vixra_id = null;
+                    if(r.get("ArxivId").isNull())
+                        vixra_id = r.get("VixraId").asString();
+                    else
+                        arxiv_id = r.get("ArxivId").asString();
+
+                    Paper snap = new Paper( arxiv_id,
+                            vixra_id,
                             r.get("Title").asString(),
                             "",
                             r.get("Category").asString(),

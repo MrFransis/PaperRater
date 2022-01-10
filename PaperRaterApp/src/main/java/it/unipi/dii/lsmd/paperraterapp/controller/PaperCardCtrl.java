@@ -14,8 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
-import java.util.Objects;
-
 public class PaperCardCtrl {
     private Paper p;
     private MongoDBManager mongoMan;
