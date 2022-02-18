@@ -1,6 +1,6 @@
 # PaperRater
 Final project for the course in 
-_Large Scale and Multi-Structured Databases_ @ University of Pisa.
+_Large Scale and Multi-Structured Databases_ @University of Pisa.
 
 ## Objective 
 The goal of the project is to design and implement a complete application which manages a “big dataset”
